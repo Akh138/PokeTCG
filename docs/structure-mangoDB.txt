@@ -1,0 +1,27 @@
+
+La structure d'une "CARTE" fusionnée:
+
+
+{
+  "id_api": "swsh1-1",             // ID unique pour faire le lien avec MySQL
+  "nom_fr": "Florizarre VMAX",     // Récupéré de TCGdex
+  "extension_fr": "Épée et Bouclier", 
+  "image_url": "https://...",     // Récupéré de pokemontcg.io (HD)
+  "prix_actuel": 15.50,            // Récupéré de pokemontcg.io (TCGPlayer)
+  "details": {                     // Données souples NoSQL
+    "hp": "330",
+    "type": "Plante",
+    "rarete": "Rare Holo VMAX"
+  }
+}
+
+La structure d'une "NEWS":
+
+{
+  "titre": "Sortie de la nouvelle extension !",
+  "auteur_id": 1,
+  "date": "2024-05-22",
+  "corps_texte": "Le contenu de l'article ici...",
+  "tags": ["Nouveauté", "Promo"]
+}
+

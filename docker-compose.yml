@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Base de données relationnelle pour la finance et les users
+  mysql-db:
+    image: mysql:8.0
+    container_name: poketcg-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: poketcg_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Base de données NoSQL pour le catalogue et le forum
+  mongodb:
+    image: mongo:latest
+    container_name: poketcg-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo_data:/data/db
+
+  # Annuaire de services pour que tes microservices se trouvent
+  consul:
+    image: hashicorp/consul:latest
+    container_name: poketcg-consul
+    ports:
+      - "8500:8500"
+    command: "agent -dev -client 0.0.0.0"
+
+volumes:
+  mysql_data:
+  mongo_data:

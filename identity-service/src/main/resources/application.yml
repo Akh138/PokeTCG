@@ -1,0 +1,39 @@
+spring:
+  # 1. Je donne un nom unique à ce microservice (son "nom de dresseur")
+  application:
+    name: identity-service
+
+  # 2. Ici, je donne les coordonnées pour trouver ma base de données MySQL sur Docker
+  datasource:
+    # L'adresse "localhost:3306" et le nom de la base qu'on a créé sur Workbench
+    url: jdbc:mysql://localhost:3306/poketcg_db?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # 3. Hibernate, c'est l'outil qui traduit mon Java en SQL automatiquement
+  jpa:
+    hibernate:
+      # "update" dit à l'appli : "Si les tables n'existent pas dans MySQL, crée-les tout de suite"
+      ddl-auto: update
+    # "true" me permet de voir les requêtes SQL dans la console en bas pour vérifier mon code
+    show-sql: true
+    properties:
+      hibernate:
+        # Je précise que je parle le "dialecte" MySQL 8
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  # 4. Ici, mon microservice va s'inscrire dans l'annuaire Consul
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        # Je dis à Consul : "Inscris-moi sous mon nom identity-service"
+        service-name: ${spring.application.name}
+        # On dit à Consul de nous appeler par notre IP et non par le nom du PC
+        prefer-ip-address: true
+
+# 5. Je définis le port de ce service. Le 8080 est souvent pris, donc je prends le 8081.
+server:
+  port: 8081
