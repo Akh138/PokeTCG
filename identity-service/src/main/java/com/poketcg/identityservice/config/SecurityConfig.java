@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // J'autorise tout le monde à accéder aux routes d'authentification (inscription/connexion)
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         // Toutes les autres requêtes devront être authentifiées
                         .anyRequest().authenticated()
                 );

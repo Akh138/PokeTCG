@@ -1,0 +1,33 @@
+spring:
+  # 1. Le nom de mon service pour Consul et les autres
+  application:
+    name: wallet-service
+
+  # 2. Ma connexion a MySQL (meme serveur, meme base que identity)
+  datasource:
+    url: jdbc:mysql://localhost:3306/poketcg_db?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # 3. Je demande a Hibernate de verifier ma classe "Portefeuille"
+  # et de creer la table si elle n'existe pas encore
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true # Pour voir les requetes d'argent dans la console
+
+  # 4. Inscription sur Consul
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: host.docker.internal # Pour que Consul me voit sur Windows
+        prefer-ip-address: false
+        port: 8082 # Port specifique pour le Wallet
+
+# 5. On utilise le port 8082 (independant du 8081 de l'identity)
+server:
+  port: 8082
