@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: catalog-service
+
+  data:
+    mongodb:
+      # L'adresse magique (URI) qui contient tout
+      # On vise le port 27018 et on précise l'utilisateur pokeadmin
+      uri: mongodb://pokeadmin:pokepassword@localhost:27018/catalog_db?authSource=admin
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: host.docker.internal
+        prefer-ip-address: false
+        port: 8083
+        health-check-path: /actuator/health
+
+server:
+  port: 8083

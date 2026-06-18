@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Base de données relationnelle pour la finance et les users
+  # 1. MySQL
   mysql-db:
     image: mysql:8.0
     container_name: poketcg-mysql
@@ -13,19 +13,19 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
-  # Base de données NoSQL pour le catalogue et le forum
+  # 2. MongoDB (On change le port externe en 27018)
   mongodb:
     image: mongo:latest
     container_name: poketcg-mongodb
     ports:
-      - "27017:27017"
+      - "27018:27017" # Ton PC parlera au 27018 pour atteindre le 27017 du Docker
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: pokeadmin
+      MONGO_INITDB_ROOT_PASSWORD: pokepassword
     volumes:
       - mongo_data:/data/db
 
-  # Annuaire de services pour que tes microservices se trouvent
+  # 3. Consul
   consul:
     image: hashicorp/consul:latest
     container_name: poketcg-consul
