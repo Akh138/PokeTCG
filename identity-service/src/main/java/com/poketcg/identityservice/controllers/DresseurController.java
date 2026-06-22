@@ -3,6 +3,7 @@ package com.poketcg.identityservice.controllers;
 import com.poketcg.identityservice.dto.LoginRequest;
 import com.poketcg.identityservice.entities.Dresseur;
 import com.poketcg.identityservice.services.DresseurService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class DresseurController {
 
     // 3. Cette méthode s'occupe de l'inscription (Requête POST).
     @PostMapping("/register")
-    public Dresseur register(@RequestBody Dresseur dresseur) {
+    public Dresseur register(@Valid @RequestBody Dresseur dresseur) { // J'ajoute @Valid pour dire à Spring de vérifier les contraintes de l'entité
         // @RequestBody veut dire : "Prends les infos envoyées par l'utilisateur et transforme-les en objet Java"
         return dresseurService.inscription(dresseur);
     }
@@ -25,5 +26,13 @@ public class DresseurController {
     public String login(@RequestBody LoginRequest loginRequest) {
         // On appelle le service pour vérifier l'identité et récupérer le badge JWT
         return dresseurService.connexion(loginRequest.getUsername(), loginRequest.getPassword());
+    }
+
+    // 5. Supprimer un dresseur (Droit à l'oubli / RGPD)
+    // J'utilise DELETE pour signifier une suppression de ressource
+    @DeleteMapping("/delete/{id}")
+    public String deleteAccount(@PathVariable Long id) {
+        dresseurService.supprimerCompte(id);
+        return "Succès : Votre compte dresseur a été supprimé ainsi que vos données personnelles.";
     }
 }

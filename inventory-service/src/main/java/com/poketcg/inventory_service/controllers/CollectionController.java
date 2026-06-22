@@ -24,4 +24,22 @@ public class CollectionController {
     public List<CollectionCard> getPokedex(@PathVariable Long idDresseur) {
         return collectionService.voirMonPokedex(idDresseur);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public String delete(@PathVariable Long id) {
+        collectionService.supprimerDuPokedex(id);
+        return "Carte supprimée de l'inventaire.";
+    }
+
+
+    @DeleteMapping("/trainer/{idDresseur}")
+    public String deleteAllByTrainer(@PathVariable Long idDresseur) {
+        collectionService.supprimerToutLePokedex(idDresseur);
+        return "Tout l'inventaire du dresseur " + idDresseur + " a été supprimé avec succès.";
+    }
+
+    @PutMapping("/update/{id}/{nouvelEtat}")
+    public CollectionCard update(@PathVariable Long id, @PathVariable String nouvelEtat) {
+        return collectionService.updateEtat(id, nouvelEtat);
+    }
 }

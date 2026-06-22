@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: marketplace-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/poketcg_db?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        hostname: host.docker.internal
+        prefer-ip-address: false
+        port: 8085
+
+server:
+  port: 8085
