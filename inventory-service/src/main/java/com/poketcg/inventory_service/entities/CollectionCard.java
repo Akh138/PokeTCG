@@ -27,4 +27,7 @@ public class CollectionCard {
     private String etatCarte;    // ex: Neuf, Excellent, Usé
     private String langueCarte;  // ex: FR, EN, JP
     private LocalDateTime dateAcquisition;
+
+    // J'ajoute le statut pour gérer le flux de livraison (POSSEDEE, EN_TRANSIT)
+    private String statut;
 }

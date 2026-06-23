@@ -37,7 +37,7 @@ public class AnnonceController {
         return annonceService.chercherParCarte(idCarteApi);
     }
 
-    // Retirer une annonce du marché
+    // Retirer une annonce précise du marché
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         annonceService.supprimerAnnonce(id);
@@ -49,5 +49,18 @@ public class AnnonceController {
     public String deleteAllByVendeur(@PathVariable Long idVendeur) {
         annonceService.supprimerToutesMesAnnonces(idVendeur);
         return "Toutes les annonces du dresseur " + idVendeur + " ont été retirées du marché.";
+    }
+
+    // ÉTAPE 1 DE LA VENTE : Lancer l'achat d'une annonce (Bloque l'argent et transfère la carte)
+    @PutMapping("/buy/{idAnnonce}/{idAcheteur}")
+    public Annonce buy(@PathVariable Long idAnnonce, @PathVariable Long idAcheteur) {
+        return annonceService.acheterUneCarte(idAnnonce, idAcheteur);
+    }
+
+    // ÉTAPE 2 DE LA VENTE : Confirmer la réception (Paye le vendeur et valide la carte)
+    // C'est cette route que j'appellerai quand le colis est arrivé !
+    @PutMapping("/confirm-delivery/{idAnnonce}")
+    public Annonce confirmDelivery(@PathVariable Long idAnnonce) {
+        return annonceService.confirmerReception(idAnnonce);
     }
 }

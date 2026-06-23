@@ -25,21 +25,35 @@ public class CollectionController {
         return collectionService.voirMonPokedex(idDresseur);
     }
 
+    // 3. Supprimer une carte précise
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         collectionService.supprimerDuPokedex(id);
         return "Carte supprimée de l'inventaire.";
     }
 
-
+    // 4. Suppression groupée pour le dresseur (RGPD)
     @DeleteMapping("/trainer/{idDresseur}")
     public String deleteAllByTrainer(@PathVariable Long idDresseur) {
         collectionService.supprimerToutLePokedex(idDresseur);
         return "Tout l'inventaire du dresseur " + idDresseur + " a été supprimé avec succès.";
     }
 
+    // 5. Modifier l'état d'une carte
     @PutMapping("/update/{id}/{nouvelEtat}")
     public CollectionCard update(@PathVariable Long id, @PathVariable String nouvelEtat) {
         return collectionService.updateEtat(id, nouvelEtat);
+    }
+
+    // 6. Transfert automatique lors d'une mise en vente (Appelé par le Marketplace)
+    @PutMapping("/transfer/{idVendeur}/{idAcheteur}/{idCarteApi}")
+    public CollectionCard transfer(@PathVariable Long idVendeur, @PathVariable Long idAcheteur, @PathVariable String idCarteApi) {
+        return collectionService.transfererPropriete(idVendeur, idAcheteur, idCarteApi);
+    }
+
+    // 7. Validation finale de réception (La carte devient "POSSÉDÉE")
+    @PutMapping("/confirm-receipt/{idDresseur}/{idCarteApi}")
+    public CollectionCard confirmReceipt(@PathVariable Long idDresseur, @PathVariable String idCarteApi) {
+        return collectionService.validerReception(idDresseur, idCarteApi);
     }
 }
