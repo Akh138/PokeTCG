@@ -1,0 +1,29 @@
+spring:
+  # 1. Je donne un nom au service pour qu'il soit reconnu dans l'annuaire
+  application:
+    name: social-service
+
+  # 2. Connexion à MongoDB
+  data:
+    mongodb:
+      # J'utilise le port 27018 (celui qu'on a fixé dans Docker)
+      # et je crée une base spécifique 'social_db' pour ce service
+      uri: mongodb://pokeadmin:pokepassword@localhost:27018/social_db?authSource=admin
+
+  # 3. Inscription dans l'annuaire Consul
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        # Adresse pour que Docker (Consul) puisse voir mon PC (IntelliJ)
+        hostname: host.docker.internal
+        prefer-ip-address: false
+        port: 8086
+        # Je précise où se trouve le test de santé pour le voyant vert
+        health-check-path: /actuator/health
+
+# 4. Je fixe le port sur 8086
+server:
+  port: 8086
