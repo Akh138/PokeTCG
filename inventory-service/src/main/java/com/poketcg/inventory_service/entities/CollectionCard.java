@@ -23,6 +23,9 @@ public class CollectionCard {
     @Column(nullable = false)
     private String idCarteApi;
 
+    //  Je stocke le nom de l'extension pour calculer la progression
+    private String extension;    // ex: Set de Base, Épée et Bouclier
+
     // Les détails que j'ai prévus dans mon MLD
     private String etatCarte;    // ex: Neuf, Excellent, Usé
     private String langueCarte;  // ex: FR, EN, JP

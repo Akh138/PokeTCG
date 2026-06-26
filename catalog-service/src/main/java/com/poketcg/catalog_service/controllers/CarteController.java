@@ -19,16 +19,37 @@ public class CarteController {
         return carteService.sauvegarderEnCache(carte);
     }
 
-    // 2. Voir tout le contenu du catalogue local
+    // 2. Voir tout le contenu du catalogue local (Ma base NoSQL)
     @GetMapping("/all")
     public List<Carte> getAll() {
         return carteService.recupererToutesLesCartes();
     }
 
-    // 3. Importer une carte réelle depuis les APIs (ex: base1-4 pour Dracaufeu)
+    // 3. Importer une carte réelle manuellement
     @PostMapping("/import/{idApi}")
     public Carte importCard(@PathVariable String idApi) {
-        // J'appelle mon service d'agrégation pour faire le travail
         return carteService.importerCarteDepuisApis(idApi);
+    }
+
+    // 4. MA ROUTE INTELLIGENTE (Ticket #6) : Récupérer ou Importer
+    // C'est la route principale : si je demande une carte qu'on n'a pas,
+    // mon service va l'aspirer automatiquement.
+    @GetMapping("/details/{idApi}")
+    public Carte getDetails(@PathVariable String idApi) {
+        return carteService.recupererOuImporter(idApi);
+    }
+
+    // 5. FILTRE PAR TYPE (Ticket #5)
+    // Exemple : /api/catalog/type/Fire
+    @GetMapping("/type/{type}")
+    public List<Carte> getByType(@PathVariable String type) {
+        return carteService.chercherParType(type);
+    }
+
+    // 6. FILTRE PAR RARETÉ (Ticket #5)
+    // Exemple : /api/catalog/rarete/Rare Holo
+    @GetMapping("/rarete/{rarete}")
+    public List<Carte> getByRarete(@PathVariable String rarete) {
+        return carteService.chercherParRarete(rarete);
     }
 }

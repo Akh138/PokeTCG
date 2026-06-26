@@ -33,6 +33,12 @@ public class SocialController {
     @GetMapping("/forum")
     public List<ForumMessage> getForum() { return socialService.voirLeForum(); }
 
+    //  Pour liker un message (PUT car on modifie le message)
+    @PutMapping("/forum/like/{id}")
+    public ForumMessage like(@PathVariable String id) {
+        return socialService.likerMessage(id);
+    }
+
     // Suppression d'un message précis (ID technique MongoDB)
     @DeleteMapping("/forum/{id}")
     public String deleteMessage(@PathVariable String id) {

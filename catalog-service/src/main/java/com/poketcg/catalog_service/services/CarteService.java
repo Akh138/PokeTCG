@@ -16,49 +16,66 @@ import java.util.Map;
 public class CarteService {
 
     private final CarteRepository carteRepository;
-    // J'injecte mes deux proxies pour pouvoir appeler les APIs
     private final PokemonTcgProxy pokemonTcgProxy;
     private final TcgDexProxy tcgDexProxy;
 
-    // Ma méthode pour "aspirer" une carte depuis les deux APIs et la mettre en cache NoSQL
+    // 1. MA LOGIQUE DE CACHE AUTOMATIQUE (Ticket #6)
+    // C'est ici que je rends le service intelligent : si la carte n'est pas en base,
+    // je déclenche l'importation automatiquement.
+    public Carte recupererOuImporter(String idApi) {
+        return carteRepository.findByIdApiUnique(idApi)
+                .orElseGet(() -> importerCarteDepuisApis(idApi));
+    }
+
+    // 2. MON ASPIRATEUR DE DONNÉES AMÉLIORÉ
     public Carte importerCarteDepuisApis(String idApi) {
 
-        // 1. J'appelle l'API française pour récupérer le nom FR et l'extension
+        // Appel TCGdex (FR)
         Map<String, Object> resFr = (Map<String, Object>) tcgDexProxy.getCardDetailsFr(idApi);
 
-        // 2. J'appelle l'API internationale pour récupérer l'image HD et le prix
+        // Appel PokemonTcg.io (HD & Infos techniques)
         Map<String, Object> resIntRaw = (Map<String, Object>) pokemonTcgProxy.getCardDetails(idApi);
         Map<String, Object> resInt = (Map<String, Object>) resIntRaw.get("data");
 
-        // 3. Je crée mon objet Carte fusionné
         Carte nouvelleCarte = new Carte();
         nouvelleCarte.setIdApiUnique(idApi);
-
-        // Données venant de TCGdex (FR)
         nouvelleCarte.setNomFr((String) resFr.get("name"));
         Map<String, Object> setFr = (Map<String, Object>) resFr.get("set");
         nouvelleCarte.setExtension((String) setFr.get("name"));
 
-        // Données venant de PokemonTcg.io (Images & Prix)
+        // Methode : J'extrais le type et la rareté
+        nouvelleCarte.setRarete((String) resInt.get("rarity"));
+        List<String> types = (List<String>) resInt.get("types");
+        if (types != null && !types.isEmpty()) {
+            nouvelleCarte.setType(types.get(0)); // Je prends le premier type (ex: Fire)
+        }
+
         Map<String, Object> images = (Map<String, Object>) resInt.get("images");
         nouvelleCarte.setImageUrl((String) images.get("large"));
 
-        // Récupération du prix (On prend le prix moyen de TCGPlayer par défaut)
         try {
             Map<String, Object> tcgPlayer = (Map<String, Object>) resInt.get("tcgplayer");
             Map<String, Object> prices = (Map<String, Object>) tcgPlayer.get("prices");
-            Map<String, Object> holofoil = (Map<String, Object>) prices.get("holofoil");
-            if (holofoil == null) holofoil = (Map<String, Object>) prices.get("normal");
+            Map<String, Object> details = (prices.containsKey("holofoil")) ?
+                    (Map<String, Object>) prices.get("holofoil") :
+                    (Map<String, Object>) prices.get("normal");
 
-            Double marketPrice = (Double) holofoil.get("market");
+            Double marketPrice = (Double) details.get("market");
             nouvelleCarte.setPrix(BigDecimal.valueOf(marketPrice));
         } catch (Exception e) {
-            // Si le prix n'est pas dispo, on met 0 par défaut
             nouvelleCarte.setPrix(BigDecimal.ZERO);
         }
 
-        // 4. J'enregistre le résultat final dans mon MongoDB
         return carteRepository.save(nouvelleCarte);
+    }
+
+    // 3. MES MÉTHODES DE FILTRAGE (Ticket #5)
+    public List<Carte> chercherParType(String type) {
+        return carteRepository.findByType(type);
+    }
+
+    public List<Carte> chercherParRarete(String rarete) {
+        return carteRepository.findByRarete(rarete);
     }
 
     public List<Carte> recupererToutesLesCartes() {

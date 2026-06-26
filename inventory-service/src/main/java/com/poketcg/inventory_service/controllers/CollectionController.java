@@ -56,4 +56,10 @@ public class CollectionController {
     public CollectionCard confirmReceipt(@PathVariable Long idDresseur, @PathVariable String idCarteApi) {
         return collectionService.validerReception(idDresseur, idCarteApi);
     }
+
+    // 8. Voir mon nombre de cartes pour une série précise
+    @GetMapping("/count/{idDresseur}/{extension}")
+    public long getCountByExtension(@PathVariable Long idDresseur, @PathVariable String extension) {
+        return collectionService.compterParSérie(idDresseur, extension);
+    }
 }

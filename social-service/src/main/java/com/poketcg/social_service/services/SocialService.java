@@ -25,7 +25,7 @@ public class SocialService {
         return newsRepository.findAll();
     }
 
-    // MA MÉTHODE : Pour supprimer une news (Modération)
+    //MÉTHODE : Pour supprimer une news (Modération)
     public void supprimerNews(String id) {
         newsRepository.deleteById(id);
     }
@@ -38,6 +38,15 @@ public class SocialService {
 
     public List<ForumMessage> voirLeForum() {
         return forumRepository.findAll();
+    }
+
+    // MÉTHODE : Pour ajouter un Like (Ticket #11)
+    // Je récupère le message, j'augmente le compteur et je sauvegarde
+    public ForumMessage likerMessage(String id) {
+        ForumMessage msg = forumRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Message introuvable !"));
+        msg.setLikes(msg.getLikes() + 1);
+        return forumRepository.save(msg);
     }
 
     // MA MÉTHODE : Pour supprimer un message précis (Modération)

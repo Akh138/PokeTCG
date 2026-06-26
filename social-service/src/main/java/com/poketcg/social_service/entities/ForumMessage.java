@@ -17,4 +17,5 @@ public class ForumMessage {
     private String sujet;      // Le titre de la discussion
     private String message;
     private LocalDateTime dateEnvoi;
+    private int likes = 0;    // Je l'initialise à 0 pour éviter d'avoir une valeur vide (null) au début
 }

@@ -27,6 +27,12 @@ public class CollectionService {
         return collectionRepository.findByIdDresseur(idDresseur);
     }
 
+    //  MÉTHODE : Calculer combien de cartes je possède dans une série (Ticket #6)
+    // C'est ici que je prépare la donnée pour afficher mon pourcentage de complétion
+    public long compterParSérie(Long idDresseur, String extension) {
+        return collectionRepository.countByIdDresseurAndExtension(idDresseur, extension);
+    }
+
     // Supprimer une carte de la collection
     public void supprimerDuPokedex(Long id) {
         collectionRepository.deleteById(id);

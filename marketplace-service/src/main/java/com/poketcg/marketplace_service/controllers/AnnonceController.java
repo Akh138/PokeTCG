@@ -1,6 +1,7 @@
 package com.poketcg.marketplace_service.controllers;
 
 import com.poketcg.marketplace_service.entities.Annonce;
+import com.poketcg.marketplace_service.entities.Offre; // J'importe l'entité Offre
 import com.poketcg.marketplace_service.services.AnnonceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,19 @@ public class AnnonceController {
         return annonceService.publierAnnonce(annonce);
     }
 
-    // Route pour voir toutes les annonces disponibles
+    // 1. Voir TOUTES les annonces disponibles (Vue globale)
     @GetMapping("/all")
     public List<Annonce> getAll() {
         return annonceService.voirLeMarche();
     }
 
-    // Voir les annonces d'un vendeur
+    // 2. Voir le marché public (Exclut mes propres ventes)
+    @GetMapping("/public/{idDresseur}")
+    public List<Annonce> getPublicMarket(@PathVariable Long idDresseur) {
+        return annonceService.voirLeMarchePublic(idDresseur);
+    }
+
+    // Voir les annonces d'un dresseur (Mes ventes à moi)
     @GetMapping("/vendeur/{idVendeur}")
     public List<Annonce> getByVendeur(@PathVariable Long idVendeur) {
         return annonceService.voirMesAnnonces(idVendeur);
@@ -51,16 +58,35 @@ public class AnnonceController {
         return "Toutes les annonces du dresseur " + idVendeur + " ont été retirées du marché.";
     }
 
-    // ÉTAPE 1 DE LA VENTE : Lancer l'achat d'une annonce (Bloque l'argent et transfère la carte)
+    // ÉTAPE 1 DE LA VENTE : Lancer l'achat d'une annonce
     @PutMapping("/buy/{idAnnonce}/{idAcheteur}")
     public Annonce buy(@PathVariable Long idAnnonce, @PathVariable Long idAcheteur) {
         return annonceService.acheterUneCarte(idAnnonce, idAcheteur);
     }
 
-    // ÉTAPE 2 DE LA VENTE : Confirmer la réception (Paye le vendeur et valide la carte)
-    // C'est cette route que j'appellerai quand le colis est arrivé !
+    // ÉTAPE 2 DE LA VENTE : Confirmer la réception
     @PutMapping("/confirm-delivery/{idAnnonce}")
     public Annonce confirmDelivery(@PathVariable Long idAnnonce) {
         return annonceService.confirmerReception(idAnnonce);
+    }
+
+    // 3. Voir le marché trié par prix croissant
+    @GetMapping("/public/sorted/{idDresseur}")
+    public List<Annonce> getPublicMarketSorted(@PathVariable Long idDresseur) {
+        return annonceService.voirLeMarchePublicTrie(idDresseur);
+    }
+
+    // ⭐ NOUVEAUTÉ : Système de Troc et Négociation (Swap)
+
+    // A. Faire une proposition (prix différent ou échange de carte)
+    @PostMapping("/offers/propose")
+    public Offre propose(@RequestBody Offre offre) {
+        return annonceService.proposerEchange(offre);
+    }
+
+    // B. Accepter l'échange (Déclenche le double transfert et le paiement négocié)
+    @PutMapping("/offers/accept/{idOffre}")
+    public Annonce acceptOffer(@PathVariable Long idOffre) {
+        return annonceService.accepterEchange(idOffre);
     }
 }
