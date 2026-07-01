@@ -1,0 +1,55 @@
+/* 1. CHARGEMENT DES POLICES */
+@font-face {
+    font-family: 'PokemonSolid';
+    src: url('../fonts/Pokemon Solid.ttf');
+}
+@font-face {
+    font-family: 'PokemonHollow';
+    src: url('../fonts/Pokemon Hollow.ttf');
+}
+
+/* 2. VARIABLES FIGMA */
+:root {
+    --bg-dark: #020617;
+    --poke-red: #EF4444;
+    --poke-yellow: #FBBF24;
+    --glass-bg: rgba(30, 41, 59, 0.5); /* Ton effet verre gris-bleu */
+    --white: #FFFFFF;
+    --text-muted: #94A3B8;  /* Le gris clair pour les descriptions */
+    --text-main: #FFFFFF;   /* Le blanc pur pour les titres */
+
+}
+
+/* 3. RESET & BASE */
+body {
+    background-color: var(--bg-dark);
+    color: white;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+/* L'EFFET VERRE (GLASSMORPHISM) */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px; /* Coins arrondis du figma */
+}
+
+/* AJOUT DU FOND POKÉMON (SANS TOUCHER AU RESTE) */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/bg-pattern.png');
+    background-repeat: repeat;
+    background-size: 500px;
+    opacity: 0.4; /* Réglage de la visibilité du fond ici */
+    z-index: -1;
+    pointer-events: none;
+}

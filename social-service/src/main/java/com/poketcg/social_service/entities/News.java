@@ -16,4 +16,5 @@ public class News {
     private String contenu;
     private String imageUrl;
     private LocalDateTime datePublication;
+    private String articleUrl;// Je l'utiliserai pour rediriger le dresseur vers le site d'origine de l'actu
 }

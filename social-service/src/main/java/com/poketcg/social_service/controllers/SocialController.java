@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+//ANNOTATION : Pour la sécurité du Front-end
+// J'ouvre la porte pour que mon futur site puisse appeler toutes les routes de ce Controller.
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/social")
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class SocialController {
     @GetMapping("/forum")
     public List<ForumMessage> getForum() { return socialService.voirLeForum(); }
 
-    //  Pour liker un message (PUT car on modifie le message)
+    // Pour liker un message (PUT car on modifie le message)
     @PutMapping("/forum/like/{id}")
     public ForumMessage like(@PathVariable String id) {
         return socialService.likerMessage(id);

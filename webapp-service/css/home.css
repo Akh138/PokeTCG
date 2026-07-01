@@ -1,0 +1,330 @@
+/* --- 1. LE HEADER FIXE --- */
+header {
+    width: 100%;
+    height: 80px;
+    background: var(--glass-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+/* --- 2. LES BOUTONS DU HEADER (CORRIGÉS) --- */
+.btn-nav {
+    background-color: var(--poke-red);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    /* Je leur donne une largeur fixe pour qu'ils soient de la même taille */
+    width: 180px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-nav:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+/* POKEDEX : Police pleine + Texte Jaune */
+.btn-nav.pokedex {
+    font-family: 'PokemonSolid', sans-serif;
+    color: var(--poke-yellow);
+    font-size: 1.3rem; /* Taille réduite pour bien rentrer */
+}
+
+/* CONNEXION : Police contour + Texte Blanc */
+.btn-nav.connexion {
+    font-family: 'PokemonHollow', sans-serif;
+    color: white;
+    font-size: 1.3rem; /* Taille réduite */
+}
+
+/* --- 3. LE CONTENU CENTRAL --- */
+main {
+    margin-top: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Plus d'espace entre le logo et le texte */
+}
+
+/* CADRE DU LOGO */
+.logo-box {
+    padding: 0; /* J'enlève le padding pour contrôler la taille moi-même */
+    width: 550px;  /* Largeur du rectangle de verre */
+    height: 120px; /* Hauteur du rectangle (plus petite que le logo pour qu'il dépasse) */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* TRÈS IMPORTANT : Je m'assure que le logo ne soit pas coupé */
+    overflow: visible;
+}
+#main-logo {
+    width: 420px;  /* Le logo fait 420px alors que la boite ne fait que 120px de haut */
+    height: auto;
+    z-index: 10;   /* Je le place bien au-dessus du cadre */
+    transform: translateY(20px);
+}
+
+/* LA BOITE DE BIENVENUE : Identique à mon design Figma */
+.welcome-box {
+    width: 85%;
+    max-width: 1000px;
+    padding: 30px 40px; /* J'ai un peu réduit le padding vertical */
+    text-align: center;
+
+    /* 1. ALIGNEMENT : Je mets le texte et les images sur la même ligne */
+    display: flex;
+    align-items: center;    /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+    gap: 30px;              /* Espace entre les icônes et le texte */
+
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(2px);
+    border-radius: 0px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 2. RÉDUCTION DU TEXTE */
+.welcome-box p {
+    font-size: 1.4rem;  /* J'ai baissé la taille (était à 2.2rem) */
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--white);
+    margin: 0;          /* J'enlève les marges par défaut du paragraphe */
+}
+
+/* 3. STYLE DES ICÔNES DE CÔTÉ */
+.side-icon {
+    width: 60px;        /* Taille petite comme tu as demandé */
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.4)); /* Petite lueur rouge */
+
+    /* 1. TRANSPARENCE TOTALE : Je baisse l'opacité au minimum pour voir le fond noir */
+    background: rgba(255, 255, 255, 0.02);  /* Très léger voile blanc */
+    backdrop-filter: blur(2px);           /* Je diminue aussi le flou pour plus de clarté */
+
+    /* 2. ZÉRO ARRONDIT : Je force les angles droits */
+    border-radius: 0px !important;
+
+    /* 3. CONTOUR FIN : Un liseré très discret */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    /* OPTIMISATION DE L'EFFET VERRE */
+    /* Je rajoute une petite ombre interne pour donner encore plus de relief */
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+/* LA CAPSULE NEWS : Forme pilule comme sur Figma */
+.news-pill {
+    position: relative;     /* Indispensable pour placer Pikachu par rapport à la boite */
+    width: 450px;           /* Largeur fixe comme sur ton Figma */
+    height: 60px;           /* Hauteur fixe pour qu'elle reste fine */
+    /* 1. COULEUR ET EFFET : Un gris-bleu plus solide pour bien détacher le titre */
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Bordure blanche semi-transparente */
+
+    /* 2. FORME : Border-radius élevé pour l'effet pilule */
+    border-radius: 50px;
+
+
+
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* TRÈS IMPORTANT : On laisse les éléments sortir de la boite */
+    overflow: visible;
+
+}
+/* LE STYLE DE L'ICÔNE PIKACHU NEWS */
+.news-icon-side {
+    position: absolute;     /* Je sors l'image du flux normal */
+    left: -50px;            /* Je le pousse vers la gauche pour qu'il dépasse du cadre */
+    width: 180px;           /* Je l'agrandis bien comme tu as demandé */
+    height: auto;
+    z-index: 10;            /* Je le place au-dessus de la bordure */
+    /* Je le centre verticalement par rapport à la capsule */
+    top: 50%;
+    transform: translateY(-50%) rotate(-5deg);
+    /* Petite ombre pour faire ressortir Pikachu */
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6));
+}
+
+/* LE TITRE H2 À L'INTÉRIEUR */
+.news-pill h2 {
+    margin-left: 50px;
+    /* J'utilise la police "Hollow" (contours) pour le titre News */
+    font-family: 'PokemonHollow', sans-serif;
+    color: var(--white);
+    font-size: 2.2rem;
+    letter-spacing: 5px; /* J'écarte un peu les lettres pour le style */
+    text-transform: uppercase;
+}
+
+/* LE BAC À NEWS : Hauteur fixe et gestion du scroll */
+.news-container {
+    width: 90%;
+    max-width: 1100px;
+    height: 450px;         /* Hauteur fixe comme sur ton Figma */
+    padding: 10px;         /* Petit padding pour laisser respirer le scroll */
+    /*  J'ajoute une marge en haut de 40px
+       pour bien décoller le tableau de la capsule "News" */
+    margin-top: 40px;
+    margin-bottom: 10px;
+    overflow: hidden;      /* On cache ce qui dépasse du cadre principal */
+}
+
+/* La zone interne qui défile vraiment */
+.news-scroll-view {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;      /* Activation du scroll vertical */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* Personnalisation de la barre de scroll pour qu'elle soit jolie (Glassmorphism) */
+.news-scroll-view::-webkit-scrollbar {
+    width: 8px;
+}
+.news-scroll-view::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+/* CHAQUE CARTE (Lien cliquable) */
+.news-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none; /* J'enlève le soulignement du lien */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.news-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(10px); /* Petit décalage vers la droite au survol */
+    border-color: var(--poke-red); /* Le bord devient rouge au survol */
+}
+
+.news-card img {
+    width: 140px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.news-info p {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.4;
+}
+
+/* MA BOITE DE SÉPARATION (Entre News et Footer) */
+.separator-box {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centre l'image horizontalement */
+    margin-top: 0px;        /* Espace sous le tableau de news */
+    margin-bottom: 0px;     /* Espace avant le footer */
+}
+
+#deco-cards {
+    width: 300px;           /* Taille équilibrée pour ne pas être trop massif */
+    height: auto;
+    opacity: 0.8;           /* Légère transparence pour le style premium */
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5)); /* Ombre portée */
+}
+
+/* LE STYLE DU LIEN "LIRE L'ARTICLE" */
+.news-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--poke-yellow); /* En jaune pour qu'on le voie bien */
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.news-link:hover {
+    color: var(--poke-red); /* Il devient rouge quand on passe dessus */
+    text-decoration: underline;
+}
+
+.news-link i {
+    font-size: 0.7rem;
+    margin-left: 5px;
+}
+
+/* LE FOOTER COMPLET (Correction pour alignement parfait) */
+footer {
+    width: 100%;
+    margin-top: 20px;
+    padding: 30px 40px;
+    display: flex;
+    align-items: center; /* Aligne tout le monde sur la même ligne horizontale */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    background: #020617;
+}
+
+/* Astuce : Chaque bloc prend 1/3 de la largeur totale */
+.footer-left, .footer-center, .footer-right {
+    flex: 1;
+}
+
+/* Mentions Nintendo à gauche */
+.footer-left {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: left;
+    line-height: 1.3;
+}
+
+/* Mon Copyright au centre */
+.footer-center {
+    font-size: 0.85rem;
+    color: white;
+    text-align: center; /* C'est ça qui le met au milieu ! */
+}
+
+/* Mes icônes à droite */
+.footer-right {
+    display: flex;
+    justify-content: flex-end; /* Colle les icônes à l'extrémité droite */
+    gap: 20px;
+}
+
+/* Taille de mes nouveaux logos sociaux */
+.footer-right img {
+    width: 32px;
+    height: auto;
+    transition: transform 0.2s ease;
+}
+
+.footer-right img:hover {
+    transform: scale(1.2); /* Petit effet sympa au survol */
+}

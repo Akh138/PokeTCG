@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PokeTCG - Accueil</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/home.css">
+    <!-- Icônes pour le footer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="glass">
+    <button class="btn-nav pokedex">POKEDEX</button>
+    <button class="btn-nav connexion">CONNEXION</button>
+</header>
+
+<main>
+    <!-- Cadre Logo -->
+    <div class="logo-box glass">
+        <img src="assets/logo.png" alt="Logo" id="main-logo">
+    </div>
+
+    <!-- Mon cadre de bienvenue encadré par les icônes Pokédex -->
+    <div class="welcome-box glass">
+        <img src="assets/pokedex-icon.png" alt="icon" class="side-icon">
+        <p>
+            Bienvenue sur PokeTCG, l'écosystème ultime pour dresseurs.
+            Collectionnez, gérez votre Pokedex et négociez vos cartes en toute sécurité.
+        </p>
+        <img src="assets/pokedex-icon.png" alt="icon" class="side-icon">
+    </div>
+
+    <!-- Ma capsule de titre News -->
+    <div class="news-pill">
+        <img src="assets/news-icon.png" alt="Pikachu News" class="news-icon-side">
+        <h2>News</h2>
+    </div>
+
+    <!-- LE BAC À NEWS avec Scroll interne -->
+    <!-- J'ajoute l'ID news-list pour que mon JavaScript puisse remplir cette zone automatiquement -->
+    <div class="news-container glass">
+        <div id="news-list" class="news-scroll-view">
+            <!-- Le contenu ici sera généré par js/app.js à partir de MongoDB -->
+            <p style="text-align: center; padding: 20px;">Chargement des actualités...</p>
+        </div>
+    </div>
+
+    <!-- Image décorative de séparation -->
+    <div class="separator-box">
+        <img src="assets/cards-back.png" alt="Cards Decoration" id="deco-cards">
+    </div>
+
+
+</main>
+
+<!-- MON FOOTER (Bas de page) -->
+<footer>
+    <!-- Zone Gauche : Mentions légales -->
+    <div class="footer-left">
+        Toutes les images et contenus liés à Pokémon sont la propriété de Nintendo et de The Pokémon Company.
+    </div>
+
+    <!-- Zone Centre : Copyright (Sera bien au milieu) -->
+    <div class="footer-center">
+        © 2024 PokeTCG — Réalisé par Habib Akerim
+    </div>
+
+    <!-- Zone Droite : Tes nouveaux logos colorés -->
+    <div class="footer-right">
+        <a href="#"><img src="assets/fb-icon.png" alt="Facebook"></a>
+        <a href="#"><img src="assets/discord-icon.png" alt="Discord"></a>
+        <a href="#"><img src="assets/insta-icon.png" alt="Instagram"></a>
+    </div>
+</footer>
+
+<!-- MA LOGIQUE JAVASCRIPT : J'appelle mon script ici pour qu'il s'exécute après le chargement du HTML -->
+<script src="js/app.js"></script>
+
+</body>
+</html>
