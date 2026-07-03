@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin("*") // J'autorise mon site web à appeler mon service pour s'inscrire ou se connecter
 @RestController // 1. Je dis à Spring que cette classe est une API (elle renvoie du JSON)
 @RequestMapping("/api/auth") // 2. Toutes les adresses commenceront par /api/auth
 @RequiredArgsConstructor

@@ -1,0 +1,121 @@
+/* --- STYLE SPÉCIFIQUE AU FORMULAIRE POKÉBALL --- */
+
+/* --- 1. RÉGLAGE POUR SUPPRIMER LE SCROLL (SANS TOUCHER AU DESIGN) --- */
+body {
+    /* Je remets le scroll automatique au cas où l'écran est vraiment minuscule */
+    overflow-y: auto !important;
+    min-height: 100vh;
+}
+
+main {
+    /* On passe de 75px à 110px pour que le logo descende bien sous le header */
+    margin-top: 110px !important;
+    gap: 0px !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- 2. CENTRAGE DU TITRE ET REMONTÉE DE LA POKÉBALL --- */
+
+.news-pill {
+    /* On passe de 10px à 30px pour l'écarter du cadre du logo */
+    margin-top: 100px !important;
+    margin-bottom: 0px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 400px !important;
+    padding: 5px 0 !important;
+}
+
+.news-pill h2 {
+    margin: 0 !important;
+    font-size: 1.8rem !important;
+}
+
+.pokeball-container {
+    /* 1. Je remonte un peu moins la pokéball pour l'équilibrer */
+    margin-top: -30px !important;
+
+    /* 2. LE RÉGLAGE MIRACLE : Je mets une grosse marge négative en bas
+       pour supprimer le "vide fantôme" créé par l'échelle */
+    margin-bottom: -150px !important;
+
+    /* 3. J'agrandis légèrement la taille (de 0.7 à 0.8) pour que
+       le formulaire remplisse mieux l'espace vertical */
+    transform: scale(0.8) !important;
+
+    transform-origin: top;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1000px;
+    overflow: visible;
+}
+
+.pb-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    z-index: 2;
+}
+
+/* LE COEUR DU FORMULAIRE */
+.login-form {
+    width: 340px;
+    background: #1e293b; /* Couleur solide gris-bleu pour bien lire */
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    border-right: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: -10px 0; /* Pour coller parfaitement aux images haut et bas */
+    z-index: 1
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.field label {
+    font-family: 'PokemonSolid', sans-serif;
+    color: var(--poke-yellow);
+    font-size: 0.9rem;
+}
+
+.field input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px;
+    border-radius: 10px;
+    color: white;
+    outline: none;
+}
+
+.auth-switch {
+    font-size: 0.8rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+.auth-switch a { color: var(--poke-yellow); text-decoration: none; font-weight: bold; }
+
+footer {
+    position: fixed; /* Il devient indépendant du reste */
+    bottom: 0;       /* Il se colle tout en bas */
+    left: 0;
+    width: 100%;
+    background: #020617;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px !important;
+    box-sizing: border-box;
+    z-index: 1000; /* Il passe devant la Pokéball si elles se touchent */
+}

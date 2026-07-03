@@ -43,11 +43,11 @@ header {
     font-size: 1.3rem; /* Taille réduite pour bien rentrer */
 }
 
-/* CONNEXION : Police contour + Texte Blanc */
-.btn-nav.connexion {
+/* CONNEXION et ACCUEIL : Ils partagent le même style (Police contour + Texte Blanc) */
+.btn-nav.connexion, .btn-nav.accueil {
     font-family: 'PokemonHollow', sans-serif;
     color: white;
-    font-size: 1.3rem; /* Taille réduite */
+    font-size: 1.3rem;
 }
 
 /* --- 3. LE CONTENU CENTRAL --- */

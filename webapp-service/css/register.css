@@ -1,0 +1,123 @@
+/* --- STYLE IDENTIQUE AU LOGIN MAIS COMPRESSÉ POUR 5 CHAMPS --- */
+
+body {
+    overflow-y: auto !important;
+    min-height: 100vh;
+    background-color: var(--bg-dark);
+}
+
+main {
+    /* Identique au login */
+    margin-top: 110px !important;
+    gap: 0px !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.news-pill {
+    /* Identique au login */
+    margin-top: 100px !important;
+    margin-bottom: 0px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 400px !important;
+    padding: 5px 0 !important;
+}
+
+.news-pill h2 {
+    margin: 0 !important;
+    font-size: 1.8rem !important;
+}
+
+.pokeball-container {
+    /* Je remonte la pokéball un peu plus pour ne pas toucher le titre */
+    margin-top: -40px !important;
+
+    /* J'augmente l'aspiration du vide en bas car le formulaire est plus long */
+    margin-bottom: -230px !important;
+
+    /* RÉGLAGE CLÉ : Je baisse l'échelle à 0.65 pour que tout tienne sans scroll */
+    transform: scale(0.65) !important;
+
+    transform-origin: top;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1000px;
+    overflow: visible;
+}
+
+.pb-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    z-index: 2;
+}
+
+/* LE CADRE BLEU (IDENTIQUE AU LOGIN) */
+.login-form {
+    width: 340px;
+    background: #1e293b;
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    border-right: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 15px 30px !important; /* Un peu plus serré à l'intérieur */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px !important;
+    margin: -10px 0;
+    z-index: 1;
+}
+
+#register-btn {
+    font-family: 'PokemonSolid', sans-serif !important;
+    color: var(--poke-yellow) !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 2px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.field label {
+    font-family: 'PokemonSolid', sans-serif;
+    color: var(--poke-yellow);
+    font-size: 0.85rem;
+}
+
+.field input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    outline: none;
+}
+
+.auth-switch {
+    font-size: 0.8rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+.auth-switch a { color: var(--poke-yellow); text-decoration: none; font-weight: bold; }
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #020617;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px !important;
+    box-sizing: border-box;
+    z-index: 1000;
+}

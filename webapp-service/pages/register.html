@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PokeTCG - Inscription</title>
+    <!-- Je lie les mêmes fichiers que pour le login -->
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="glass">
+    <!-- Ma navigation identique au login -->
+    <button class="btn-nav pokedex" onclick="window.location.href='pokedex.html'">POKEDEX</button>
+    <button class="btn-nav accueil" onclick="window.location.href='../index.html'">ACCUEIL</button>
+</header>
+
+<main>
+    <!-- Mon cadre logo : copier-coller exact du login -->
+    <div class="logo-box glass">
+        <img src="../assets/logo.png" alt="Logo" id="main-logo">
+    </div>
+
+    <!-- Ma capsule de titre -->
+    <div class="news-pill">
+        <h2>Inscription</h2>
+    </div>
+
+    <!-- MA POKÉBALL (Structure identique au login) -->
+    <div class="pokeball-container">
+        <img src="../assets/pokeball-top.png" alt="top" class="pb-img">
+
+        <!-- J'utilise la classe .login-form pour avoir le même cadre bleu -->
+        <div class="login-form">
+            <div class="field">
+                <label>USERNAME</label>
+                <input type="text" id="reg-username" placeholder="Pseudo...">
+            </div>
+            <div class="field">
+                <label>EMAIL</label>
+                <input type="email" id="reg-email" placeholder="ton@email.com">
+            </div>
+            <div class="field">
+                <label>MOT DE PASSE</label>
+                <input type="password" id="reg-password" placeholder="••••••••">
+            </div>
+            <div class="field">
+                <label>ADRESSE</label>
+                <input type="text" id="reg-address" placeholder="123 rue de Kanto...">
+            </div>
+            <div class="field">
+                <label>CODE POSTAL</label>
+                <input type="text" id="reg-zip" placeholder="Ex: 75001">
+            </div>
+
+            <!-- J'utilise la classe .connexion pour avoir le bouton rouge -->
+            <button class="btn-nav connexion" id="register-btn" style="width: 100%; margin-top: 10px;">S'INSCRIRE</button>
+            <p class="auth-switch">Déjà dresseur ? <a href="login.html">Connecte-toi</a></p>
+        </div>
+
+        <img src="../assets/pokeball-bottom.png" alt="bottom" class="pb-img">
+    </div>
+</main>
+
+<footer>
+    <div class="footer-left">Toutes les images sont la propriété de Nintendo et de The Pokémon Company.</div>
+    <div class="footer-center">© 2024 PokeTCG — Réalisé par Habib Akerim</div>
+    <div class="footer-right">
+        <a href="#"><img src="../assets/fb-icon.png" alt="Facebook"></a>
+        <a href="#"><img src="../assets/discord-icon.png" alt="Discord"></a>
+        <a href="#"><img src="../assets/insta-icon.png" alt="Instagram"></a>
+    </div>
+</footer>
+
+<script src="../js/register.js"></script>
+</body>
+</html>
