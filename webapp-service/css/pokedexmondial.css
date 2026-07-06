@@ -1,0 +1,165 @@
+/* --- STYLE DU POKEDEX MONDIAL (VERSION EXPLORATEUR DE SÉRIES) --- */
+
+/* 1. LA BARRE DE RECHERCHE ET FILTRES */
+#search-zone {
+    width: 90%;
+    max-width: 1100px;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Aligne le bas de la barre et du menu */
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.search-box {
+    flex: 2;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    color: var(--text-muted);
+}
+
+#search-name {
+    width: 100%;
+    height: 45px;
+    padding: 0 12px 0 45px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: white;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.filter-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-box label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+#extension-filter {
+    height: 45px;
+    background: #1e293b;
+    color: white;
+    padding: 0 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* --- STRUCTURE DE LA GRILLE --- */
+#pokedex-grid {
+    width: 95%;
+    max-width: 1400px;
+    display: grid;
+    /* On force des colonnes de 220px maximum */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    padding: 20px;
+    margin-bottom: 100px;
+}
+
+/* Header de la grille (Bouton retour + Titre) */
+.grid-header {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.back-btn { background: var(--poke-red) !important; font-weight: bold; }
+
+/* --- STYLE DES CARTES POKÉMON (BIEN RANGÉES) --- */
+.pokemon-card {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 380px; /* On fixe la hauteur pour que tout soit aligné */
+    justify-content: space-between;
+}
+
+.card-img-container {
+    width: 100%;
+    height: 280px; /* On limite la hauteur de l'image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.pokemon-card img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* L'image ne se déforme pas et ne dépasse pas */
+    border-radius: 10px;
+}
+
+.card-details { text-align: center; margin-top: 10px; }
+.card-details h3 { font-size: 1rem; margin: 5px 0; }
+.card-details .price { color: var(--poke-yellow); font-family: 'PokemonSolid'; font-size: 1.1rem; }
+
+/* --- STYLE DES EXTENSIONS (GARDÉ) --- */
+.extension-card {
+    padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease;
+    display: flex; flex-direction: column; justify-content: space-between; min-height: 250px;
+}
+.extension-card img { width: 100%; height: 120px; object-fit: contain; }
+
+
+/* --- STYLE DE LA MODALE D'AGRANDISSEMENT --- */
+
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed;
+    z-index: 2000; /* Passe au-dessus du header */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* Fond noir très sombre */
+    backdrop-filter: blur(5px); /* Flou sur le reste du site */
+    justify-content: center;
+    align-items: center;
+}
+
+/* L'image agrandie */
+.modal-content {
+    max-height: 85vh; /* Elle ne dépasse pas 85% de la hauteur de l'écran */
+    width: auto;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.4); /* Lueur jaune Pikachu */
+    animation: zoomIn 0.3s ease; /* Petit effet d'apparition */
+}
+
+/* Bouton pour fermer (en haut à droite) */
+.close-modal {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    color: white;
+    font-size: 50px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Animation d'ouverture */
+@keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}

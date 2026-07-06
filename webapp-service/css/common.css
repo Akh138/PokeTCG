@@ -1,55 +1,152 @@
-/* 1. CHARGEMENT DES POLICES */
-@font-face {
-    font-family: 'PokemonSolid';
-    src: url('../fonts/Pokemon Solid.ttf');
-}
-@font-face {
-    font-family: 'PokemonHollow';
-    src: url('../fonts/Pokemon Hollow.ttf');
-}
+/* --- 1. POLICES --- */
+@font-face { font-family: 'PokemonSolid'; src: url('../fonts/Pokemon Solid.ttf'); }
+@font-face { font-family: 'PokemonHollow'; src: url('../fonts/Pokemon Hollow.ttf'); }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-/* 2. VARIABLES FIGMA */
+/* --- 2. MA CHARTE GRAPHIQUE --- */
 :root {
     --bg-dark: #020617;
     --poke-red: #EF4444;
     --poke-yellow: #FBBF24;
-    --glass-bg: rgba(30, 41, 59, 0.5); /* Ton effet verre gris-bleu */
     --white: #FFFFFF;
-    --text-muted: #94A3B8;  /* Le gris clair pour les descriptions */
-    --text-main: #FFFFFF;   /* Le blanc pur pour les titres */
-
+    --text-muted: #94A3B8;
+    --glass-bg: rgba(30, 41, 59, 0.5);
+    --font-main: 'Inter', sans-serif;
 }
 
-/* 3. RESET & BASE */
+/* --- 3. LE FOND ET LA STRUCTURE --- */
 body {
     background-color: var(--bg-dark);
     color: white;
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
+    font-family: var(--font-main);
+    margin: 0; padding: 0;
     position: relative;
+    min-height: 100vh;
 }
 
-/* L'EFFET VERRE (GLASSMORPHISM) */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+
+    /* LE SECRET : J'ajoute un dégradé radial (rond) par-dessus l'image.
+       Le centre est transparent, mais les bords deviennent noirs comme le fond.
+       C'est ce qui "gomme" les lignes de répétition sur les côtés. */
+    background: radial-gradient(circle, transparent 20%, var(--bg-dark) 80%),
+    url('../assets/bg-pattern.png');
+
+    background-repeat: repeat;
+
+    /* J'agrandis la taille à 800px pour que les icônes soient plus grandes
+       et qu'on voie moins souvent la répétition de l'image */
+    background-size: 900px;
+
+    opacity: 0.35;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* --- 4. LE HEADER FIXE AVEC LOGO CENTRAL --- */
+header {
+    width: 100%; height: 80px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px; box-sizing: border-box;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed; top: 0; z-index: 1000;
+    overflow: visible; /* Indispensable pour le débordement */
+}
+
+/* LE CADRE DU LOGO (La petite boîte de verre dans le menu) */
+.header-logo {
+    width: 350px;         /* 1. J'agrandis la zone pour le logo */
+    height: 80px;
+    background: transparent; /* 2. Je rends le cadre invisible à l'intérieur */
+    border: none;            /* J'enlève les bordures */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;     /* Je laisse l'image sortir librement */
+
+}
+
+.header-logo img {
+    width: 420px !important;  /* 3. J'agrandis l'image (était à 200px) */
+    height: auto !important;
+
+    /* 4. LE DÉBORDEMENT VERS LE BAS :
+       Je pousse l'image vers le bas de 45 pixels.
+       Elle va "sortir" du header et flotter sur le contenu du site. */
+    transform: translateY(70px);
+
+    /* Je rajoute une ombre plus forte pour que le logo ressorte bien sur le fond */
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
+    z-index: 1100;
+}
+
+.btn-nav {
+    background-color: var(--poke-red);
+    border: none; border-radius: 15px;
+    cursor: pointer; transition: all 0.2s ease;
+    width: 180px; height: 45px;
+    display: flex; align-items: center; justify-content: center;
+}
+.btn-nav:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+.btn-nav.pokedex { font-family: 'PokemonSolid'; color: var(--poke-yellow); font-size: 1.1rem; }
+.btn-nav.connexion, .btn-nav.accueil { font-family: 'PokemonHollow'; color: white; font-size: 1.3rem; }
+
+/* --- 5. LE CONTENU CENTRAL --- */
+main {
+    /* J'augmente la marge du haut à 220px pour que ton titre
+       ne soit pas caché par le logo qui descend */
+    margin-top: 220px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* La capsule de titre reste identique */
+.news-pill {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    padding: 5px 0; width: 450px;
+    display: flex; justify-content: center; align-items: center;
+    margin-top: 10px;
+    position: relative; overflow: visible;
+}
+
+.news-pill h2 {
+    font-family: 'PokemonHollow', sans-serif;
+    color: white; margin: 0; font-size: 1.8rem;
+    letter-spacing: 5px; text-transform: uppercase;
+}
+
+/* --- 6. LE FOOTER FIXE --- */
+footer {
+    position: fixed; bottom: 0; left: 0;
+    width: 100%; background: #020617;
+    padding: 10px 40px; box-sizing: border-box;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+}
+.footer-left, .footer-center, .footer-right { flex: 1; }
+.footer-left { font-size: 0.7rem; color: var(--text-muted); }
+.footer-center { font-size: 0.8rem; text-align: center; }
+.footer-right { display: flex; justify-content: flex-end; gap: 20px; }
+.footer-right img { width: 32px; height: auto; }
+
+/* L'EFFET GLASS REUTILISABLE */
 .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 25px; /* Coins arrondis du figma */
-}
-
-/* AJOUT DU FOND POKÉMON (SANS TOUCHER AU RESTE) */
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../assets/bg-pattern.png');
-    background-repeat: repeat;
-    background-size: 500px;
-    opacity: 0.4; /* Réglage de la visibilité du fond ici */
-    z-index: -1;
-    pointer-events: none;
+    border-radius: 25px;
 }

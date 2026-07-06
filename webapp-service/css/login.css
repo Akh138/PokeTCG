@@ -1,121 +1,110 @@
-/* --- STYLE SPÉCIFIQUE AU FORMULAIRE POKÉBALL --- */
-
-/* --- 1. RÉGLAGE POUR SUPPRIMER LE SCROLL (SANS TOUCHER AU DESIGN) --- */
-body {
-    /* Je remets le scroll automatique au cas où l'écran est vraiment minuscule */
-    overflow-y: auto !important;
-    min-height: 100vh;
-}
-
-main {
-    /* On passe de 75px à 110px pour que le logo descende bien sous le header */
-    margin-top: 110px !important;
-    gap: 0px !important;
-    padding: 0 !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* --- 2. CENTRAGE DU TITRE ET REMONTÉE DE LA POKÉBALL --- */
-
+/* 2. RÉGLAGE DES ÉCARTS (FLÈCHE TITRE) */
 .news-pill {
-    /* On passe de 10px à 30px pour l'écarter du cadre du logo */
-    margin-top: 100px !important;
-    margin-bottom: 0px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 400px !important;
-    padding: 5px 0 !important;
+    /* Je force une marge plus grande pour descendre le titre sous le logo */
+    margin-top: 50px !important;
 }
 
-.news-pill h2 {
-    margin: 0 !important;
-    font-size: 1.8rem !important;
-}
-
+/* 3. LE CONTENEUR DE LA POKÉBALL */
 .pokeball-container {
-    /* 1. Je remonte un peu moins la pokéball pour l'équilibrer */
-    margin-top: -30px !important;
-
-    /* 2. LE RÉGLAGE MIRACLE : Je mets une grosse marge négative en bas
-       pour supprimer le "vide fantôme" créé par l'échelle */
+    /* Je remonte l'ensemble pour compenser la réduction de taille (scale) */
+    margin-top: -50px !important;
+    /* J'aspire le vide fantôme pour que le footer reste visible */
     margin-bottom: -150px !important;
 
-    /* 3. J'agrandis légèrement la taille (de 0.7 à 0.8) pour que
-       le formulaire remplisse mieux l'espace vertical */
-    transform: scale(0.8) !important;
-
-    transform-origin: top;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 1000px;
+
+    transform: scale(0.85); /* Taille adaptée pour tenir dans l'écran */
+    transform-origin: top;
     overflow: visible;
+
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9))
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+
 }
 
+/* 4. LES IMAGES POKÉBALL (EFFET BURGER) */
 .pb-img {
-    width: 100%;
+    /* J'agrandis les images pour qu'elles soient plus larges que le formulaire */
+    width: 1000px !important;
     height: auto;
     display: block;
-    z-index: 2;
+    z-index: 2; /* Passe devant le cadre bleu */
 }
 
-/* LE COEUR DU FORMULAIRE */
+
+
+/* LE COEUR DU FORMULAIRE (LISERÉ BLANC GARANTI) */
 .login-form {
-    width: 340px;
-    background: #1e293b; /* Couleur solide gris-bleu pour bien lire */
-    border-left: 2px solid rgba(255, 255, 255, 0.3);
-    border-right: 2px solid rgba(255, 255, 255, 0.3);
+    width: 380px !important;
+    background: rgba(30, 41, 59, 0.95) !important;
+    backdrop-filter: blur(10px);
+
+    /* J'enlève toutes les bordures ici car le parent gère le liseré */
+    border: none !important;
+    box-shadow: none !important;
+
     padding: 20px 30px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin: -10px 0; /* Pour coller parfaitement aux images haut et bas */
-    z-index: 1
+    margin: -5px 0;
+    z-index: 1;
+
+    /* 3. TA COURBE (INCHANGÉE) */
+    clip-path: polygon(
+            0% 0%, 4% 20%, 7% 50%, 4% 80%, 0% 100%,
+            100% 100%, 96% 80%, 93% 50%, 96% 20%, 100% 0%
+    );
 }
+
+/* --- STYLE DES CHAMPS (GARDÉ TEL QUEL) --- */
 
 .field {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+    flex-direction: row; /* Je mets le label et l'input sur la même ligne */
+    align-items: center; /* Je les centre verticalement */
+    gap: 15px;           /* Espace entre le mot et la case */
 }
 
 .field label {
+    /* Je donne une largeur fixe pour que les cases commencent au même niveau.
+       110px est suffisant pour "MOT DE PASSE" */
+    width: 110px;
     font-family: 'PokemonSolid', sans-serif;
     color: var(--poke-yellow);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    text-align: left;
 }
 
 .field input {
+    /* La case de saisie prend tout le reste de la place */
+    flex: 1;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 12px;
+    padding: 10px;
     border-radius: 10px;
     color: white;
     outline: none;
 }
 
 .auth-switch {
-    font-size: 0.8rem;
-    text-align: center;
+    width: 100% !important;   /* Je force le texte à prendre toute la largeur */
+    text-align: center !important; /* Je le centre au milieu du cadre bleu */
+    margin-top: 15px !important;
+    font-size: 0.8rem !important;
     color: var(--text-muted);
 }
-.auth-switch a { color: var(--poke-yellow); text-decoration: none; font-weight: bold; }
 
-footer {
-    position: fixed; /* Il devient indépendant du reste */
-    bottom: 0;       /* Il se colle tout en bas */
-    left: 0;
-    width: 100%;
-    background: #020617;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 40px !important;
-    box-sizing: border-box;
-    z-index: 1000; /* Il passe devant la Pokéball si elles se touchent */
+.auth-switch a {
+    color: var(--poke-yellow);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline; /* Petit effet au survol du lien */
 }

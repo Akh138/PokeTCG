@@ -5,13 +5,21 @@ import com.poketcg.catalog_service.services.CarteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
+@CrossOrigin("*") // J'autorise mon site web à lire les données du catalogue (Port 8083)
 @RestController
 @RequestMapping("/api/catalog")
 @RequiredArgsConstructor
 public class CarteController {
 
     private final CarteService carteService;
+
+    //  Lister toutes les séries de cartes disponibles dans l'API
+    @GetMapping("/extensions")
+    public Object getExtensions() {
+        return carteService.recupererToutesLesExtensions();
+    }
 
     // 1. Ajouter manuellement une carte au cache (Test technique)
     @PostMapping("/add")
@@ -51,5 +59,17 @@ public class CarteController {
     @GetMapping("/rarete/{rarete}")
     public List<Carte> getByRarete(@PathVariable String rarete) {
         return carteService.chercherParRarete(rarete);
+    }
+
+    // 7. Voir toutes les cartes d'une extension précise (ex: /set/base1)
+    @GetMapping("/set/{setId}")
+    public List<Map<String, Object>> getCardsBySet(@PathVariable String setId) {
+        return carteService.recupererCartesParExtension(setId);
+    }
+
+    // 8. Recherche globale par nom (ex: Pikachu) sur toutes les séries
+    @GetMapping("/search/{nom}")
+    public List<Map<String, Object>> searchGlobal(@PathVariable String nom) {
+        return carteService.rechercherCartesGlobalement(nom);
     }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PokeTCG - Pokedex Mondial</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/pokedexmondial.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="glass">
+    <button class="btn-nav pokedex" onclick="window.location.href='pokedexmondial.html'">POKEDEX</button>
+    <div class="header-logo">
+        <img src="../assets/logo.png" alt="Logo">
+    </div>
+    <button class="btn-nav accueil" onclick="window.location.href='../index.html'">ACCUEIL</button>
+</header>
+
+<main>
+    <div class="news-pill">
+        <h2>Pokedex Mondial</h2>
+    </div>
+
+    <!-- ZONE DE RECHERCHE AVANCÉE -->
+    <section id="search-zone" class="glass">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-name" placeholder="Chercher par nom (ex: Dracaufeu)...">
+        </div>
+
+        <div class="filter-box">
+            <label>Filtrer par extension :</label>
+            <select id="extension-filter">
+                <option value="all">Toutes les extensions</option>
+                <!-- Les options seront ajoutées par le JavaScript -->
+            </select>
+        </div>
+    </section>
+
+    <!-- GRILLE DE CARTES -->
+    <div id="pokedex-grid">
+        <!-- Rempli par js/pokedexmondial.js -->
+    </div>
+</main>
+
+<footer>
+    <div class="footer-left">Toutes les images sont la propriété de Nintendo.</div>
+    <div class="footer-center">© 2024 PokeTCG — Réalisé par Habib Akerim</div>
+    <div class="footer-right">
+        <a href="#"><img src="../assets/fb-icon.png" alt="FB"></a>
+        <a href="#"><img src="../assets/discord-icon.png" alt="Discord"></a>
+        <a href="#"><img src="../assets/insta-icon.png" alt="IG"></a>
+    </div>
+</footer>
+
+<script src="../js/pokedexmondial.js"></script>
+<!-- MA MODALE POUR AGRANDIR LA CARTE -->
+<div id="card-modal" class="modal">
+    <span class="close-modal">&times;</span>
+    <img class="modal-content" id="img-zoom">
+</div>
+</body>
+</html>

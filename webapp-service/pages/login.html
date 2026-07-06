@@ -17,15 +17,15 @@
     <!-- Bouton Pokedex à gauche -->
     <button class="btn-nav pokedex" onclick="window.location.href='pokedex.html'">POKEDEX</button>
 
+    <div class="header-logo">
+        <img src="../assets/logo.png" alt="Logo"> <!-- Utilise assets/logo.png pour l'accueil -->
+    </div>
+
     <!-- Bouton Accueil à droite (remplace Connexion) -->
     <button class="btn-nav accueil" onclick="window.location.href='../index.html'">ACCUEIL</button>
 </header>
 
 <main>
-    <!-- Je garde EXACTEMENT le même cadre de logo que l'accueil -->
-    <div class="logo-box glass">
-        <img src="../assets/logo.png" alt="Logo" id="main-logo">
-    </div>
 
     <!-- Titre de la page (Capsule comme sur Figma) -->
     <div class="news-pill">
@@ -45,8 +45,10 @@
                 <label>MOT DE PASSE</label>
                 <input type="password" id="password" placeholder="••••••••">
             </div>
-            <button class="btn-nav connexion" id="login-btn" style="width: 100%; margin-top: 10px;">VALIDER</button>
-            <p style="font-size: 0.8rem; margin-top: 10px;">Pas encore dresseur ? <a href="register.html" style="color: var(--poke-yellow);">Inscris-toi</a></p>
+            <button class="btn-nav connexion" id="login-btn" style="width: 100%; margin-top: 10px;">Connexion</button>
+            <p class="auth-switch">
+                Pas encore dresseur ? <a href="register.html" style="color: var(--poke-yellow);">Inscris-toi</a>
+            </p>
         </div>
 
         <img src="../assets/pokeball-bottom.png" alt="bottom" class="pb-img">
