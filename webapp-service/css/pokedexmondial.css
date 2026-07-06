@@ -163,3 +163,19 @@
     from { transform: scale(0.5); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
+
+/* --- MA NOUVELLE ÉTIQUETTE DE PRIX (STYLE POKÉCARDEX) --- */
+.price-tag {
+    background: #020617;
+    border: 1px solid var(--poke-yellow);
+    border-radius: 6px;
+    padding: 2px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+.price-tag i { color: var(--poke-yellow); font-size: 0.7rem; }
+.price-tag span { color: white; font-weight: bold; font-size: 0.9rem; }
+
+.btn-nav.connexion2 { font-family: 'PokemonSolid'; color: var(--poke-yellow); font-size: 1.1rem; }

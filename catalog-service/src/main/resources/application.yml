@@ -19,5 +19,16 @@ spring:
         port: 8083
         health-check-path: /actuator/health
 
+# MA NOUVELLE CONFIGURATION : Pour éviter que l'application ne coupe la connexion
+# quand l'API Pokémon met du temps à répondre (Erreur Read timed out).
+feign:
+  client:
+    config:
+      default:
+        # J'autorise 5 secondes pour établir le contact avec l'API
+        connectTimeout: 5000
+        # J'autorise 30 secondes pour recevoir les données (utile pour les gros sets de 200 cartes)
+        readTimeout: 30000
+
 server:
   port: 8083

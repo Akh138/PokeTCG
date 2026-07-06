@@ -21,7 +21,7 @@ public class CarteService {
     private final PokemonTcgProxy pokemonTcgProxy;
     private final TcgDexProxy tcgDexProxy;
 
-    // 1. LOGIQUE DE FUSION FRANÇAISE (GARDÉE)
+    // 1. LOGIQUE DE FUSION FRANÇAISE (IDENTIQUE)
     public Object recupererToutesLesExtensions() {
         Map<String, Object> resIntRaw = (Map<String, Object>) pokemonTcgProxy.getAllSets();
         List<Map<String, Object>> setsInt = (List<Map<String, Object>>) resIntRaw.get("data");
@@ -79,73 +79,58 @@ public class CarteService {
                     if (images != null) { images.put("large", fr.get("image")); }
                 }
             }
+            // ⭐ MA NOUVELLE LOGIQUE DE PRIX : Je pré-calcule le prix pour le Front-end
+            // Je scanne toutes les catégories (Holo, Normal, etc.) pour ne jamais avoir de N/A
+            cInt.put("prixFinal", "0.00"); // Valeur par défaut
+            if (cInt.containsKey("tcgplayer")) {
+                Map<String, Object> tcg = (Map<String, Object>) cInt.get("tcgplayer");
+                if (tcg.containsKey("prices")) {
+                    Map<String, Object> p = (Map<String, Object>) tcg.get("prices");
+                    for (Object key : p.keySet()) {
+                        Map<String, Object> details = (Map<String, Object>) p.get(key);
+                        if (details.get("market") != null) {
+                            cInt.put("prixFinal", details.get("market").toString());
+                            break;
+                        }
+                    }
+                }
+            }
         }
         return finalCards;
     }
 
-    // ⭐ MA LOGIQUE DE RECHERCHE BILINGUE (VERSION FINALE - LA PLUS ROBUSTE)
+    // ⭐ MA LOGIQUE DE RECHERCHE BILINGUE (SÉCURISÉE)
     public List<Map<String, Object>> rechercherCartesGlobalement(String nomSaisi) {
         List<Map<String, Object>> finalCards = new ArrayList<>();
-
-        // Je prépare le nom avec la première lettre en majuscule (ex: Dracaufeu)
         String nomFormate = nomSaisi.substring(0, 1).toUpperCase() + nomSaisi.substring(1).toLowerCase();
         String nomPourRechercheHD = nomFormate;
 
-        // ÉTAPE 1 : Trouver le nom anglais via une recherche ciblée
         try {
-            // A. Je cherche une carte portant ce nom sur l'API FR
-            List<Map<String, Object>> cardsFr = (List<Map<String, Object>>) tcgDexProxy.searchCardsByNameFr(nomFormate);
-
-            if (cardsFr != null && !cardsFr.isEmpty()) {
-                // B. Je prends l'ID de la première carte (ex: base1-4)
-                String idUniversel = (String) cardsFr.get(0).get("id");
-
-                // C. Je demande son nom anglais à l'international
-                Map<String, Object> resInt = (Map<String, Object>) pokemonTcgProxy.getCardDetails(idUniversel);
-                Map<String, Object> data = (Map<String, Object>) resInt.get("data");
-
-                nomPourRechercheHD = (String) data.get("name");
-                System.out.println("INFO : Pont réussi ! [" + nomFormate + "] -> [" + nomPourRechercheHD + "]");
+            List<Map<String, Object>> resFr = (List<Map<String, Object>>) tcgDexProxy.searchCardsByNameFr(nomFormate);
+            if (resFr != null && !resFr.isEmpty()) {
+                String idReference = (String) resFr.get(0).get("id");
+                Map<String, Object> detailsRaw = (Map<String, Object>) pokemonTcgProxy.getCardDetails(idReference);
+                Map<String, Object> details = (Map<String, Object>) detailsRaw.get("data");
+                nomPourRechercheHD = (String) details.get("name");
             }
-        } catch (Exception e) {
-            System.out.println("LOG : Pas de traduction trouvée. Tentative recherche directe.");
-        }
+        } catch (Exception e) {}
 
-        // ÉTAPE 2 : Recherche Mondiale HD avec le nom anglais (ex: Charizard)
         try {
             Map<String, Object> resIntRaw = (Map<String, Object>) pokemonTcgProxy.searchCardsByName("name:\"" + nomPourRechercheHD + "*\"");
-            if (resIntRaw != null && resIntRaw.get("data") != null) {
-                finalCards = (List<Map<String, Object>>) resIntRaw.get("data");
-            }
-        } catch (Exception e) {
-            System.out.println("ERREUR : L'API Internationale ne répond pas.");
-        }
-
-        // ÉTAPE 3 : Traduction des résultats (Optionnel mais plus propre)
-        try {
-            List<Map<String, Object>> trads = (List<Map<String, Object>>) tcgDexProxy.searchCardsByNameFr(nomFormate);
-            Map<String, String> dico = new HashMap<>();
-            if (trads != null) {
-                for (Map<String, Object> t : trads) {
-                    dico.put((String) t.get("id"), (String) t.get("name"));
-                }
-            }
-            for (Map<String, Object> c : finalCards) {
-                String id = (String) c.get("id");
-                if (dico.containsKey(id)) {
-                    c.put("name", dico.get(id));
-                }
-            }
+            if (resIntRaw != null && resIntRaw.get("data") != null) { finalCards = (List<Map<String, Object>>) resIntRaw.get("data"); }
         } catch (Exception e) {}
 
         return finalCards;
     }
 
     public Carte recupererOuImporter(String idApi) { return carteRepository.findByIdApiUnique(idApi).orElseGet(() -> importerCarteDepuisApis(idApi)); }
+
+    // MA MÉTHODE D'IMPORTATION (AMÉLIORÉE POUR LES PRIX)
     public Carte importerCarteDepuisApis(String idApi) {
         Map<String, Object> resFr = (Map<String, Object>) tcgDexProxy.getCardDetailsFr(idApi);
         Map<String, Object> resIntRaw = (Map<String, Object>) pokemonTcgProxy.getCardDetails(idApi);
         Map<String, Object> resInt = (Map<String, Object>) resIntRaw.get("data");
+
         Carte nouvelleCarte = new Carte();
         nouvelleCarte.setIdApiUnique(idApi);
         nouvelleCarte.setNomFr((String) resFr.get("name"));
@@ -156,15 +141,27 @@ public class CarteService {
         if (types != null && !types.isEmpty()) { nouvelleCarte.setType(types.get(0)); }
         Map<String, Object> images = (Map<String, Object>) resInt.get("images");
         nouvelleCarte.setImageUrl((String) images.get("large"));
+
+        // MA LOGIQUE DE RECHERCHE DE PRIX MULTI-SOURCES (Back)
         try {
             Map<String, Object> tcgPlayer = (Map<String, Object>) resInt.get("tcgplayer");
             Map<String, Object> prices = (Map<String, Object>) tcgPlayer.get("prices");
-            Map<String, Object> details = (prices.containsKey("holofoil")) ? (Map<String, Object>) prices.get("holofoil") : (Map<String, Object>) prices.get("normal");
-            Double marketPrice = (Double) details.get("market");
-            nouvelleCarte.setPrix(BigDecimal.valueOf(marketPrice));
+
+            // Je teste les catégories dans l'ordre de probabilité
+            Map<String, Object> sel = null;
+            if (prices.containsKey("holofoil")) sel = (Map<String, Object>) prices.get("holofoil");
+            else if (prices.containsKey("normal")) sel = (Map<String, Object>) prices.get("normal");
+            else if (prices.containsKey("reverseHolofoil")) sel = (Map<String, Object>) prices.get("reverseHolofoil");
+
+            if (sel != null) {
+                Double marketPrice = (Double) sel.get("market");
+                nouvelleCarte.setPrix(BigDecimal.valueOf(marketPrice));
+            }
         } catch (Exception e) { nouvelleCarte.setPrix(BigDecimal.ZERO); }
+
         return carteRepository.save(nouvelleCarte);
     }
+
     public List<Carte> chercherParType(String type) { return carteRepository.findByType(type); }
     public List<Carte> chercherParRarete(String rarete) { return carteRepository.findByRarete(rarete); }
     public List<Carte> recupererToutesLesCartes() { return carteRepository.findAll(); }

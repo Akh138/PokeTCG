@@ -87,19 +87,16 @@ async function voirCartesDeLExtension(setId) {
     }
 }
 
-// ⭐ NOUVEAUTÉ : MA LOGIQUE DE RECHERCHE GLOBALE (Toutes les extensions)
-// Cette fonction est appelée quand on appuie sur ENTRÉE
+// ⭐ MA LOGIQUE DE RECHERCHE GLOBALE (Toutes les extensions)
 async function rechercherGlobalement(nom) {
     modeVue = "RECHERCHE_GLOBALE";
     const grid = document.getElementById("pokedex-grid");
     grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center;">Recherche de "${nom}" dans le monde entier...</p>`;
 
     try {
-        // J'appelle la route de recherche que j'ai créée dans mon microservice
         const reponse = await fetch(`${API_BASE}/search/${nom}`);
         const resultats = await reponse.json();
 
-        // Je prépare l'en-tête pour les résultats
         grid.innerHTML = `
             <div class="grid-header">
                 <button class="filter-btn back-btn" onclick="chargerExplorateur()">
@@ -109,7 +106,6 @@ async function rechercherGlobalement(nom) {
                 <p style="color: var(--poke-yellow)">${resultats.length} cartes trouvées</p>
             </div>`;
 
-        // J'affiche les cartes trouvées
         afficherGrilleCartes(resultats);
 
     } catch (error) {
@@ -118,19 +114,30 @@ async function rechercherGlobalement(nom) {
     }
 }
 
-// 5. FONCTION D'AFFICHAGE DES CARTES
+// 5. FONCTION D'AFFICHAGE DES CARTES (AVEC CAPSULE PRIX)
 function afficherGrilleCartes(liste) {
     const grid = document.getElementById("pokedex-grid");
-    const cards = grid.querySelectorAll('.pokemon-card');
-    cards.forEach(c => c.remove());
+    const oldCards = grid.querySelectorAll('.pokemon-card');
+    oldCards.forEach(c => c.remove());
 
     liste.forEach(carte => {
-        const imgUrl = (carte.images && carte.images.large) ? carte.images.large : "https://via.placeholder.com/250x350?text=Image+Non+Disponible";
-        let prix = "N/A";
-        if(carte.tcgplayer && carte.tcgplayer.prices) {
+        // Sécurité Image
+        const imgUrl = (carte.images && carte.images.large) ? carte.images.large : "https://via.placeholder.com/250x350?text=Image+Indisponible";
+
+        // MA LOGIQUE DE RÉCUPÉRATION DE PRIX SÉCURISÉE
+        let prixFinal = "0.00";
+
+        // 1. Je regarde si le backend a déjà calculé le prix
+        if (carte.prixFinal && carte.prixFinal !== "0.00") {
+            prixFinal = parseFloat(carte.prixFinal).toFixed(2);
+        }
+        // 2. Sinon, je scanne l'objet tcgplayer en profondeur
+        else if (carte.tcgplayer && carte.tcgplayer.prices) {
             const p = carte.tcgplayer.prices;
-            const prixVal = p.holofoil ? p.holofoil.market : (p.normal ? p.normal.market : null);
-            if (prixVal) prix = prixVal + " PC";
+            const data = p.holofoil || p.normal || p.reverseHolofoil || p.unlimitedHolofoil || p["1stEditionHolofoil"];
+            if (data && data.market) {
+                prixFinal = data.market.toFixed(2);
+            }
         }
 
         const cardHtml = `
@@ -140,7 +147,11 @@ function afficherGrilleCartes(liste) {
                 </div>
                 <div class="card-details">
                     <h3>${carte.name}</h3>
-                    <p class="price">${prix}</p>
+                    <!-- MA CAPSULE POKÉ-CRÉDIT -->
+                    <div class="price-tag">
+                        <i class="fas fa-coins"></i>
+                        <span>${prixFinal} PC</span>
+                    </div>
                 </div>
             </div>`;
         grid.innerHTML += cardHtml;
@@ -153,14 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const searchInput = document.getElementById("search-name");
 
-    // MA MODIFICATION : Gestion du clavier
     searchInput.addEventListener("keydown", (e) => {
-        // Si j'appuie sur la touche ENTRÉE
         if (e.key === "Enter") {
             let val = searchInput.value.trim();
             if (val.length >= 3) {
-                // ASTUCE PRO : Je force la première lettre en majuscule (ex: dracaufeu -> Dracaufeu)
-                // car l'API TCGdex refuse les minuscules.
+                // Je force la majuscule pour le pont bilingue
                 val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
                 rechercherGlobalement(val);
             } else {
@@ -169,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Filtre local (quand je tape sans appuyer sur entrée)
     searchInput.addEventListener("input", (e) => {
         const saisie = e.target.value.toLowerCase();
         if (modeVue === "EXTENSIONS") {
