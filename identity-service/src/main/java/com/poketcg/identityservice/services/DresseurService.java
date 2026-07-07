@@ -58,4 +58,22 @@ public class DresseurService {
 
         dresseurRepository.deleteById(id);
     }
+    // les infos d'un dresseur déjà connecté via son pseudo
+    public Dresseur recupererProfil(String username) {
+        return dresseurRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Erreur : Dresseur [" + username + "] introuvable en base."));
+    }
+
+    // Méthode pour mettre à jour les coordonnées du dresseur
+    public Dresseur mettreAJourProfil(String username, Dresseur nouveauxInfos) {
+        Dresseur dresseur = dresseurRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Dresseur introuvable"));
+
+        // Je ne modifie que ce qui est autorisé
+        dresseur.setAddress(nouveauxInfos.getAddress());
+        dresseur.setZipCode(nouveauxInfos.getZipCode());
+        dresseur.setPhone(nouveauxInfos.getPhone());
+
+        return dresseurRepository.save(dresseur);
+    }
 }

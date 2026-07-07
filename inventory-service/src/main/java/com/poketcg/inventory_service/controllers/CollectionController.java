@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventory") // L'adresse de mon Inventaire
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class CollectionController {
 

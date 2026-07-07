@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PokeTCG - Dashboard Dresseur</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/dashboarddresseur.css">
+    <!-- J'ajoute le CSS du Pokedex Mondial pour réutiliser la grille si besoin -->
+    <link rel="stylesheet" href="../css/pokedexmondial.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<!-- 1. MON HEADER ÉLITE (BURGER + LOGO + WALLET) -->
+<header class="glass">
+    <button class="burger-btn" id="burger-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="header-logo">
+        <img src="../assets/logo.png" alt="Logo">
+    </div>
+
+    <div class="wallet-capsule" id="wallet-trigger">
+        <i class="fas fa-coins"></i>
+        <span id="user-balance-header">0.00 PC</span>
+        <button class="add-funds-btn" title="Recharger">+</button>
+    </div>
+</header>
+
+<!-- 2. MON MENU TIROIR (SIDE DRAWER) -->
+<nav class="side-drawer glass" id="side-drawer">
+    <div class="drawer-header">
+        <span>Menu Dresseur</span>
+        <button id="close-drawer">&times;</button>
+    </div>
+
+    <div class="drawer-links">
+        <a href="#" class="nav-link active" data-target="view-home"><i class="fas fa-chart-line"></i> Vue d'ensemble</a>
+        <a href="#" class="nav-link" data-target="view-pokedex"><i class="fas fa-globe"></i> Pokedex Mondial</a>
+        <a href="#" class="nav-link" data-target="view-collection"><i class="fas fa-box-open"></i> Ma Collection</a>
+        <a href="#" class="nav-link" data-target="view-wallet"><i class="fas fa-wallet"></i> Mon Portefeuille</a>
+        <a href="#" class="nav-link" data-target="view-market"><i class="fas fa-store"></i> Mes Ventes</a>
+        <hr>
+        <a href="forum.html"><i class="fas fa-comments"></i> Forum</a>
+        <a href="#" onclick="logout()" class="logout-link"><i class="fas fa-power-off"></i> Déconnexion</a>
+    </div>
+</nav>
+
+<!-- 3. ZONE DE CONTENU (SINGLE PAGE) -->
+<main class="content-full">
+
+    <!-- SECTION 1 : VUE D'ENSEMBLE (Home / Mon Profil) -->
+    <section id="view-home" class="dashboard-view active">
+        <div class="trainer-status-grid">
+            <div class="trainer-card glass">
+                <div class="card-header">
+                    <div class="avatar-container" onclick="openAvatarModal()">
+                        <img src="../assets/avatars/avatar1.png" id="current-avatar" alt="Avatar">
+                        <div class="avatar-overlay"><i class="fas fa-sync-alt"></i></div>
+                    </div>
+                    <div class="header-info">
+                        <h2 id="display-pseudo">Chargement...</h2>
+                        <span class="role-badge">Dresseur de Johto</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="info-row">
+                        <i class="fas fa-envelope"></i>
+                        <div><label>Email</label><p id="display-email">...</p></div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-phone"></i>
+                        <div><label>Téléphone</label><p id="display-phone">06 XX XX XX XX</p></div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div><label>Adresse de livraison</label><p id="display-address">...</p></div>
+                    </div>
+                    <button class="edit-profile-btn" onclick="openEditModal()">
+                        <i class="fas fa-user-edit"></i> Modifier mes coordonnées
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-card glass">
+                <h3><i class="fas fa-medal"></i> Progression</h3>
+                <div class="level-section">
+                    <div class="level-badge">
+                        <span class="lv-text">LV.</span>
+                        <span class="lv-number" id="trainer-level">1</span>
+                    </div>
+                    <div class="xp-container">
+                        <div class="xp-info">
+                            <span>Expérience Dresseur</span>
+                            <span id="xp-text">0 / 1000 XP</span>
+                        </div>
+                        <div class="xp-bar-bg">
+                            <div class="xp-fill" id="xp-fill-bar" style="width: 10%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mini-stats-grid">
+                    <div class="mini-stat">
+                        <label>Collection</label>
+                        <p id="total-cards-count">0 Cartes</p>
+                    </div>
+                    <div class="mini-stat">
+                        <label>Valeur estimée</label>
+                        <p id="total-collection-value" style="color: var(--poke-yellow);">0.00 PC</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2 : POKEDEX MONDIAL -->
+    <section id="view-pokedex" class="dashboard-view">
+        <div class="news-pill"><h2>Explorateur Mondial</h2></div>
+        <section id="search-zone" class="glass" style="width: 100%; margin-top: 20px;">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-name" placeholder="Chercher un Pokémon (ex: Dracaufeu)... puis Entrée">
+            </div>
+            <div class="filter-box">
+                <label>Filtrer par extension :</label>
+                <select id="extension-filter">
+                    <option value="all">Toutes les extensions</option>
+                </select>
+            </div>
+        </section>
+        <div id="pokedex-grid" class="pokedex-grid"></div>
+    </section>
+
+    <!-- SECTION 3 : MA COLLECTION -->
+    <section id="view-collection" class="dashboard-view">
+        <div class="news-pill"><h2>Ma Collection</h2></div>
+        <div id="collection-grid" class="pokedex-grid"></div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="footer-left">Toutes les images sont la propriété de Nintendo.</div>
+    <div class="footer-center">© 2024 PokeTCG — Réalisé par Habib Akerim</div>
+    <div class="footer-right">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-discord"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+    </div>
+</footer>
+
+<!-- 4. MES MODALES (FENÊTRES SURGISSANTES) -->
+
+<!-- MODALE ZOOM CARTE (HABIB : C'ÉTAIT ELLE QU'IL MANQUAIT !) -->
+<div id="card-modal" class="modal">
+    <span class="close-modal" onclick="document.getElementById('card-modal').style.display='none'">&times;</span>
+    <img class="modal-content" id="img-zoom" alt="Pokémon Agrandis">
+</div>
+
+<!-- MODALE SÉLECTION AVATAR -->
+<div id="avatar-modal" class="modal">
+    <div class="modal-content glass">
+        <h3>Choisir mon profil</h3>
+        <div class="avatar-picker" id="avatar-list"></div>
+        <button class="btn-nav pokedex" style="width:100%; margin-top:20px;" onclick="closeAvatarModal()">Fermer</button>
+    </div>
+</div>
+
+<!-- MODALE AJOUT CARTE -->
+<div id="add-card-modal" class="modal">
+    <div class="modal-content glass">
+        <h3>Capturer cette carte</h3>
+        <div class="form-group">
+            <label>État de conservation :</label>
+            <select id="select-condition">
+                <option value="Neuf">Neuf (Mint)</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Usé">Usé (Played)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Variante possédée :</label>
+            <div class="version-selector">
+                <button class="ver-btn" data-ver="Normal">Normal</button>
+                <button class="ver-btn holo" data-ver="Holo">Holo</button>
+                <button class="ver-btn reverse" data-ver="Reverse">Reverse</button>
+            </div>
+        </div>
+        <button class="btn-nav connexion" id="confirm-add" style="width:100%; margin-top:10px;">Ajouter au Pokedex</button>
+    </div>
+</div>
+
+<!-- MODALE MODIFICATION COORDONNÉES -->
+<div id="edit-profile-modal" class="modal">
+    <div class="modal-content glass">
+        <h3 class="pokemon-font-hollow">Modifier le profil</h3>
+        <div class="edit-form">
+            <div class="input-group">
+                <label><i class="fas fa-home"></i> Adresse</label>
+                <input type="text" id="edit-address" class="glass-input">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-map-pin"></i> Code Postal</label>
+                <input type="text" id="edit-zip" class="glass-input">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-phone"></i> Téléphone</label>
+                <input type="text" id="edit-phone" class="glass-input">
+            </div>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-nav pokedex" onclick="closeEditModal()">Annuler</button>
+            <button class="btn-nav connexion" onclick="sauvegarderProfil()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/dashboarddresseur.js"></script>
+</body>
+</html>

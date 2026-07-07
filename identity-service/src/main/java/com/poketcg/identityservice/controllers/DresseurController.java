@@ -36,4 +36,17 @@ public class DresseurController {
         dresseurService.supprimerCompte(id);
         return "Succès : Votre compte dresseur a été supprimé ainsi que vos données personnelles.";
     }
+
+    // Cette route permet au JavaScript de demander les infos (Email, Adresse)
+    // On utilise le pseudo dans l'URL pour cibler le bon dresseur
+    @GetMapping("/user/{username}")
+    public Dresseur getProfile(@PathVariable String username) {
+        return dresseurService.recupererProfil(username);
+    }
+
+    // Route pour modifier son profil (Adresse et Téléphone)
+    @PutMapping("/update/{username}")
+    public Dresseur updateProfile(@PathVariable String username, @RequestBody Dresseur dresseur) {
+        return dresseurService.mettreAJourProfil(username, dresseur);
+    }
 }

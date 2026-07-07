@@ -43,4 +43,7 @@ public class Dresseur {
 
     @Column(nullable = false, length = 20)
     private String role;
+
+    @Column(length = 20)
+    private String phone;
 }
