@@ -76,4 +76,11 @@ public class DresseurService {
 
         return dresseurRepository.save(dresseur);
     }
+
+    // méthode pour permettre au Marché Mondial
+    // de retrouver le pseudo d'un vendeur via son ID numérique
+    public Dresseur trouverParId(Long id) {
+        return dresseurRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Erreur : ID [" + id + "] inconnu."));
+    }
 }

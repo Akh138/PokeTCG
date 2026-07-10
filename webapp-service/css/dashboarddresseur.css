@@ -1,18 +1,19 @@
-/* --- 1. LAYOUT GLOBAL DU DASHBOARD --- */
+/* --- 1. LAYOUT GLOBAL DU DASHBOARD (RÉPARÉ) --- */
 
-/* Ma zone principale qui occupe toute la largeur car la sidebar est maintenant cachée */
-.content-full {
-    width: 95%;
+/* Habib : On force le main du Dashboard à ignorer le Flex-Column du fichier common.css */
+body > main.content-full {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important; /* HABIB : C'est cette ligne qui permet à la grille de s'étaler */
+    width: 95% !important;
     max-width: 1400px;
-    /* J'augmente de 220px à 280px pour laisser le logo respirer
-       et éviter que les cartes ne soient trop collées en haut */
     margin: 280px auto 100px auto;
     transition: filter 0.3s ease;
+    text-align: center; /* Pour centrer les titres mais pas les cartes */
 }
 
 /* --- 2. LE HEADER ÉLITE (BURGER & WALLET) --- */
 
-/* Bouton Burger à gauche */
 .burger-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -25,9 +26,8 @@
 }
 .burger-btn:hover { background: var(--poke-red); transform: scale(1.05); }
 
-/* Ma Capsule Wallet style Fintech à droite */
 .wallet-capsule {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); /* Dégradé Or */
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     border: 1px solid #fbbf24;
     padding: 5px 5px 5px 15px;
     border-radius: 50px;
@@ -39,13 +39,12 @@
 .wallet-capsule:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
 .wallet-capsule span {
-    color: #020617; /* Contraste noir sur or */
+    color: #020617;
     font-weight: 800;
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
 }
 
-/* Petit bouton "+" noir à l'intérieur de la capsule */
 .add-funds-btn {
     background: #020617;
     color: var(--poke-yellow);
@@ -61,7 +60,7 @@
 
 .side-drawer {
     position: fixed;
-    top: 0; left: -320px; /* Caché par défaut à gauche */
+    top: 0; left: -320px;
     width: 300px; height: 100vh;
     z-index: 2000;
     padding: 40px 20px;
@@ -69,7 +68,6 @@
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Activation via JavaScript */
 .side-drawer.open {
     left: 0;
     box-shadow: 20px 0 60px rgba(0,0,0,0.9);
@@ -86,23 +84,18 @@
 #close-drawer { background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; }
 
 .drawer-links { display: flex; flex-direction: column; gap: 10px; }
-
 .drawer-links a {
     text-decoration: none; color: white;
     padding: 15px 20px; border-radius: 12px;
     display: flex; align-items: center; gap: 15px;
     transition: 0.3s;
 }
-
-.drawer-links a:hover, .drawer-links a.active {
-    background: var(--poke-red);
-}
-
+.drawer-links a:hover, .drawer-links a.active { background: var(--poke-red); }
 .drawer-links hr { border: 0.5px solid rgba(255,255,255,0.1); margin: 15px 0; }
 
 /* --- 4. GESTION DES VUES (SINGLE PAGE) --- */
 
-.dashboard-view { display: none; }
+.dashboard-view { display: none; width: 100% !important; /* Habib : On force la vue à s'étaler */ }
 .dashboard-view.active { display: block; animation: fadeIn 0.5s ease; }
 
 @keyframes fadeIn {
@@ -110,15 +103,25 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- CENTRAGE DES TITRES (CAPSULES) --- */
+
+/* Habib : Je force les capsules de titre à se centrer horizontalement
+   en utilisant des marges automatiques à gauche et à droite */
+.content-full .news-pill {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 40px; /* J'ajoute un peu d'espace sous le titre */
+}
+
 /* --- 5. SECTION PROFIL : MA TRAINER CARD --- */
 
 .trainer-status-grid {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr; /* Carte dresseur plus large que les stats */
+    grid-template-columns: 1.2fr 0.8fr;
     gap: 30px;
+    text-align: left;
 }
 
-/* Ma carte de dresseur principale */
 .trainer-card {
     padding: 30px;
     border-radius: 25px;
@@ -127,7 +130,6 @@
 
 .trainer-card .card-header { display: flex; align-items: center; gap: 25px; }
 
-/* Conteneur du portrait circulaire */
 .avatar-container {
     width: 110px; height: 110px;
     border-radius: 50%;
@@ -139,7 +141,6 @@
 }
 .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Overlay qui apparaît au survol de l'avatar */
 .avatar-overlay {
     position: absolute; bottom: 0; width: 100%; height: 40%;
     background: rgba(0,0,0,0.6); color: white;
@@ -151,7 +152,6 @@
 .header-info h2 { font-family: 'PokemonSolid'; color: var(--poke-yellow); letter-spacing: 2px; margin: 0; font-size: 1.8rem; }
 .role-badge { background: var(--poke-red); padding: 4px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
 
-/* Lignes d'informations personnelles */
 .card-body { display: flex; flex-direction: column; gap: 15px; }
 .info-row {
     display: flex; align-items: center; gap: 20px;
@@ -165,10 +165,9 @@
 
 /* --- 6. SECTION STATS : NIVEAU ET XP BAR --- */
 
-.stats-card { padding: 30px; border-radius: 25px; }
+.stats-card { padding: 30px; border-radius: 25px; text-align: left; }
 .stats-card h3 { color: var(--text-muted); text-transform: uppercase; font-size: 0.9rem; margin-bottom: 25px; }
 
-/* Bloc du badge de niveau */
 .level-section { display: flex; align-items: center; gap: 25px; margin-bottom: 35px; }
 .level-badge {
     background: var(--poke-yellow); color: #020617;
@@ -179,7 +178,6 @@
 .lv-text { font-size: 0.7rem; font-weight: 900; }
 .lv-number { font-family: 'PokemonSolid'; font-size: 1.8rem; }
 
-/* Ma barre d'XP style RPG */
 .xp-container { flex: 1; }
 .xp-info { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 10px; color: var(--white); font-weight: bold; }
 .xp-bar-bg { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 50px; overflow: hidden; }
@@ -187,10 +185,9 @@
     height: 100%;
     background: linear-gradient(90deg, var(--poke-red), #fb7185);
     box-shadow: 0 0 15px var(--poke-red);
-    transition: width 1s ease-out; /* Animation fluide de la barre */
+    transition: width 1s ease-out;
 }
 
-/* Grille pour le résumé rapide */
 .mini-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .mini-stat { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
 .mini-stat label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
@@ -198,10 +195,13 @@
 
 /* --- 7. INDICATEURS DE COLLECTION (POKÉCARDEX STYLE) --- */
 
-.pokedex-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 25px; margin-top: 30px;
+/* Habib : Je force le Pokedex Mondial à être en grille */
+#pokedex-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+    gap: 25px !important;
+    width: 100% !important;
+    margin-top: 30px;
 }
 
 .card-status-indicators { display: flex; gap: 8px; margin-top: 12px; justify-content: center; }
@@ -214,7 +214,6 @@
     font-weight: bold; color: rgba(255,255,255,0.2); transition: 0.3s;
 }
 
-/* Mes états allumés */
 .indicator.owned-normal { background: #3b82f6; color: white; border-color: #60a5fa; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
 .indicator.owned-holo { background: #ef4444; color: white; border-color: #f87171; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
 .indicator.owned-reverse { background: #f59e0b; color: white; border-color: #fbbf24; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
@@ -240,89 +239,24 @@
 }
 .modal-content { width: 450px; padding: 40px; border-radius: 30px; text-align: center; position: relative; }
 
-/* --- LE BOUTON DANS LA CARTE --- */
-.edit-profile-btn {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px dashed rgba(255, 255, 255, 0.3);
-    color: var(--poke-yellow);
-    padding: 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: bold;
-    transition: 0.3s;
-    margin-top: 10px;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-}
-.edit-profile-btn:hover {
-    background: rgba(251, 191, 36, 0.1);
-    border-style: solid;
-    border-color: var(--poke-yellow);
-}
+/* --- 10. LE BOUTON DANS LA CARTE --- */
+.edit-profile-btn { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.3); color: var(--poke-yellow); padding: 12px; border-radius: 12px; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.edit-profile-btn:hover { background: rgba(251, 191, 36, 0.1); border-style: solid; border-color: var(--poke-yellow); }
 
-/* --- DESIGN DE LA MODALE MODERNE --- */
-.edit-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: 25px 0;
-    text-align: left;
-}
+/* --- 11. DESIGN DE LA MODALE MODERNE --- */
+.edit-form { display: flex; flex-direction: column; gap: 20px; margin: 25px 0; text-align: left; }
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.input-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; padding-left: 5px; }
+.glass-input { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 12px 15px; color: white; font-size: 1rem; outline: none; transition: 0.3s; }
+.glass-input:focus { border-color: var(--poke-yellow); background: rgba(255, 255, 255, 0.1); }
+.modal-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
+.modal-buttons .btn-nav { width: 160px; font-size: 1rem; }
+.pokemon-font-hollow { font-family: 'PokemonHollow', sans-serif; color: var(--white); letter-spacing: 3px; font-size: 1.5rem; }
 
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.input-group label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding-left: 5px;
-}
-
-.glass-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 12px 15px;
-    color: white;
-    font-size: 1rem;
-    outline: none;
-    transition: 0.3s;
-}
-.glass-input:focus {
-    border-color: var(--poke-yellow);
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/*  Ici on centre les deux boutons côte à côte */
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 10px;
-}
-
-.modal-buttons .btn-nav {
-    width: 160px; /* Taille fixe pour la symétrie */
-    font-size: 1rem;
-}
-
-.pokemon-font-hollow {
-    font-family: 'PokemonHollow', sans-serif;
-    color: var(--white);
-    letter-spacing: 3px;
-    font-size: 1.5rem;
-}
-
-/* --- 10. STYLE DES CARTES ÉVOLUÉ (POKÉCARDEX) --- */
+/* --- 12. STYLE DES CARTES POKÉMON --- */
 
 .card-img-container {
-    position: relative; /* Indispensable pour placer le prix et la loupe par dessus */
+    position: relative;
     width: 100%;
     height: 280px;
     display: flex;
@@ -333,127 +267,282 @@
     border-radius: 10px;
 }
 
-/* Étiquette de Prix (En haut à gauche) */
-.market-price-tag {
-    position: absolute;
-    top: 10px; left: 10px;
-    background: white;
-    color: #1e293b;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 800;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    z-index: 5;
-}
-
-/* Bouton Zoom (En haut à droite) */
-.btn-zoom-overlay {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #1e293b;
-    width: 35px; height: 35px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    z-index: 10 !important; /* HABIB : Priorité pour que le clic sur la loupe marche */
-    transition: 0.3s;
-}
+.market-price-tag { position: absolute; top: 10px; left: 10px; background: white; color: #1e293b; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 5; }
+.btn-zoom-overlay { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.9); color: #1e293b; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10 !important; transition: 0.3s; }
 .btn-zoom-overlay:hover { transform: scale(1.2); background: white; }
 
-/* Carrés d'états (En bas) */
-.status-indicators {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-.box {
-    width: 25px; height: 25px;
-    border-radius: 50%; /* On fait des petits ronds avec icônes comme ton image */
-    background: rgba(255,255,255,0.1);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-    color: rgba(255,255,255,0.2);
-    transition: 0.3s;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Couleurs quand possédé (selon ton image) */
+.status-indicators { display: flex; justify-content: center; gap: 12px; margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+.box { width: 25px; height: 25px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgba(255,255,255,0.2); transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
 .box.active-normal { background: #ef4444; color: white; border-color: #f87171; box-shadow: 0 0 10px #ef4444; }
 .box.active-holo { background: #f59e0b; color: white; border-color: #fbbf24; box-shadow: 0 0 10px #f59e0b; }
 .box.active-reverse { background: #3b82f6; color: white; border-color: #60a5fa; box-shadow: 0 0 10px #3b82f6; }
 
-/* --- 11. SÉCURITÉ PROFONDEUR POUR LE ZOOM (LOUPE) --- */
-#card-modal {
-    z-index: 9999 !important; /* Force la modale de zoom au dessus de tout */
-}
-
-/* --- 12. STYLE DE LA MODALE DE CAPTURE AMÉLIORÉE --- */
-
-#add-card-modal .modal-content {
-    background: rgba(15, 23, 42, 0.95); /* Bleu nuit profond */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
-    border-radius: 20px;
-    padding: 30px;
-    width: 400px;
-}
-
-#select-condition {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    background: #0f172a;
-    color: white;
-    border: 1px solid var(--poke-yellow);
-    outline: none;
-}
-
-.ver-btn.selected {
-    border-color: var(--poke-yellow);
-    background: rgba(251, 191, 36, 0.2);
-    box-shadow: 0 0 15px var(--poke-yellow);
-}
+#card-modal { z-index: 9999 !important; }
+#add-card-modal .modal-content { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 0 30px rgba(251, 191, 36, 0.2); border-radius: 20px; padding: 30px; width: 400px; }
+#select-condition { width: 100%; padding: 12px; border-radius: 10px; background: #0f172a; color: white; border: 1px solid var(--poke-yellow); outline: none; }
+.ver-btn.selected { border-color: var(--poke-yellow); background: rgba(251, 191, 36, 0.2); box-shadow: 0 0 15px var(--poke-yellow); }
 
 /* --- 13. BARRE DE PROGRESSION MINI (STYLE POKÉCARDEX) --- */
-.ext-progress {
-    margin-top: 15px;
-    width: 100%;
+.ext-progress { margin-top: 15px; width: 100%; }
+.ext-progress-info { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+.ext-progress-bg { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; }
+.ext-progress-fill { height: 100%; background: var(--poke-yellow); box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.ext-progress-fill.completed { background: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
+
+/* --- 14. STYLE DU CLASSEUR PRIVÉ (BINDER ÉLITE - RÉPARÉ) --- */
+
+#view-collection {
+    width: 100% !important;
 }
 
-.ext-progress-info {
+.binder-shelf {
+    width: 100% !important;
+    margin-bottom: 50px;
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: left;
+}
+
+.shelf-title {
     display: flex;
     justify-content: space-between;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 1px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.ext-progress-bg {
+.shelf-title h3 { color: var(--poke-yellow); margin: 0; font-size: 1.4rem; }
+.shelf-count { background: var(--poke-red); padding: 3px 12px; border-radius: 50px; font-weight: bold; font-size: 0.8rem; }
+
+.binder-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    gap: 20px !important;
+    width: 100% !important;
+    margin: 0 auto;
+}
+
+.binder-grid .pokemon-card {
+    width: 100% !important;
+    max-width: 220px;
+    height: auto !important;
+    margin: 0 !important;
+}
+
+.condition-badge { position: absolute; bottom: 10px; left: 10px; padding: 4px 10px; border-radius: 5px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.cond-neuf { background: #10b981; color: white; }
+.cond-excellent { background: #f59e0b; color: white; }
+.cond-use { background: #ef4444; color: white; }
+.acquisition-date { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; font-style: italic; text-align: center; }
+
+.pokemon-card.not-owned { opacity: 0.3; filter: grayscale(100%); border: 1px dashed rgba(255,255,255,0.2); }
+.missing-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; z-index: 10; }
+
+/* --- 15. BOUTON VENDRE (CLASSEUR) --- */
+
+.btn-sell-trigger {
     width: 100%;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    height: 45px; /* Habib : Je fixe la hauteur pour l'harmonie visuelle */
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); /* Gold */
+    border: none;
+    color: #020617;
+    padding: 0 10px; /* Padding latéral uniquement car hauteur fixée */
     border-radius: 10px;
-    overflow: hidden;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-top: 15px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: 0.3s;
+    box-sizing: border-box;
 }
 
-.ext-progress-fill {
-    height: 100%;
-    background: var(--poke-yellow); /* Couleur par défaut */
-    box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+.btn-sell-trigger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(217, 119, 6, 0.4);
+    filter: brightness(1.1);
 }
 
-/*  Quand c'est fini à 100%, on allume en vert ! */
-.ext-progress-fill.completed {
-    background: #10b981;
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+.btn-sell-trigger i {
+    font-size: 0.9rem;
+}
+
+/* --- 16. BADGE STATUT VENTE (CLASSEUR) --- */
+
+/* Habib : Ce badge fait maintenant exactement la même taille que le bouton Vendre */
+.status-badge-sale {
+    width: 100%;
+    height: 45px; /* Même hauteur stricte que le bouton */
+    background: rgba(245, 158, 11, 0.1); /* Orange très léger */
+    border: 1px solid var(--poke-yellow);
+    color: var(--poke-yellow);
+    padding: 0 10px; /* Padding latéral uniquement */
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-sizing: border-box; /* Évite que les marges déforment la taille */
+}
+
+.status-badge-sale i {
+    font-size: 0.9rem;
+    animation: pulse 2s infinite; /* Petit effet de pulsation pour attirer l'oeil */
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* --- 17. STYLE DU PORTEFEUILLE (FINTECH) --- */
+
+.wallet-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.wallet-card {
+    padding: 30px;
+    border-radius: 20px;
+    text-align: left;
+}
+
+.wallet-card.available { border-left: 5px solid #10b981; } /* Vert */
+.wallet-card.locked { border-left: 5px solid #3b82f6; }    /* Bleu */
+
+.wallet-info i { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+.wallet-info.available i { color: #10b981; }
+.wallet-info.locked i { color: #3b82f6; }
+
+.wallet-info label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+.wallet-info h2 { font-family: 'PokemonSolid'; font-size: 2.2rem; color: var(--poke-yellow); margin: 10px 0; }
+
+.wallet-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+
+/* Boite de recharge */
+.recharge-box { padding: 40px; border-radius: 20px; text-align: center; }
+.recharge-form { display: flex; justify-content: center; gap: 20px; margin: 25px 0; }
+.recharge-form .glass-input { width: 250px; text-align: center; font-size: 1.2rem; font-weight: bold; }
+
+.quick-amounts { display: flex; justify-content: center; gap: 15px; }
+.quick-amounts button {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.quick-amounts button:hover { background: var(--poke-yellow); color: #020617; }
+
+/* --- 18. STYLE TERMINAL DE PAIEMENT (SIMULATION) --- */
+
+.conversion-rate { color: var(--poke-yellow); font-size: 0.8rem; font-weight: bold; margin-bottom: 20px; }
+
+.payment-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding: 20px;
+}
+
+/* La Carte Visuelle */
+.credit-card-visual {
+    width: 350px;
+    height: 200px;
+    border-radius: 15px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: left;
+}
+
+.card-top { display: flex; justify-content: space-between; align-items: center; }
+.chip { width: 45px; height: 35px; background: linear-gradient(135deg, #ffd700, #b8860b); border-radius: 5px; }
+.fa-cc-visa { font-size: 2.5rem; opacity: 0.8; }
+
+.card-number-display { font-size: 1.4rem; letter-spacing: 3px; font-family: 'Courier New', monospace; margin: 20px 0; }
+.card-bottom { display: flex; justify-content: space-between; font-size: 0.8rem; text-transform: uppercase; opacity: 0.7; }
+
+/* Le Formulaire à droite */
+.payment-form { width: 400px; display: flex; flex-direction: column; gap: 15px; text-align: left; }
+.form-row { display: flex; gap: 15px; }
+.payment-form .glass-input { width: 100%; box-sizing: border-box; }
+.payment-form label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-left: 5px; }
+
+/* Section 19 - Correction finale bouton paiement */
+.payment-form .btn-nav.connexion {
+    height: 65px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.95rem !important;
+    padding: 0 20px !important;
+    padding-bottom: 8px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    font-family: 'PokemonSolid', sans-serif !important;
+    color: var(--poke-yellow) !important;
+}
+
+/* --- 20. STYLE DU MARCHÉ PUBLIC --- */
+
+.market-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    gap: 30px;
+}
+
+.market-filters .search-box { flex: 2; }
+.market-filters .sort-box { flex: 1; text-align: right; }
+
+.market-filters select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Bouton Acheter (Style Fintech Green) */
+.btn-buy-trigger {
+    width: 100%;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Vert */
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.btn-buy-trigger:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
 }

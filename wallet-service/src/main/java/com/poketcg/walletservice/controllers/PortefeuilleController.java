@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/api/wallets") // C'est l'adresse de base pour contacter ma "banque"
+@RequestMapping("/api/wallets") // C'est l'adresse de base pour contacter ma "banque".
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class PortefeuilleController {
 

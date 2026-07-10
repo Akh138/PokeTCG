@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface CarteRepository extends MongoRepository<Carte, String> {
 
     // 1. Pour vérifier si on a déjà la carte en cache
-    Optional<Carte> findByIdApiUnique(String idApiUnique);
+    List<Carte> findByIdApiUnique(String idApiUnique);
 
     // 2. MÉTHODE : Chercher par extension (ex: Set de Base)
     List<Carte> findByExtension(String extension);

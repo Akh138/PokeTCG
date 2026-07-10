@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/marketplace")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class AnnonceController {
 

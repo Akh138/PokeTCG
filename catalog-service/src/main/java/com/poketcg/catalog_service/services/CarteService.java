@@ -123,31 +123,54 @@ public class CarteService {
         return finalCards;
     }
 
-    public Carte recupererOuImporter(String idApi) { return carteRepository.findByIdApiUnique(idApi).orElseGet(() -> importerCarteDepuisApis(idApi)); }
+    public Carte recupererOuImporter(String idApi) {
+        // J'utilise le nouveau retour en List du Repository
+        List<Carte> cartesEnBase = carteRepository.findByIdApiUnique(idApi);
 
-    // MA MÉTHODE D'IMPORTATION (AMÉLIORÉE POUR LES PRIX)
+        // Si ma liste n'est pas vide, je renvoie la première carte trouvée
+        // Même s'il y a un doublon en base, le service ne crash plus !
+        if (!cartesEnBase.isEmpty()) {
+            return cartesEnBase.get(0);
+        }
+
+        // Sinon, je lance l'importation normale
+        return importerCarteDepuisApis(idApi);
+    }
+
+    // MA MÉTHODE D'IMPORTATION (SÉCURISÉE CONTRE LE CRASH 404)
     public Carte importerCarteDepuisApis(String idApi) {
-        Map<String, Object> resFr = (Map<String, Object>) tcgDexProxy.getCardDetailsFr(idApi);
+        // A. J'appelle d'abord l'international (Source fiable à 100%)
         Map<String, Object> resIntRaw = (Map<String, Object>) pokemonTcgProxy.getCardDetails(idApi);
         Map<String, Object> resInt = (Map<String, Object>) resIntRaw.get("data");
 
+        // B. Je tente le Français (Si 404, j'attrape l'erreur pour ne pas crasher)
+        Map<String, Object> resFr = null;
+        try {
+            resFr = (Map<String, Object>) tcgDexProxy.getCardDetailsFr(idApi);
+        } catch (Exception e) {
+            System.out.println("Note : Traduction FR non disponible pour " + idApi + ". On continue en anglais.");
+        }
+
         Carte nouvelleCarte = new Carte();
         nouvelleCarte.setIdApiUnique(idApi);
-        nouvelleCarte.setNomFr((String) resFr.get("name"));
-        Map<String, Object> setFr = (Map<String, Object>) resFr.get("set");
-        nouvelleCarte.setExtension((String) setFr.get("name"));
+
+        // Si le français a échoué (resFr null), je prends les données anglaises mondiales
+        nouvelleCarte.setNomFr(resFr != null ? (String) resFr.get("name") : (String) resInt.get("name"));
+
+        Map<String, Object> setFr = (resFr != null) ? (Map<String, Object>) resFr.get("set") : null;
+        nouvelleCarte.setExtension(setFr != null ? (String) setFr.get("name") : "Série Inconnue");
+
         nouvelleCarte.setRarete((String) resInt.get("rarity"));
         List<String> types = (List<String>) resInt.get("types");
         if (types != null && !types.isEmpty()) { nouvelleCarte.setType(types.get(0)); }
         Map<String, Object> images = (Map<String, Object>) resInt.get("images");
         nouvelleCarte.setImageUrl((String) images.get("large"));
 
-        // MA LOGIQUE DE RECHERCHE DE PRIX MULTI-SOURCES (Back)
+        // MA LOGIQUE DE RECHERCHE DE PRIX MULTI-SOURCES
         try {
             Map<String, Object> tcgPlayer = (Map<String, Object>) resInt.get("tcgplayer");
             Map<String, Object> prices = (Map<String, Object>) tcgPlayer.get("prices");
 
-            // Je teste les catégories dans l'ordre de probabilité
             Map<String, Object> sel = null;
             if (prices.containsKey("holofoil")) sel = (Map<String, Object>) prices.get("holofoil");
             else if (prices.containsKey("normal")) sel = (Map<String, Object>) prices.get("normal");

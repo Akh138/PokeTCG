@@ -49,4 +49,10 @@ public class DresseurController {
     public Dresseur updateProfile(@PathVariable String username, @RequestBody Dresseur dresseur) {
         return dresseurService.mettreAJourProfil(username, dresseur);
     }
+
+    //  Route indispensable pour traduire l'ID du vendeur en Pseudo sur le Marché
+    @GetMapping("/id/{id}")
+    public Dresseur getById(@PathVariable Long id) {
+        return dresseurService.trouverParId(id);
+    }
 }

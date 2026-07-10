@@ -17,7 +17,7 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <div class="header-logo">
+    <div class="header-logo connected">
         <img src="../assets/logo.png" alt="Logo">
     </div>
 
@@ -140,6 +140,104 @@
         <div id="collection-grid" class="pokedex-grid"></div>
     </section>
 
+
+    <!-- SECTION 4 : MON PORTEFEUILLE (FINTECH VIEW) -->
+    <section id="view-wallet" class="dashboard-view">
+        <div class="news-pill"><h2>Ma Banque</h2></div>
+
+        <div class="wallet-grid">
+            <!-- Carte Solde Disponible -->
+            <div class="wallet-card available glass">
+                <div class="wallet-info">
+                    <i class="fas fa-check-circle"></i>
+                    <label>Solde Disponible</label>
+                    <h2 id="wallet-available">0.00 PC</h2>
+                </div>
+                <p class="wallet-desc">Argent utilisable immédiatement pour acheter des cartes.</p>
+            </div>
+
+            <!-- Carte Solde Séquestre (Escrow) -->
+            <div class="wallet-card locked glass">
+                <div class="wallet-info">
+                    <i class="fas fa-lock"></i>
+                    <label>Fonds en Séquestre</label>
+                    <h2 id="wallet-escrow">0.00 PC</h2>
+                </div>
+                <p class="wallet-desc">Argent bloqué en attente de validation de vos achats en cours.</p>
+            </div>
+        </div>
+
+        <!-- Formulaire de Paiement Bancaire (Simulation Fintech) -->
+        <div class="recharge-box glass">
+            <h3><i class="fas fa-shield-alt"></i> Paiement Sécurisé (Simulation)</h3>
+            <p class="conversion-rate">Taux de change : 1.00 € = 1.00 PC</p>
+
+            <div class="payment-container">
+                <!-- Visuel de la Carte Bancaire -->
+                <div class="credit-card-visual glass">
+                    <div class="card-top">
+                        <div class="chip"></div>
+                        <i class="fab fa-cc-visa"></i>
+                    </div>
+                    <div class="card-number-display">•••• •••• •••• ••••</div>
+                    <div class="card-bottom">
+                        <div class="card-holder">NOM DU DRESSEUR</div>
+                        <div class="card-expiry">MM/YY</div>
+                    </div>
+                </div>
+
+                <!-- Formulaire de saisie -->
+                <div class="payment-form">
+                    <div class="input-group">
+                        <label>Numéro de carte</label>
+                        <input type="text" id="card-num" class="glass-input" placeholder="4530 •••• •••• ••••" maxlength="16">
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Expiration</label>
+                            <input type="text" id="card-exp" class="glass-input" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="input-group">
+                            <label>CVV</label>
+                            <input type="password" id="card-cvv" class="glass-input" placeholder="•••" maxlength="3">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Montant du dépôt (€)</label>
+                        <input type="number" id="recharge-amount" class="glass-input" placeholder="0.00">
+                    </div>
+                    <button class="btn-nav connexion" onclick="rechargerCompte()">Confirmer le paiement</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5 : MARCHÉ MONDIAL (MARKETPLACE) -->
+    <section id="view-market" class="dashboard-view">
+        <div class="news-pill"><h2>Marché Mondial</h2></div>
+
+        <!-- Filtres du marché -->
+        <div class="market-filters glass">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="market-search" placeholder="Filtrer les annonces...">
+            </div>
+            <div class="sort-box">
+                <label>Trier par :</label>
+                <select id="market-sort">
+                    <option value="recent">Plus récentes</option>
+                    <option value="price-asc">Prix croissant</option>
+                    <option value="price-desc">Prix décroissant</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Grille des annonces publiques -->
+        <div id="market-grid" class="pokedex-grid">
+            <!-- Rempli par JS avec les annonces des autres dresseurs -->
+        </div>
+    </section>
+
 </main>
 
 <footer>
@@ -214,6 +312,30 @@
         <div class="modal-buttons">
             <button class="btn-nav pokedex" onclick="closeEditModal()">Annuler</button>
             <button class="btn-nav connexion" onclick="sauvegarderProfil()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+<!-- MODALE : METTRE EN VENTE (MARKETPLACE) -->
+<div id="sell-card-modal" class="modal">
+    <div class="modal-content glass">
+        <h3 class="pokemon-font-hollow">Mettre en vente</h3>
+
+        <div class="edit-form">
+            <!-- Rappel de la carte (rempli par JS) -->
+            <p id="sell-card-name" style="color: var(--poke-yellow); font-weight: bold; text-align: center;"></p>
+
+            <div class="input-group">
+                <label><i class="fas fa-coins"></i> Prix de vente (PC)</label>
+                <input type="number" id="sell-price" class="glass-input" placeholder="Ex: 500.00">
+                <small style="color: var(--text-muted); font-size: 0.7rem; margin-top: 5px;">
+                    Note : Le prix doit être en Poké-Crédits.
+                </small>
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn-nav pokedex" onclick="closeSellModal()">Annuler</button>
+            <button class="btn-nav connexion" onclick="confirmerMiseEnVente()">Publier</button>
         </div>
     </div>
 </div>

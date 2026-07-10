@@ -36,4 +36,6 @@ public class Annonce {
     private String statut;
 
     private LocalDateTime datePublication;
+    //Etat de la carte
+    private String etat;
 }
