@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class PortefeuilleService {
 
     private final PortefeuilleRepository portefeuilleRepository;
     private final TransactionHistoryRepository historyRepository;
+    private final TransactionHistoryRepository transactionHistoryRepository;
 
     // 1. Initialisation d'un nouveau compte
     public Portefeuille creerPortefeuille(Long idDresseur) {
@@ -87,5 +89,11 @@ public class PortefeuilleService {
         historyRepository.save(new TransactionHistory(null, idAcheteur, montant, "PURCHASE_CANCELLED", LocalDateTime.now()));
 
         return "Annulation effectuée : le montant de " + montant + " PC a été restitué sur votre solde disponible.";
+    }
+
+    // ⭐ HABIB : Méthode pour récupérer le journal d'audit financier ⭐
+    public List<TransactionHistory> recupererHistorique(Long idDresseur) {
+        // On appelle le repository pour avoir la liste triée par date
+        return transactionHistoryRepository.findByIdDresseurOrderByDateDesc(idDresseur);
     }
 }

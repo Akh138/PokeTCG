@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long> {
+
+    //Je cherche l'historique d'un dresseur trié du plus récent au plus ancien
+    java.util.List<TransactionHistory> findByIdDresseurOrderByDateDesc(Long idDresseur);
 }

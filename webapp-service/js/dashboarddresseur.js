@@ -29,21 +29,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // ⭐ HABIB : ÉTAPE PRIORITAIRE n°1 ⭐
-    // J'active IMMÉDIATEMENT les contrôles UI (Burger, Onglets)
-    // Comme ça, le menu fonctionne même pendant que les données chargent.
-    initUIControls();
-    initAvatarSystem();
-    initCaptureLogic();
-    initSearchLogic();
-
-    // A. INITIALISATION DU PROFIL (Pseudo)
-    document.getElementById("display-pseudo").innerText = userData.pseudo;
+    // A. INITIALISATION DU PROFIL (MySQL 8081)
+    // ⭐ HABIB : CORRECTION ICI : On utilise username car c'est le nom dans ton entité Java ⭐
+    const nomUtilisateur = userData.username || userData.pseudo;
+    document.getElementById("display-pseudo").innerText = nomUtilisateur;
 
     // B. CHARGEMENT DES DONNÉES EN CASCADE (ORDRE CRITIQUE)
     try {
         // 1. Je récupère d'abord les infos complètes (Email, Adresse, Solde)
-        const userFull = await chargerInfosDresseur(userData.pseudo, userToken);
+        // ⭐ HABIB : CORRECTION ICI : On envoie le bon nom au service Identity ⭐
+        const userFull = await chargerInfosDresseur(nomUtilisateur, userToken);
 
         // 2. TRÈS IMPORTANT : Je récupère mon inventaire MySQL AVANT d'afficher le catalogue
         if (userFull && userFull.id) {
@@ -60,8 +55,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         await chargerExtensionsMondiales();
 
     } catch (error) {
-        console.error("Erreur lors du chargement des données :", error);
+        console.error("Erreur lors du démarrage du Dashboard :", error);
     }
+
+    // C. ACTIVATION DES ÉCOUTEURS D'ÉVÉNEMENTS
+    initUIControls();      // Burger et Onglets
+    initAvatarSystem();    // Choix des portraits
+    initCaptureLogic();    // Modale de capture
+    initSearchLogic();     // Recherche globale (Entrée)
 });
 
 
@@ -239,10 +240,15 @@ function afficherGrillePokemon(liste, nomExtension) {
 
 // ⭐ HABIB : MA LOGIQUE DE COLLECTION (LISTE DES LOGOS + CLASSEUR GRID) ⭐
 
-function afficherMaCollection() {
+async function afficherMaCollection() {
     const grid = document.getElementById("collection-grid");
     if (!grid) return;
-    grid.innerHTML = "";
+    grid.innerHTML = `<p style="text-align:center;">Chargement de votre collection...</p>`;
+
+    // Habib : Sécurité si les extensions ne sont pas encore chargées
+    if (toutesLesExtensions.length === 0) {
+        await chargerExtensionsMondiales();
+    }
 
     // Je ne garde que les extensions où je possède au moins une carte dans mon inventaire MySQL
     const mesSetsNoms = [...new Set(monInventaire.map(c => c.extension))];
@@ -253,6 +259,7 @@ function afficherMaCollection() {
         return;
     }
 
+    grid.innerHTML = "";
     mesExtensions.forEach(ext => {
         const mesCartes = monInventaire.filter(c => c.extension === ext.name);
         const uniqueIds = [...new Set(mesCartes.map(c => c.idCarteApi))];
@@ -279,11 +286,8 @@ async function ouvrirClasseurSet(setId) {
     grid.innerHTML = `<p style="text-align:center;">Ouverture du classeur ${ext.name}...</p>`;
 
     try {
-        // Je récupère toute la série de MongoDB (Port 8083)
         const reponse = await fetch(`${API_CATALOG}/set/${setId}`);
         const toutesLesCartesMondiales = await reponse.json();
-
-        // Je trie par numéro officiel pour respecter le rangement du classeur
         toutesLesCartesMondiales.sort((a, b) => parseInt(a.number) - parseInt(b.number));
 
         grid.innerHTML = `
@@ -291,26 +295,24 @@ async function ouvrirClasseurSet(setId) {
                 <button class="filter-btn back-btn" onclick="afficherMaCollection()">Retour</button>
                 <h2>${ext.name}</h2>
             </div>
-            <!-- HABIB : J'utilise binder-grid pour forcer le rangement horizontal -->
             <div class="binder-grid" id="binder-view"></div>
         `;
 
         const binderView = document.getElementById("binder-view");
 
         toutesLesCartesMondiales.forEach(carteMondiale => {
-            const possession = monInventaire.find(c => c.idCarteApi === carteMondiale.id);
+            // ⭐ HABIB : Rigueur - On affiche en couleur uniquement si statut est 'POSSEDEE'
+            // Si c'est 'EN_TRANSIT', la carte reste en mode "Manquante" tant qu'on n'a pas cliqué sur le bouton
+            const possession = monInventaire.find(c => c.idCarteApi === carteMondiale.id && c.statut === 'POSSEDEE');
 
             if (possession) {
-
-                // ⭐ HABIB : LOGIQUE DE BADGE MARKETPLACE ⭐
-                // Je vérifie si cette carte est déjà en vente (Statut DISPONIBLE)
                 const estEnVente = mesAnnonces.some(a => a.idCarteApi === carteMondiale.id && a.statut === 'DISPONIBLE');
-
-                // CARTE POSSÉDÉE : Couleur + Badge d'état + Image Mongo
                 let classEtat = "cond-neuf";
                 if(possession.etatCarte === "Excellent") classEtat = "cond-excellent";
                 if(possession.etatCarte === "Usé") classEtat = "cond-use";
                 const date = new Date(possession.dateAcquisition).toLocaleDateString('fr-FR');
+
+                const nomSecurise = carteMondiale.name.replace(/'/g, "\\'");
 
                 binderView.innerHTML += `
                     <div class="pokemon-card glass">
@@ -321,37 +323,19 @@ async function ouvrirClasseurSet(setId) {
                         </div>
                         <div class="card-details">
                             <h3>${carteMondiale.name}</h3>
-                            
-                            <!-- HABIB : SWITCH BOUTON VENDRE / BADGE STATUT -->
-                            ${estEnVente ? `
-                                <div class="status-badge-sale">
-                                    <i class="fas fa-tag"></i> En vente
-                                </div>
-                            ` : `
-                                <button class="btn-sell-trigger" onclick="preparerVente('${carteMondiale.id}', '${carteMondiale.name}')">
-                                    <i class="fas fa-hand-holding-usd"></i> Mettre en vente
-                                </button>
-                            `}
-                            
-                            <div class="status-indicators">
-                                <div class="box ${possession.langueCarte === 'Normal' ? 'active-normal' : ''}">N</div>
-                                <div class="box ${possession.langueCarte === 'Holo' ? 'active-holo' : ''}">H</div>
-                                <div class="box ${possession.langueCarte === 'Reverse' ? 'active-reverse' : ''}">R</div>
-                            </div>
+                            ${estEnVente ? `<div class="status-badge-sale"><i class="fas fa-tag"></i> En vente</div>` : `<button class="btn-sell-trigger" onclick="preparerVente('${carteMondiale.id}', '${nomSecurise}')"><i class="fas fa-hand-holding-usd"></i> Mettre en vente</button>`}
+                            <div class="status-indicators"><div class="box ${possession.langueCarte === 'Normal' ? 'active-normal' : ''}">N</div><div class="box ${possession.langueCarte === 'Holo' ? 'active-holo' : ''}">H</div><div class="box ${possession.langueCarte === 'Reverse' ? 'active-reverse' : ''}">R</div></div>
                             <span class="acquisition-date">Obtenue le ${date}</span>
                         </div>
                     </div>`;
             } else {
-                // CARTE MANQUANTE : Dos de carte (assets/cards-back.png)
                 binderView.innerHTML += `
                     <div class="pokemon-card glass not-owned">
                         <div class="card-img-container">
                             <div class="missing-badge">MANQUANTE</div>
                             <img src="../assets/cards-back.png" alt="Missing">
                         </div>
-                        <div class="card-details">
-                            <h3 style="opacity:0.3;">N°${carteMondiale.number}</h3>
-                        </div>
+                        <div class="card-details"><h3 style="opacity:0.3;">N°${carteMondiale.number}</h3></div>
                     </div>`;
             }
         });
@@ -359,7 +343,7 @@ async function ouvrirClasseurSet(setId) {
 }
 
 
-// ⭐ HABIB : NOUVELLE SECTION - MARCHÉ MONDIAL (ACHAT) ⭐
+// ⭐ HABIB : LOGIQUE MARCHÉ MONDIAL ⭐
 
 async function chargerMarcheMondial() {
     const grid = document.getElementById("market-grid");
@@ -367,7 +351,6 @@ async function chargerMarcheMondial() {
     grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center;">Ouverture du marché...</p>`;
 
     try {
-        // 1. Je récupère les annonces des AUTRES (Port 8085)
         const reponse = await fetch(`${API_MARKETPLACE}/public/${userData.id}`);
         const annonces = await reponse.json();
 
@@ -377,22 +360,16 @@ async function chargerMarcheMondial() {
         }
 
         grid.innerHTML = "";
-
-        // 2. Pour chaque annonce, je vais chercher les détails HD (Mongo 8083)
         for (const ad of annonces) {
             const res = await fetch(`${API_CATALOG}/details/${ad.idCarteApi}`);
             const rawData = await res.json();
-
-            // ⭐ HABIB : SÉCURITÉ CONTRE LES ENVELOPPES .DATA ET NOMS DE CARTE.JAVA ⭐
             const cardData = rawData.id ? rawData : rawData.data;
 
-            // 3. Je récupère le Pseudo réel du vendeur via son ID (Identity 8081)
             const resSeller = await fetch(`${API_IDENTITY}/id/${ad.idVendeur}`);
             const sellerData = await resSeller.json();
             const sellerName = sellerData.username || "Dresseur";
 
-            // 4. Couleur du badge selon l'état de l'annonce
-            let badgeColor = "#10b981"; // Mint
+            let badgeColor = "#10b981";
             if(ad.etat === "Excellent") badgeColor = "#f59e0b";
             if(ad.etat === "Usé") badgeColor = "#ef4444";
 
@@ -423,9 +400,8 @@ async function chargerMarcheMondial() {
 
 async function acheterCarte(idAnnonce, prix) {
     const userData = JSON.parse(localStorage.getItem("user_data"));
-    const token = localStorage.getItem("user_token");
+    const userToken = localStorage.getItem("user_token");
 
-    // Habib : Simulation de validation Fintech (Solde suffisant ?)
     if (userData.solde < prix) {
         alert("Achat refusé : Solde insuffisant ! Allez à la banque pour recharger.");
         return;
@@ -434,9 +410,12 @@ async function acheterCarte(idAnnonce, prix) {
     if (!confirm(`Confirmer l'achat pour ${prix} PC ? L'argent sera placé en séquestre.`)) return;
 
     try {
-        // J'appelle la route d'achat du Marketplace (Port 8085)
         const reponse = await fetch(`${API_MARKETPLACE}/buy/${idAnnonce}/${userData.id}`, {
-            method: "PUT"
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + userToken,
+                "Content-Type": "application/json"
+            }
         });
 
         if (reponse.ok) {
@@ -444,19 +423,195 @@ async function acheterCarte(idAnnonce, prix) {
             await chargerSoldeDresseur(userData.id);
             await chargerInventairePrivé(userData.id);
             chargerMarcheMondial();
+        } else {
+            const errorMsg = await reponse.text();
+            alert("Le serveur a refusé l'achat : " + errorMsg);
         }
-    } catch (error) { alert("Erreur lors de la transaction."); }
+    } catch (error) { alert("Erreur réseau."); }
 }
 
 
-// ⭐ HABIB : LOGIQUE MARKETPLACE (Vendeur) ⭐
+// ⭐ HABIB : SECTION 6 - GESTION DES VENTES (HISTORIQUE DÉDIÉ ACHATS/VENTES) ⭐
+async function chargerGestionVentes() {
+    const placeholder = document.getElementById("my-sales-placeholder");
+    const userData = JSON.parse(localStorage.getItem("user_data"));
+    if (!placeholder) return;
+
+    placeholder.innerHTML = `<p style="text-align:center;">Chargement de votre bureau commercial...</p>`;
+
+    try {
+        const monIdReel = Number(userData.id);
+
+        // 1. Récupération des données via les routes dresseur
+        const resAchats = await fetch(`${API_MARKETPLACE}/acheteur/${monIdReel}`);
+        const mesAchats = await resAchats.json();
+
+        const resVentes = await fetch(`${API_MARKETPLACE}/vendeur/${monIdReel}`);
+        const mesVentes = await resVentes.json();
+
+        // 2. Filtrage pour séparer l'actuel de l'historique
+        const achatsEnCours = mesAchats.filter(a => a.statut === 'EN_TRANSIT' || a.statut === 'EXPEDIEE');
+        const historiqueAchatsReçus = mesAchats.filter(a => a.statut === 'VENDUE');
+
+        // 3. Préparation du Design avec des IDs de listes DIFFÉRENTS du portefeuille
+        placeholder.innerHTML = `
+            <div class="management-grid">
+                <div class="mgmt-section glass">
+                    <h3><i class="fas fa-shopping-bag"></i> Mes achats en route (${achatsEnCours.length})</h3>
+                    <div id="list-achats-cours"></div>
+                    <hr style="margin:20px 0; opacity:0.1;">
+                    <h3><i class="fas fa-history"></i> Cartes déjà reçues</h3>
+                    <div id="list-achats-termines"></div>
+                </div>
+                
+                <div class="mgmt-section glass">
+                    <h3><i class="fas fa-store"></i> Mes annonces / ventes actives</h3>
+                    <div id="list-ventes-actives"></div>
+                </div>
+            </div>`;
+
+        // 4. Remplissage Achats en cours (Acheteur voit ses colis)
+        const pendingGrid = document.getElementById("list-achats-cours");
+        if (achatsEnCours.length === 0) {
+            pendingGrid.innerHTML = "<p class='small-text'>Aucun colis en route.</p>";
+        } else {
+            for (const achat of achatsEnCours) {
+                const resCard = await fetch(`${API_CATALOG}/details/${achat.idCarteApi}`);
+                const card = await resCard.json();
+                const cardData = card.id ? card : card.data;
+
+                // Je gère les boutons dynamiquement selon le statut
+                let actionHtml = "";
+
+                if (achat.statut === 'EN_TRANSIT') {
+                    // Si c'est juste acheté, Ondine peut encore annuler
+                    actionHtml = `
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <span style="color:var(--text-muted); font-size:0.7rem;"><i class="fas fa-clock"></i> Attente envoi...</span>
+                            <button class="btn-nav pokedex" style="height:25px; font-size:0.6rem; background:#64748b; border:none;" onclick="cloturerAnnulerAchat(${achat.id})">
+                                Annuler l'achat
+                            </button>
+                        </div>`;
+                } else if (achat.statut === 'EXPEDIEE') {
+                    // Si Habib a envoyé, Ondine peut seulement valider la réception
+                    actionHtml = `<button class="btn-nav connexion" style="height:35px; font-size:0.7rem;" onclick="confirmerReceptionAchat(${achat.id})">Valider réception</button>`;
+                }
+
+                pendingGrid.innerHTML += `
+                    <div class="mgmt-item">
+                        <div class="mgmt-item-info"><b>${cardData.nomFr}</b><span>Prix : ${achat.prix} PC</span></div>
+                        ${actionHtml}
+                    </div>`;
+            }
+        }
+
+        // 5. Remplissage Historique des Cartes Reçues
+        const historyGrid = document.getElementById("list-achats-termines");
+        if (historiqueAchatsReçus.length === 0) {
+            historyGrid.innerHTML = "<p class='small-text'>Aucun historique.</p>";
+        } else {
+            for (const h of historiqueAchatsReçus) {
+                const resCard = await fetch(`${API_CATALOG}/details/${h.idCarteApi}`);
+                const card = await resCard.json();
+                historyGrid.innerHTML += `<div class="mgmt-item" style="opacity:0.6;"><div class="mgmt-item-info"><b>${card.nomFr || card.data.nomFr}</b><span>Statut : REÇUE</span></div></div>`;
+            }
+        }
+
+        // 6. Remplissage Ventes (Habib voit ses ventes et peut envoyer)
+        const salesGrid = document.getElementById("list-ventes-actives");
+        if (mesVentes.length === 0) {
+            salesGrid.innerHTML = "<p class='small-text'>Vous n'avez aucune annonce.</p>";
+        } else {
+            for (const vente of mesVentes) {
+                const resCard = await fetch(`${API_CATALOG}/details/${vente.idCarteApi}`);
+                const card = await resCard.json();
+                const cardData = card.id ? card : card.data;
+
+                // ⭐ HABIB : Je gère les boutons Vendeur avec précision selon le statut ⭐
+                let btnVendeur = "";
+
+                if (vente.statut === 'DISPONIBLE') {
+                    // La carte est sur le marché, on peut la retirer
+                    btnVendeur = `<button class="btn-nav pokedex" style="height:35px; font-size:0.7rem; background:#ef4444; border:none;" onclick="annulerAnnonce(${vente.id})"><i class="fas fa-times-circle"></i> Retirer</button>`;
+                } else if (vente.statut === 'EN_TRANSIT') {
+                    // Ondine a payé, Habib doit confirmer l'envoi
+                    btnVendeur = `<button class="btn-nav connexion" style="height:35px; font-size:0.7rem; background:var(--poke-yellow); color:black;" onclick="marquerCommeEnvoye(${vente.id})"><i class="fas fa-shipping-fast"></i> Confirmer l'envoi</button>`;
+                } else if (vente.statut === 'EXPEDIEE') {
+                    // Habib a envoyé, il attend qu'Ondine valide
+                    btnVendeur = `<span style="color:#3b82f6; font-size:0.7rem;"><i class="fas fa-truck"></i> Colis expédié</span>`;
+                }
+
+                salesGrid.innerHTML += `
+                    <div class="mgmt-item">
+                        <div class="mgmt-item-info">
+                            <b>${cardData.nomFr || card.nomFr}</b>
+                            <span>Prix : ${vente.prix} PC</span>
+                            <span class="status-tag ${vente.statut === 'VENDUE' ? 'status-available' : 'status-transit'}">${vente.statut}</span>
+                        </div>
+                        ${btnVendeur}
+                    </div>`;
+            }
+        }
+    } catch (e) { console.error("Erreur de rendu Gestion :", e); }
+}
+
+// ⭐ NOUVELLE FONCTION POUR LE VENDEUR (HABIB)
+async function marquerCommeEnvoye(idAnnonce) {
+    if (!confirm("Avez-vous bien déposé le colis ? Ondine pourra alors valider la réception.")) return;
+    try {
+        const res = await fetch(`${API_MARKETPLACE}/ship/${idAnnonce}`, { method: "PUT" });
+        if (res.ok) { alert("Colis marqué comme envoyé !"); chargerGestionVentes(); }
+    } catch (e) { alert("Erreur serveur."); }
+}
+
+async function confirmerReceptionAchat(idAnnonce) {
+    if (!confirm("Avez-vous bien reçu le colis ? L'argent sera transféré au vendeur.")) return;
+
+    try {
+        const res = await fetch(`${API_MARKETPLACE}/confirm-delivery/${idAnnonce}`, {
+            method: "PUT"
+        });
+
+        if (res.ok) {
+            alert("Merci de votre confiance ! La transaction est clôturée. La carte est officiellement à vous !");
+            location.reload();
+        }
+    } catch (e) { alert("Erreur."); }
+}
+
+// ⭐ HABIB : FONCTION POUR RETIRER UNE ANNONCE DU MARCHÉ ⭐
+async function annulerAnnonce(idAnnonce) {
+    if (!confirm("Rigueur Habib : Voulez-vous vraiment retirer cette carte de la vente ?")) return;
+
+    try {
+        // J'appelle la route DELETE de mon contrôleur Marketplace
+        const res = await fetch(`${API_MARKETPLACE}/delete/${idAnnonce}`, {
+            method: "DELETE"
+        });
+
+        if (res.ok) {
+            alert("L'annonce a été retirée avec succès.");
+            // On rafraîchit les listes et le portefeuille (au cas où)
+            chargerGestionVentes();
+            const userData = JSON.parse(localStorage.getItem("user_data"));
+            chargerInventairePrivé(userData.id);
+        } else {
+            alert("Erreur lors de la suppression de l'annonce.");
+        }
+    } catch (e) {
+        console.error("Erreur annulation :", e);
+        alert("Microservice Marketplace injoignable.");
+    }
+}
+
+
+// ⭐ HABIB : LOGIQUE PROFIL, INVENTAIRE ET WALLET (RIGOUREUSEMENT IDENTIQUES) ⭐
 
 async function chargerMesAnnonces(idVendeur) {
     try {
         const res = await fetch(`${API_MARKETPLACE}/vendeur/${idVendeur}`);
         if (res.ok) {
             mesAnnonces = await res.json();
-            console.log("LOG : Synchronisation Marketplace réussie.");
         }
     } catch (e) { console.error("Erreur Marketplace :", e); }
 }
@@ -470,44 +625,17 @@ function preparerVente(idApi, nomFr) {
 async function confirmerMiseEnVente() {
     const userData = JSON.parse(localStorage.getItem("user_data"));
     const prixSaisi = document.getElementById("sell-price").value;
-
     if (!prixSaisi || prixSaisi <= 0) { alert("Prix invalide !"); return; }
-
     const maCarte = monInventaire.find(c => c.idCarteApi === carteEnCoursDeVente);
-
-    const nouvelleAnnonce = {
-        idVendeur: userData.id,
-        idCarteApi: carteEnCoursDeVente,
-        prix: prixSaisi,
-        etat: maCarte ? maCarte.etatCarte : "Normal",
-        statut: "DISPONIBLE",
-        datePublication: new Date().toISOString()
-    };
-
+    const nouvelleAnnonce = { idVendeur: userData.id, idCarteApi: carteEnCoursDeVente, prix: prixSaisi, etat: maCarte ? maCarte.etatCarte : "Normal", statut: "DISPONIBLE", datePublication: new Date().toISOString() };
     try {
-        const reponse = await fetch(`${API_MARKETPLACE}/post`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(nouvelleAnnonce)
-        });
-
-        if (reponse.ok) {
-            alert("Votre annonce est publiée ! Elle est visible par la communauté.");
-            closeSellModal();
-            await chargerMesAnnonces(userData.id);
-            const activeCard = monInventaire.find(c => c.idCarteApi === carteEnCoursDeVente);
-            if(activeCard) {
-                const ext = toutesLesExtensions.find(e => e.name === activeCard.extension);
-                if(ext) ouvrirClasseurSet(ext.id);
-            }
-        }
-    } catch (error) { alert("Erreur de publication."); }
+        const reponse = await fetch(`${API_MARKETPLACE}/post`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(nouvelleAnnonce) });
+        if (reponse.ok) { alert("Annonce publiée !"); closeSellModal(); await chargerMesAnnonces(userData.id); const ext = toutesLesExtensions.find(e => e.name === maCarte.extension); if(ext) ouvrirClasseurSet(ext.id); }
+    } catch (error) { alert("Erreur."); }
 }
 
 function closeSellModal() { document.getElementById("sell-card-modal").style.display = "none"; }
 
-
-// ⭐ HABIB : LOGIQUE FINTECH (Port 8082) ⭐
 
 async function chargerSoldeDresseur(idDresseur) {
     try {
@@ -523,7 +651,6 @@ async function chargerSoldeDresseur(idDresseur) {
                 document.getElementById("wallet-escrow").innerText = bloque + " PC";
             }
 
-            // Je mets à jour la session locale pour la validation d'achat
             const u = JSON.parse(localStorage.getItem("user_data"));
             u.solde = wallet.soldeDisponible;
             localStorage.setItem("user_data", JSON.stringify(u));
@@ -531,7 +658,6 @@ async function chargerSoldeDresseur(idDresseur) {
     } catch (error) { console.error("Erreur Banque :", error); }
 }
 
-// Habib : Ma logique de rechargement sécurisée avec simulation bancaire
 async function rechargerCompte() {
     const userData = JSON.parse(localStorage.getItem("user_data"));
     const montant = document.getElementById("recharge-amount").value;
@@ -539,9 +665,8 @@ async function rechargerCompte() {
     const exp = document.getElementById("card-exp").value;
     const cvv = document.getElementById("card-cvv").value;
 
-    if (!card || card.length < 16) { alert("Erreur : Numéro de carte invalide."); return; }
-    if (!exp || !cvv) { alert("Erreur : Merci de compléter les infos de sécurité."); return; }
-    if (!montant || montant <= 0) { alert("Montant invalide !"); return; }
+    if (!card || card.length < 16 || !exp || !cvv) { alert("Infos bancaires invalides."); return; }
+    if (!montant || montant <= 0) { alert("Montant invalide."); return; }
 
     try {
         const res = await fetch(`${API_WALLETS}/deposit/${userData.id}/${montant}`, {
@@ -549,7 +674,7 @@ async function rechargerCompte() {
         });
 
         if (res.ok) {
-            alert("Paiement accepté ! Compte crédité de " + montant + " PC.");
+            alert("Paiement accepté ! Compte crédité !");
             document.getElementById("recharge-amount").value = "";
             document.getElementById("card-num").value = "";
             document.getElementById("card-exp").value = "";
@@ -632,16 +757,17 @@ async function chargerInfosDresseur(pseudo, token) {
             if (phoneCell) phoneCell.innerText = fullUser.phone || "Non renseigné";
 
             localStorage.setItem("user_data", JSON.stringify(fullUser));
-            return fullUser; // ⭐ HABIB : C'est ici le point vital pour l'ID !
+            return fullUser;
         }
     } catch (error) { console.error(error); }
 }
 
 async function chargerInventairePrivé(idDresseur) {
     try {
-        const res = await fetch(`${API_INVENTORY}/pokedex/${idDresseur}`);
-        if (res.ok) {
-            monInventaire = await res.json();
+        const reponse = await fetch(`${API_INVENTORY}/pokedex/${idDresseur}`);
+        if (reponse.ok) {
+            // ⭐ HABIB : Je corrige le nom de la variable reponse ici ⭐
+            monInventaire = await reponse.json();
         }
     } catch (e) { console.error(e); }
 }
@@ -682,7 +808,6 @@ function initUIControls() {
                 if (v.id === target) v.classList.add("active");
             });
 
-            // ⭐ HABIB : NAVIGATION CORRIGÉE ⭐
             if (target === "view-collection") {
                 afficherMaCollection();
             }
@@ -691,10 +816,17 @@ function initUIControls() {
                 chargerMarcheMondial();
             }
 
+            // NAVIGATION VERS LA GESTION DES VENTES
+            if (target === "view-my-sales") {
+                chargerGestionVentes();
+            }
+
             if (target === "view-wallet") {
                 const userData = JSON.parse(localStorage.getItem("user_data"));
                 if(userData && userData.id) {
                     chargerSoldeDresseur(userData.id);
+                    // J'ajoute l'appel ici pour charger l'audit au clic sur l'onglet
+                    chargerHistoriquePortefeuille(userData.id)
                 }
             }
 
@@ -744,5 +876,66 @@ function openEditModal() {
     document.getElementById("edit-phone").value = u.phone || "";
     document.getElementById("edit-profile-modal").style.display = "flex";
 }
+
 function closeEditModal() { document.getElementById("edit-profile-modal").style.display = "none"; }
+
+//  LOGIQUE DE VÉRIFICATION FINANCIÈRE (AUDIT LOG - WALLET)
+async function chargerHistoriquePortefeuille(idDresseur) {
+    const list = document.getElementById("wallet-history-list");
+    if (!list) return;
+
+    try {
+        const reponse = await fetch(`${API_WALLETS}/history/${idDresseur}`);
+        const data = await reponse.json();
+
+        if (data.length === 0) {
+            list.innerHTML = "<p style='color:var(--text-muted); font-size:0.8rem; text-align:center;'>Aucun mouvement enregistré.</p>";
+            return;
+        }
+
+        list.innerHTML = "";
+        data.forEach(t => {
+            const date = new Date(t.date).toLocaleString('fr-FR');
+            let color = "white";
+            let prefix = "";
+
+            if (t.type === 'DEPOSIT') { color = "#10b981"; prefix = "+"; }
+            if (t.type === 'PURCHASE_LOCK' || t.type === 'PURCHASE_CONFIRMED') { color = "#ef4444"; prefix = "-"; }
+            if (t.type === 'SALE_CONFIRMED') { color = "#10b981"; prefix = "+"; }
+
+            list.innerHTML += `
+                <div class="mgmt-item" style="border-left: 4px solid ${color}; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+                    <div class="mgmt-item-info" style="text-align: left;">
+                        <b style="font-size: 0.85rem;">${t.type}</b><br>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">${date}</span>
+                    </div>
+                    <b style="color: ${color}; font-size: 1rem;">${prefix}${t.montant.toFixed(2)} PC</b>
+                </div>`;
+        });
+    } catch (e) { console.error("Erreur Audit Wallet :", e); }
+}
+
+//  FONCTION POUR ANNULER UN ACHAT (REMBOURSEMENT + RETOUR CARTE) ⭐
+async function cloturerAnnulerAchat(idAnnonce) {
+    if (!confirm("Rigueur Habib : Voulez-vous vraiment annuler cet achat ? L'argent sera rendu sur votre solde disponible.")) return;
+
+    try {
+        // J'appelle la route de mon contrôleur Marketplace (8085)
+        const reponse = await fetch(`${API_MARKETPLACE}/cancel-buy/${idAnnonce}`, {
+            method: "PUT"
+        });
+
+        if (reponse.ok) {
+            alert("Achat annulé avec succès. Vos Poké-Crédits sont débloqués !");
+            location.reload(); // Je recharge pour mettre à jour le solde et le Pokedex
+        } else {
+            const error = await reponse.text();
+            alert("Action impossible : " + error);
+        }
+    } catch (e) {
+        console.error("Erreur annulation :", e);
+        alert("Microservice Marketplace injoignable.");
+    }
+}
+
 function logout() { localStorage.clear(); window.location.href = "../index.html"; }

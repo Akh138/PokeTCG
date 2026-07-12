@@ -1,6 +1,7 @@
 package com.poketcg.walletservice.controllers;
 
 import com.poketcg.walletservice.entities.Portefeuille;
+import com.poketcg.walletservice.entities.TransactionHistory;
 import com.poketcg.walletservice.services.PortefeuilleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +54,11 @@ public class PortefeuilleController {
     @PutMapping("/cancel/{idAcheteur}/{montant}")
     public String cancelPurchase(@PathVariable Long idAcheteur, @PathVariable BigDecimal montant) {
         return portefeuilleService.annulerAchat(idAcheteur, montant);
+    }
+
+    @GetMapping("/history/{idDresseur}")
+    public java.util.List<TransactionHistory> getHistory(@PathVariable Long idDresseur) {
+        // Appelle la méthode dans ton service (assure-toi que recupererHistorique existe dans PortefeuilleService)
+        return portefeuilleService.recupererHistorique(idDresseur);
     }
 }

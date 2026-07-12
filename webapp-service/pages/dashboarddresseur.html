@@ -5,7 +5,6 @@
     <title>PokeTCG - Dashboard Dresseur</title>
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/dashboarddresseur.css">
-    <!-- J'ajoute le CSS du Pokedex Mondial pour réutiliser la grille si besoin -->
     <link rel="stylesheet" href="../css/pokedexmondial.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -40,7 +39,13 @@
         <a href="#" class="nav-link" data-target="view-pokedex"><i class="fas fa-globe"></i> Pokedex Mondial</a>
         <a href="#" class="nav-link" data-target="view-collection"><i class="fas fa-box-open"></i> Ma Collection</a>
         <a href="#" class="nav-link" data-target="view-wallet"><i class="fas fa-wallet"></i> Mon Portefeuille</a>
-        <a href="#" class="nav-link" data-target="view-market"><i class="fas fa-store"></i> Mes Ventes</a>
+
+        <!-- HABIB : J'AI RENOMMÉ CET ONGLET POUR L'ACHAT -->
+        <a href="#" class="nav-link" data-target="view-market"><i class="fas fa-shopping-cart"></i> Marché Mondial</a>
+
+        <!-- HABIB : J'AI AJOUTÉ CET ONGLET POUR LA GESTION -->
+        <a href="#" class="nav-link" data-target="view-my-sales"><i class="fas fa-tasks"></i> Gestion de mes ventes</a>
+
         <hr>
         <a href="forum.html"><i class="fas fa-comments"></i> Forum</a>
         <a href="#" onclick="logout()" class="logout-link"><i class="fas fa-power-off"></i> Déconnexion</a>
@@ -141,82 +146,68 @@
     </section>
 
 
-    <!-- SECTION 4 : MON PORTEFEUILLE (FINTECH VIEW) -->
+    <!-- SECTION 4 : MON PORTEFEUILLE -->
     <section id="view-wallet" class="dashboard-view">
         <div class="news-pill"><h2>Ma Banque</h2></div>
-
         <div class="wallet-grid">
-            <!-- Carte Solde Disponible -->
             <div class="wallet-card available glass">
                 <div class="wallet-info">
                     <i class="fas fa-check-circle"></i>
                     <label>Solde Disponible</label>
                     <h2 id="wallet-available">0.00 PC</h2>
                 </div>
-                <p class="wallet-desc">Argent utilisable immédiatement pour acheter des cartes.</p>
+                <p class="wallet-desc">Argent utilisable immédiatement.</p>
             </div>
-
-            <!-- Carte Solde Séquestre (Escrow) -->
             <div class="wallet-card locked glass">
                 <div class="wallet-info">
                     <i class="fas fa-lock"></i>
                     <label>Fonds en Séquestre</label>
                     <h2 id="wallet-escrow">0.00 PC</h2>
                 </div>
-                <p class="wallet-desc">Argent bloqué en attente de validation de vos achats en cours.</p>
+                <p class="wallet-desc">Argent bloqué en attente de validation.</p>
             </div>
         </div>
 
-        <!-- Formulaire de Paiement Bancaire (Simulation Fintech) -->
         <div class="recharge-box glass">
             <h3><i class="fas fa-shield-alt"></i> Paiement Sécurisé (Simulation)</h3>
             <p class="conversion-rate">Taux de change : 1.00 € = 1.00 PC</p>
-
             <div class="payment-container">
-                <!-- Visuel de la Carte Bancaire -->
                 <div class="credit-card-visual glass">
-                    <div class="card-top">
-                        <div class="chip"></div>
-                        <i class="fab fa-cc-visa"></i>
-                    </div>
+                    <div class="card-top"><div class="chip"></div><i class="fab fa-cc-visa"></i></div>
                     <div class="card-number-display">•••• •••• •••• ••••</div>
-                    <div class="card-bottom">
-                        <div class="card-holder">NOM DU DRESSEUR</div>
-                        <div class="card-expiry">MM/YY</div>
-                    </div>
+                    <div class="card-bottom"><div class="card-holder">NOM DU DRESSEUR</div><div class="card-expiry">MM/YY</div></div>
                 </div>
-
-                <!-- Formulaire de saisie -->
                 <div class="payment-form">
-                    <div class="input-group">
-                        <label>Numéro de carte</label>
-                        <input type="text" id="card-num" class="glass-input" placeholder="4530 •••• •••• ••••" maxlength="16">
-                    </div>
+                    <div class="input-group"><label>Numéro de carte</label><input type="text" id="card-num" class="glass-input" placeholder="4530 •••• •••• ••••" maxlength="16"></div>
                     <div class="form-row">
-                        <div class="input-group">
-                            <label>Expiration</label>
-                            <input type="text" id="card-exp" class="glass-input" placeholder="MM/YY" maxlength="5">
-                        </div>
-                        <div class="input-group">
-                            <label>CVV</label>
-                            <input type="password" id="card-cvv" class="glass-input" placeholder="•••" maxlength="3">
-                        </div>
+                        <div class="input-group"><label>Expiration</label><input type="text" id="card-exp" class="glass-input" placeholder="MM/YY" maxlength="5"></div>
+                        <div class="input-group"><label>CVV</label><input type="password" id="card-cvv" class="glass-input" placeholder="•••" maxlength="3"></div>
                     </div>
-                    <div class="input-group">
-                        <label>Montant du dépôt (€)</label>
-                        <input type="number" id="recharge-amount" class="glass-input" placeholder="0.00">
-                    </div>
+                    <div class="input-group"><label>Montant du dépôt (€)</label><input type="number" id="recharge-amount" class="glass-input" placeholder="0.00"></div>
                     <button class="btn-nav connexion" onclick="rechargerCompte()">Confirmer le paiement</button>
                 </div>
             </div>
         </div>
+
+        <!-- ZONE HISTORIQUE DES MOUVEMENTS (AUDIT FINANCIER) -->
+        <div class="history-box glass" style="margin-top: 30px; padding: 30px; text-align: left;">
+            <h3 style="color: var(--poke-yellow); font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-file-invoice-dollar"></i> Journal des mouvements
+            </h3>
+
+            <!-- C'est ici que le JavaScript va injecter les lignes de transactions -->
+            <div id="wallet-history-list">
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 20px;">
+                    Aucune transaction enregistrée pour le moment.
+                </p>
+            </div>
+        </div>
     </section>
 
-    <!-- SECTION 5 : MARCHÉ MONDIAL (MARKETPLACE) -->
+
+    <!-- SECTION 5 : MARCHÉ MONDIAL -->
     <section id="view-market" class="dashboard-view">
         <div class="news-pill"><h2>Marché Mondial</h2></div>
-
-        <!-- Filtres du marché -->
         <div class="market-filters glass">
             <div class="search-box">
                 <i class="fas fa-search"></i>
@@ -231,10 +222,14 @@
                 </select>
             </div>
         </div>
+        <div id="market-grid" class="pokedex-grid"></div>
+    </section>
 
-        <!-- Grille des annonces publiques -->
-        <div id="market-grid" class="pokedex-grid">
-            <!-- Rempli par JS avec les annonces des autres dresseurs -->
+    <!-- SECTION 6 - GESTION DES VENTES (NEW) -->
+    <section id="view-my-sales" class="dashboard-view">
+        <div class="news-pill"><h2>Gestion de mes ventes</h2></div>
+        <div id="my-sales-placeholder">
+            <p style="text-align:center; padding:50px;">Ici vous pourrez gérer vos annonces, vos achats et confirmer vos réceptions.</p>
         </div>
     </section>
 
@@ -252,13 +247,11 @@
 
 <!-- 4. MES MODALES (FENÊTRES SURGISSANTES) -->
 
-<!-- MODALE ZOOM CARTE (HABIB : C'ÉTAIT ELLE QU'IL MANQUAIT !) -->
 <div id="card-modal" class="modal">
     <span class="close-modal" onclick="document.getElementById('card-modal').style.display='none'">&times;</span>
     <img class="modal-content" id="img-zoom" alt="Pokémon Agrandis">
 </div>
 
-<!-- MODALE SÉLECTION AVATAR -->
 <div id="avatar-modal" class="modal">
     <div class="modal-content glass">
         <h3>Choisir mon profil</h3>
@@ -267,7 +260,6 @@
     </div>
 </div>
 
-<!-- MODALE AJOUT CARTE -->
 <div id="add-card-modal" class="modal">
     <div class="modal-content glass">
         <h3>Capturer cette carte</h3>
@@ -291,23 +283,13 @@
     </div>
 </div>
 
-<!-- MODALE MODIFICATION COORDONNÉES -->
 <div id="edit-profile-modal" class="modal">
     <div class="modal-content glass">
         <h3 class="pokemon-font-hollow">Modifier le profil</h3>
         <div class="edit-form">
-            <div class="input-group">
-                <label><i class="fas fa-home"></i> Adresse</label>
-                <input type="text" id="edit-address" class="glass-input">
-            </div>
-            <div class="input-group">
-                <label><i class="fas fa-map-pin"></i> Code Postal</label>
-                <input type="text" id="edit-zip" class="glass-input">
-            </div>
-            <div class="input-group">
-                <label><i class="fas fa-phone"></i> Téléphone</label>
-                <input type="text" id="edit-phone" class="glass-input">
-            </div>
+            <div class="input-group"><label><i class="fas fa-home"></i> Adresse</label><input type="text" id="edit-address" class="glass-input"></div>
+            <div class="input-group"><label><i class="fas fa-map-pin"></i> Code Postal</label><input type="text" id="edit-zip" class="glass-input"></div>
+            <div class="input-group"><label><i class="fas fa-phone"></i> Téléphone</label><input type="text" id="edit-phone" class="glass-input"></div>
         </div>
         <div class="modal-buttons">
             <button class="btn-nav pokedex" onclick="closeEditModal()">Annuler</button>
@@ -315,24 +297,17 @@
         </div>
     </div>
 </div>
-<!-- MODALE : METTRE EN VENTE (MARKETPLACE) -->
+
 <div id="sell-card-modal" class="modal">
     <div class="modal-content glass">
         <h3 class="pokemon-font-hollow">Mettre en vente</h3>
-
         <div class="edit-form">
-            <!-- Rappel de la carte (rempli par JS) -->
             <p id="sell-card-name" style="color: var(--poke-yellow); font-weight: bold; text-align: center;"></p>
-
             <div class="input-group">
                 <label><i class="fas fa-coins"></i> Prix de vente (PC)</label>
                 <input type="number" id="sell-price" class="glass-input" placeholder="Ex: 500.00">
-                <small style="color: var(--text-muted); font-size: 0.7rem; margin-top: 5px;">
-                    Note : Le prix doit être en Poké-Crédits.
-                </small>
             </div>
         </div>
-
         <div class="modal-buttons">
             <button class="btn-nav pokedex" onclick="closeSellModal()">Annuler</button>
             <button class="btn-nav connexion" onclick="confirmerMiseEnVente()">Publier</button>

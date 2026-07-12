@@ -546,3 +546,56 @@ body > main.content-full {
     transform: scale(1.03);
     box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
 }
+
+/* --- 21. STYLE GESTION DES VENTES & ACHATS --- */
+
+.management-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Deux colonnes : Achats / Ventes */
+    gap: 30px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.mgmt-section {
+    padding: 25px;
+    border-radius: 20px;
+    text-align: left;
+    min-height: 400px;
+}
+
+.mgmt-section h3 {
+    font-size: 1rem;
+    color: var(--poke-yellow);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+}
+
+/* Ligne d'un article dans la liste */
+.mgmt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+}
+
+.mgmt-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+.mgmt-item-info { display: flex; flex-direction: column; gap: 5px; }
+.mgmt-item-info b { color: white; font-size: 0.9rem; }
+.mgmt-item-info span { color: var(--text-muted); font-size: 0.75rem; }
+
+.status-tag {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.status-available { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.status-transit { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }

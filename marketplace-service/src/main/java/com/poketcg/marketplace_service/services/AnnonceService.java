@@ -142,4 +142,41 @@ public class AnnonceService {
         offreRepository.save(offre);
         return annonceRepository.save(annonce);
     }
+
+    //  Nouvelle étape pour le workflow
+    public Annonce marquerCommeExpediee(Long idAnnonce) {
+        Annonce annonce = annonceRepository.findById(idAnnonce)
+                .orElseThrow(() -> new RuntimeException("Annonce introuvable !"));
+        annonce.setStatut("EXPEDIEE");
+        return annonceRepository.save(annonce);
+    }
+
+    //  Voir les achats d'un dresseur précis (indépendamment du statut)
+    public List<Annonce> voirMesAchats(Long idAcheteur) {
+        return annonceRepository.findAll().stream()
+                .filter(a -> a.getIdAcheteur() != null && a.getIdAcheteur().equals(idAcheteur))
+                .toList();
+    }
+
+    // Annuler un achat en cours (Retour au vendeur + Remboursement acheteur)
+    public Annonce annulerAchatEnCours(Long idAnnonce) {
+        Annonce annonce = annonceRepository.findById(idAnnonce)
+                .orElseThrow(() -> new RuntimeException("Annonce introuvable !"));
+
+        if (!"EN_TRANSIT".equals(annonce.getStatut())) {
+            throw new RuntimeException("Impossible d'annuler : le colis est déjà expédié ou vendu.");
+        }
+
+        // 1. On rend l'argent à l'acheteur (On utilise ta méthode cancelPurchase du Wallet)
+        walletProxy.cancelPurchase(annonce.getIdAcheteur(), annonce.getPrix());
+
+        // 2. On rend la carte au vendeur (On inverse les IDs dans transferCard)
+        inventoryProxy.transferCard(annonce.getIdAcheteur(), annonce.getIdVendeur(), annonce.getIdCarteApi());
+
+        // 3. On remet l'annonce à zéro
+        annonce.setIdAcheteur(null);
+        annonce.setStatut("DISPONIBLE");
+
+        return annonceRepository.save(annonce);
+    }
 }

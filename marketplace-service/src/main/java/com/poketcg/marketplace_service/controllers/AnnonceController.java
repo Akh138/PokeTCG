@@ -90,4 +90,19 @@ public class AnnonceController {
     public Annonce acceptOffer(@PathVariable Long idOffre) {
         return annonceService.accepterEchange(idOffre);
     }
+
+    @PutMapping("/ship/{id}")
+    public Annonce ship(@PathVariable Long id) {
+        return annonceService.marquerCommeExpediee(id);
+    }
+
+    @GetMapping("/acheteur/{idAcheteur}")
+    public List<Annonce> getByAcheteur(@PathVariable Long idAcheteur) {
+        return annonceService.voirMesAchats(idAcheteur);
+    }
+
+    @PutMapping("/cancel-buy/{id}")
+    public Annonce cancelBuy(@PathVariable Long id) {
+        return annonceService.annulerAchatEnCours(id);
+    }
 }
