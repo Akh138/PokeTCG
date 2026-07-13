@@ -98,3 +98,70 @@
     margin-top: 10px;
 }
 .auth-switch a { font-weight: bold; }
+
+/* =============================================================
+   SECTION :  RESPONSIVE INSCRIPTION (POKÉBALL)
+   ============================================================= */
+
+@media (max-width: 768px) {
+    /* 1. Le Conteneur Global : On s'adapte à la largeur du téléphone */
+    .pokeball-container {
+        width: 100% !important;
+        max-width: 400px;
+        margin-top: -30px !important;
+        /* On augmente un peu l'échelle sur mobile pour la lisibilité */
+        transform: scale(0.9) !important;
+        margin-bottom: -100px !important; /* On réduit le vide fantôme */
+    }
+
+    /* 2. Les images de la Pokéball */
+    .pb-img {
+        width: 100% !important;
+        height: auto;
+    }
+
+    /* 3. Le Formulaire : On l'élargit un peu pour les 5 champs */
+    .login-form {
+        width: 88% !important;
+        padding: 15px 20px !important;
+        gap: 8px !important; /* On serre un peu pour tout faire tenir verticalement */
+    }
+
+    /* 4. Les Champs : On les passe l'un sous l'autre (Indispensable !) */
+    .field {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+    }
+
+    .field label {
+        width: 100% !important;
+        font-size: 0.65rem !important; /* Un peu plus petit pour gagner de la place */
+        padding-left: 5px;
+    }
+
+    .field input {
+        width: 100% !important;
+        padding: 8px !important; /* On réduit légèrement le rembourrage */
+        box-sizing: border-box;
+    }
+
+    /* 5. Le bouton S'inscrire */
+    #register-btn {
+        width: 100% !important;
+        height: 48px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* 6. Le switch vers Connexion */
+    .auth-switch {
+        font-size: 0.75rem !important;
+        margin-top: 5px !important;
+    }
+}
+
+/* Sécurité pour les petits écrans  */
+@media (max-width: 400px) {
+    .pokeball-container { transform: scale(0.85) !important; }
+    .login-form { width: 92% !important; }
+}

@@ -163,3 +163,73 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 25px;
 }
+
+/* =============================================================
+   SECTION 7 : RIGUEUR HABIB - RESPONSIVE GLOBAL (HEADER/FOOTER)
+   ============================================================= */
+
+@media (max-width: 768px) {
+    /* 1. Header : On permet aux éléments de s'ajuster s'il n'y a plus de place */
+    header {
+        padding: 0 10px !important;
+        height: 70px !important;
+        justify-content: space-between;
+    }
+
+    /* 2. Le Logo : On réduit sa taille et sa descente pour mobile */
+    .header-logo {
+        width: 150px !important;
+        order: 2; /* On le garde au centre */
+    }
+
+    .header-logo img {
+        width: 180px !important;
+        transform: translateY(30px) !important;
+    }
+
+    /* Ajustement mode connecté */
+    .header-logo.connected { width: 120px !important; }
+    .header-logo.connected img { width: 140px !important; transform: translateY(20px) !important; }
+
+    /* 3. Boutons de navigation (Connexion / Inscription) */
+    .btn-nav {
+        width: 110px !important; /* ⭐ Plus petit pour tenir sur l'écran ⭐ */
+        height: 38px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* 4. Le Contenu : On adapte la marge haute */
+    main {
+        margin-top: 130px !important;
+        padding-bottom: 100px !important;
+        width: 95% !important;
+    }
+
+    /* 5. Capsule de titre */
+    .news-pill {
+        width: 95% !important;
+        max-width: 300px;
+    }
+
+    .news-pill h2 {
+        font-size: 1.1rem !important;
+        letter-spacing: 2px !important;
+    }
+
+    /* 6. Le Footer : Stable et empilé */
+    footer {
+        position: relative !important;
+        flex-direction: column !important;
+        gap: 15px;
+        padding: 20px !important;
+        height: auto !important;
+    }
+
+    .footer-right { justify-content: center !important; }
+}
+
+/* Sécurité pour les tout petits écrans (iPhone SE, etc.)  */
+@media (max-width: 400px) {
+    .header-logo img { width: 150px !important; }
+    .btn-nav { width: 90px !important; font-size: 0.7rem !important; }
+}

@@ -247,9 +247,11 @@ body > main.content-full {
 .edit-form { display: flex; flex-direction: column; gap: 20px; margin: 25px 0; text-align: left; }
 .input-group { display: flex; flex-direction: column; gap: 8px; }
 .input-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; padding-left: 5px; }
+
+/*  Correction vitale pour l'alignement des champs de texte */
 .glass-input {
-    width: 100%;
-    box-sizing: border-box; /* Ajout vital pour que le 100% inclue le padding et la bordure ⭐ */
+    width: 100% !important;   /* ⭐ Prend toute la largeur disponible ⭐ */
+    box-sizing: border-box !important; /* ⭐ FORCE le calcul (100% inclut le padding et bordure) ⭐ */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
@@ -631,4 +633,75 @@ body > main.content-full {
 .btn-forum:hover {
     filter: brightness(1.2);
     letter-spacing: 4px;           /* Petit effet stylé au survol */
+}
+
+/* Style spécial pour le bouton de suppression RGPD */
+.btn-delete-account:hover {
+    background: #b91c1c !important; /* Rouge plus foncé au survol */
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    transform: scale(0.98); /* Petit effet d'enfoncement */
+}
+
+/* =============================================================
+   SECTION 22 : - RESPONSIVE DASHBOARD DRESSEUR
+   ============================================================= */
+
+@media (max-width: 768px) {
+    /* 1. Ajustement du Layout : On remonte le contenu car le logo est plus petit */
+    body > main.content-full {
+        margin-top: 140px !important;
+        width: 95% !important;
+        padding: 0 10px !important;
+    }
+
+    /* 2. Trainer Card & Stats : On empile verticalement au lieu de 2 colonnes */
+    .trainer-status-grid,
+    .mini-stats-grid,
+    .management-grid {
+        grid-template-columns: 1fr !important; /* Une seule colonne sur mobile */
+        gap: 20px !important;
+    }
+
+    /* 3. GRILLES DE CARTES (Pokedex / Marché / Classeur) */
+    /* Habib : On force 2 cartes par ligne pour que ce soit comme une vraie appli TCG */
+    #pokedex-grid,
+    #collection-grid,
+    .binder-grid,
+    #market-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 15px !important;
+    }
+
+    /* 4. Ajustement des cartes pour petit écran */
+    .card-img-container {
+        height: 180px !important; /* On réduit la hauteur de l'image */
+    }
+
+    .card-details h3 {
+        font-size: 0.85rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Coupe le nom si trop long */
+    }
+
+    /* 5. Boutons dans les cartes */
+    .add-to-collection-btn, .btn-buy-trigger, .btn-sell-trigger {
+        font-size: 0.7rem !important;
+        padding: 10px 5px !important;
+        height: auto !important;
+    }
+
+    /* 6. Modales : Elles prennent presque tout l'écran pour être cliquables au doigt */
+    .modal-content {
+        width: 92% !important;
+        padding: 20px !important;
+        margin: 0 15px;
+    }
+}
+
+/*  Sécurité pour les écrans ultra-étroits (ex: Galaxy Fold)  */
+@media (max-width: 400px) {
+    #pokedex-grid, #collection-grid, .binder-grid, #market-grid {
+        grid-template-columns: 1fr !important; /* Une seule carte par ligne */
+    }
 }

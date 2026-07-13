@@ -1108,4 +1108,42 @@ async function supprimerMessageForum(idMessage) {
     }
 }
 
+//  LOGIQUE DE SUPPRESSION TOTALE (RGPD)
+async function supprimerMonCompte() {
+    const userData = JSON.parse(localStorage.getItem("user_data"));
+
+    const confirmation = confirm(
+        "ATTENTION RIGUEUR HABIB :\n\n" +
+        "Voulez-vous vraiment supprimer votre compte ?\n" +
+        "Cette action effacera définitivement :\n" +
+        "- Votre Pokedex personnel\n" +
+        "- Vos annonces sur le marché\n" +
+        "- Vos messages sur le forum\n" +
+        "- Votre portefeuille de Poké-Crédits\n\n" +
+        "C'est votre dernière chance !"
+    );
+
+    if (!confirmation) return;
+
+    try {
+        // J'appelle la route DELETE de mon service Identity (8081)
+        const reponse = await fetch(`${API_IDENTITY}/delete/${userData.id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("user_token")
+            }
+        });
+
+        if (reponse.ok) {
+            alert("Votre compte et toutes vos données ont été effacés avec succès. Au revoir dresseur !");
+            logout(); // On vide le localStorage et on redirige vers l'accueil
+        } else {
+            alert("Erreur lors de la suppression. Contactez l'administrateur.");
+        }
+    } catch (e) {
+        console.error("Crash suppression compte :", e);
+        alert("Microservice Identity injoignable.");
+    }
+}
+
 function logout() { localStorage.clear(); window.location.href = "../index.html"; }

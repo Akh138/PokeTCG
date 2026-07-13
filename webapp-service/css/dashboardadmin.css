@@ -240,3 +240,63 @@ td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 
     padding-right: 10px;
 }
 
+/* =============================================================
+   SECTION 8 :  RESPONSIVE CONSOLE ADMIN
+   ============================================================= */
+
+@media (max-width: 768px) {
+    /* 1. Layout : On remonte le contenu car le header mobile est plus fin */
+    body > main.content-full {
+        margin-top: 140px !important;
+        width: 95% !important;
+    }
+
+    /* 2. Stats Globales : On passe de 3 colonnes à 1 seule colonne */
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* 3. Communication Ligue : On empile le formulaire et la modération */
+    .admin-social-grid {
+        grid-template-columns: 1fr !important; /* Habib : Le formulaire passe au dessus des listes */
+    }
+
+    .admin-management-column {
+        margin-top: 25px;
+    }
+
+    /* 4. Tableaux (Dresseurs/Marché) : Sécurité anti-débordement */
+    /* Habib : On force le scroll horizontal pour que le tableau ne casse pas le cadre */
+    .admin-table-container {
+        padding: 10px !important;
+        overflow-x: auto !important;
+        display: block;
+    }
+
+    table {
+        min-width: 600px; /* Force une largeur minimum pour garder les colonnes lisibles */
+    }
+
+    th, td {
+        padding: 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* 5. News & Forum : On réduit les hauteurs de scroll pour mobile */
+    .admin-scroll-list {
+        max-height: 300px !important;
+    }
+}
+
+/* Ajustement spécial pour les petits smartphones  */
+@media (max-width: 480px) {
+    .stat-card p {
+        font-size: 1.5rem !important; /* Chiffres moins gros */
+    }
+
+    .btn-diffuser {
+        font-size: 0.8rem !important;
+        height: 45px !important;
+    }
+}

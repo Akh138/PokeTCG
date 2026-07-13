@@ -108,3 +108,71 @@
 .auth-switch a:hover {
     text-decoration: underline; /* Petit effet au survol du lien */
 }
+
+/* =============================================================
+   SECTION :  RESPONSIVE CONNEXION (POKÉBALL)
+   ============================================================= */
+
+@media (max-width: 768px) {
+    /* 1. Le Conteneur Global : On oublie les 1000px ! */
+    .pokeball-container {
+        width: 100% !important;
+        max-width: 400px; /* On limite pour que la ball reste ronde */
+        margin-top: -20px !important;
+        transform: scale(0.95); /* On réduit moins qu'en version PC */
+    }
+
+    /* 2. Les demi-Pokéballs : Elles s'adaptent à la largeur de l'écran */
+    .pb-img {
+        width: 100% !important;
+        height: auto;
+    }
+
+    /* 3. Le Formulaire : On le rétrécit pour qu'il ne dépasse pas des bords de la ball */
+    .login-form {
+        width: 85% !important; /* Il occupe 85% de la largeur de la ball */
+        padding: 15px 20px !important;
+        gap: 10px !important;
+    }
+
+    /* 4. Les Champs (Labels + Inputs) : On les empile ! */
+    .field {
+        flex-direction: column !important; /* Label au-dessus de l'input */
+        align-items: flex-start !important;
+        gap: 5px !important;
+    }
+
+    .field label {
+        width: 100% !important; /* Le label prend toute la ligne */
+        font-size: 0.7rem !important;
+        padding-left: 5px;
+    }
+
+    .field input {
+        width: 100% !important; /* L'input prend toute la ligne */
+        box-sizing: border-box;
+    }
+
+    /* 5. Le bouton de validation (Pokémon Solid) */
+    #login-btn, #register-btn {
+        width: 100% !important;
+        height: 50px !important;
+        font-size: 1rem !important;
+    }
+
+    /* 6. Le lien "S'inscrire / Se connecter" */
+    .auth-switch {
+        font-size: 0.75rem !important;
+        margin-top: 10px !important;
+    }
+}
+
+/* Ajustement pour les écrans très fins (iPhone SE)  */
+@media (max-width: 400px) {
+    .login-form {
+        width: 90% !important;
+        padding: 10px 15px !important;
+    }
+
+    .news-pill { margin-top: 30px !important; }
+}

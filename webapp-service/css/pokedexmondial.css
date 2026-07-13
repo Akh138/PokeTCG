@@ -179,3 +179,78 @@
 .price-tag span { color: white; font-weight: bold; font-size: 0.9rem; }
 
 .btn-nav.connexion2 { font-family: 'PokemonSolid'; color: var(--poke-yellow); font-size: 1.1rem; }
+
+/* =============================================================
+   SECTION : RESPONSIVE POKEDEX MONDIAL
+   ============================================================= */
+
+@media (max-width: 768px) {
+    /* 1. Zone de Recherche : On empile la barre et le filtre */
+    #search-zone {
+        width: 95% !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 15px !important;
+        gap: 15px !important;
+    }
+
+    .search-box, .filter-box {
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    /* 2. Grille de Cartes : 2 colonnes pour un look "App Mobile" */
+    #pokedex-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 15px !important;
+        padding: 10px !important;
+    }
+
+    /* 3. Ajustement des Cartes Pokémon */
+    .pokemon-card {
+        height: auto !important; /* On laisse la carte respirer */
+        min-height: 280px !important;
+        padding: 8px !important;
+    }
+
+    .card-img-container {
+        height: 160px !important; /* Images plus petites pour mobile */
+    }
+
+    .card-details h3 {
+        font-size: 0.85rem !important;
+    }
+
+    /* 4. Ajustement des Extensions (Logos) */
+    .extension-card {
+        min-height: 180px !important;
+    }
+
+    .extension-card img {
+        height: 80px !important;
+    }
+
+    /* 5. Modale d'agrandissement (Zoom) */
+    .modal-content {
+        width: 90% !important; /* Prend presque toute la largeur */
+        height: auto !important;
+    }
+
+    .close-modal {
+        top: 20px !important;
+        right: 20px !important;
+        font-size: 40px !important;
+    }
+}
+
+/* ⭐ HABIB : Sécurité pour les petits écrans (iPhone SE) ⭐ */
+@media (max-width: 480px) {
+    #pokedex-grid {
+        gap: 10px !important;
+    }
+
+    .price-tag {
+        padding: 2px 8px !important;
+        font-size: 0.7rem !important;
+    }
+}

@@ -86,6 +86,9 @@
                     <button class="edit-profile-btn" onclick="openEditModal()">
                         <i class="fas fa-user-edit"></i> Modifier mes coordonnées
                     </button>
+                    <button class="btn-nav pokedex" onclick="supprimerMonCompte()" style="background: #ef4444; border: none; margin-top: 20px; width: 100%; font-size: 0.8rem; height: 45px;">
+                        <i class="fas fa-user-times"></i> Supprimer définitivement mon compte
+                    </button>
                 </div>
             </div>
 
@@ -241,7 +244,7 @@
         <div class="mgmt-section glass" style="margin-bottom: 30px; text-align: left; padding: 25px;">
             <h3 style="color: var(--poke-yellow); margin-bottom: 20px;"><i class="fas fa-comment-dots"></i> Créer une discussion</h3>
 
-            <!--  J'utilise un conteneur flex pour espacer proprement les champs -->
+            <!-- J'utilise un conteneur flex vertical avec un gap pour un espacement parfait -->
             <div style="display: flex; flex-direction: column; gap: 15px;">
                 <input type="text" id="forum-sujet" class="glass-input" placeholder="Titre de votre sujet...">
 

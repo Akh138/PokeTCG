@@ -40,3 +40,62 @@
 
 .separator-box { margin-bottom: 100px; }
 #deco-cards { width: 250px; opacity: 0.6; }
+
+/* =============================================================
+   SECTION : - RESPONSIVE ACCUEIL (HOME)
+   ============================================================= */
+
+@media (max-width: 768px) {
+    /* 1. Boite de Bienvenue : On réduit l'espace et la police */
+    .welcome-box {
+        width: 95% !important;
+        padding: 20px !important;
+        gap: 15px !important;
+        flex-direction: column; /* On empile les icônes et le texte */
+        text-align: center;
+    }
+
+    .welcome-box p {
+        font-size: 1rem !important; /* On baisse de 1.4rem à 1rem */
+    }
+
+    .side-icon {
+        width: 40px !important; /* Icônes Pokédex plus petites */
+    }
+
+    /* 2. Le Pikachu décoratif : On le réduit pour qu'il ne cache pas le titre */
+    .news-icon-side {
+        width: 100px !important;
+        left: -20px !important;
+    }
+
+    /* 3. Les News : On adapte les cartes pour le tactile */
+    .news-container {
+        width: 95% !important;
+        height: auto !important; /* On laisse la zone grandir selon le nombre de news */
+        max-height: 500px;
+    }
+
+    .news-card {
+        flex-direction: column; /* Image au-dessus du texte sur mobile */
+        gap: 10px !important;
+        padding: 15px !important;
+        text-align: center;
+    }
+
+    .news-card img {
+        width: 100% !important; /* L'image prend toute la largeur */
+        height: 120px !important;
+    }
+}
+
+/*  Ajustement pour les écrans minuscules  */
+@media (max-width: 480px) {
+    .news-icon-side {
+        display: none; /* On cache Pikachu s'il n'y a vraiment plus de place */
+    }
+
+    .welcome-box p {
+        font-size: 0.9rem !important;
+    }
+}
