@@ -6,6 +6,7 @@ import com.poketcg.walletservice.services.PortefeuilleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/wallets") // C'est l'adresse de base pour contacter ma "banque".
@@ -60,5 +61,10 @@ public class PortefeuilleController {
     public java.util.List<TransactionHistory> getHistory(@PathVariable Long idDresseur) {
         // Appelle la méthode dans ton service (assure-toi que recupererHistorique existe dans PortefeuilleService)
         return portefeuilleService.recupererHistorique(idDresseur);
+    }
+
+    @GetMapping("/admin/stats")
+    public Map<String, BigDecimal> getAdminStats() {
+        return portefeuilleService.getGlobalStats();
     }
 }

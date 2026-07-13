@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DresseurService {
@@ -82,5 +84,10 @@ public class DresseurService {
     public Dresseur trouverParId(Long id) {
         return dresseurRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Erreur : ID [" + id + "] inconnu."));
+    }
+
+    // Méthode Admin pour lister tous les inscrits
+    public List<Dresseur> recupererTousLesDresseurs() {
+        return dresseurRepository.findAll();
     }
 }

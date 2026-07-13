@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PokeTCG - Console d'Administration</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/dashboardadmin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<!-- 1. HEADER ADMIN ÉLITE -->
+<header class="glass admin-header">
+    <button class="burger-btn" id="admin-burger">
+        <i class="fas fa-tools"></i>
+    </button>
+    <div class="header-logo">
+        <img src="../assets/logo.png" alt="Logo">
+        <span class="admin-badge">ADMIN</span>
+    </div>
+    <div class="admin-profile">
+        <span id="admin-name">Maître Admin</span>
+        <button class="logout-btn" title="Déconnexion" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+    </div>
+</header>
+
+<!-- 2. MENU DE CONTRÔLE DE LA LIGUE -->
+<nav class="side-drawer glass" id="admin-drawer">
+    <div class="drawer-header">
+        <span>Contrôle Ligue</span>
+        <button id="close-admin-drawer">&times;</button>
+    </div>
+    <div class="drawer-links">
+        <a href="#" class="admin-nav-link active" data-target="admin-view-home"><i class="fas fa-tachometer-alt"></i> Vue d'ensemble</a>
+        <a href="#" class="admin-nav-link" data-target="admin-view-users"><i class="fas fa-users"></i> Gestion Dresseurs</a>
+        <a href="#" class="admin-nav-link" data-target="admin-view-market"><i class="fas fa-shopping-cart"></i> Modération Marché</a>
+        <a href="#" class="admin-nav-link" data-target="admin-view-social"><i class="fas fa-bullhorn"></i> News & Forum</a>
+        <a href="#" class="admin-nav-link" data-target="admin-view-wallet"><i class="fas fa-university"></i> Audit Fintech</a>
+        <hr>
+        <!-- Habib : Lien pour switcher rapidement vers le mode utilisateur -->
+        <a href="dashboarddresseur.html"><i class="fas fa-user-circle"></i> Mode Dresseur</a>
+    </div>
+</nav>
+
+<!-- 3. ZONE DE COMMANDEMENT (MAIN CONTENT) -->
+<main class="content-full">
+
+    <!-- SECTION 1 : STATISTIQUES GLOBALES -->
+    <section id="admin-view-home" class="admin-dashboard-view active">
+        <div class="news-pill"><h2>Statistiques Globales</h2></div>
+        <div class="stats-grid">
+            <div class="stat-card glass">
+                <label>Dresseurs Inscrits</label>
+                <p id="stat-total-users">0</p>
+            </div>
+            <div class="stat-card glass">
+                <label>Crédits en Circulation</label>
+                <p id="stat-total-credits">0.00 PC</p>
+            </div>
+            <div class="stat-card glass">
+                <label>Total en Séquestre</label>
+                <p id="stat-total-escrow">0.00 PC</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2 : GESTION DES UTILISATEURS (Identity 8081) -->
+    <section id="admin-view-users" class="admin-dashboard-view">
+        <div class="news-pill"><h2>Base des Dresseurs</h2></div>
+        <div class="admin-table-container glass">
+            <table id="users-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Pseudo</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="users-list-body">
+                <!-- Rempli par admin-users.js -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- SECTION 3 : MODÉRATION MARCHÉ (Marketplace 8085) -->
+    <section id="admin-view-market" class="admin-dashboard-view">
+        <div class="news-pill"><h2>Contrôle du Marché</h2></div>
+        <div id="admin-market-list" class="admin-table-container glass">
+            <!-- Habib : On pourra lister ici toutes les annonces suspectes -->
+            <p style="color:var(--text-muted)">Chargement des annonces mondiales...</p>
+        </div>
+    </section>
+
+    <!-- SECTION 4 : COMMUNICATION LIGUE -->
+    <section id="admin-view-social" class="admin-dashboard-view">
+        <div class="news-pill"><h2>Communication Ligue</h2></div>
+
+        <div class="admin-social-grid">
+
+            <!-- COLONNE GAUCHE : LE FORMULAIRE (DÉDIÉ) -->
+            <div class="news-form-box glass">
+                <h3><i class="fas fa-plus-circle"></i> Créer une News</h3>
+
+                <label class="small-label">Titre de l'actualité</label>
+                <input type="text" id="news-title" class="glass-input" placeholder="Titre...">
+
+                <label class="small-label">Lien de l'image (URL)</label>
+                <input type="text" id="news-image" class="glass-input" placeholder="Lien .jpg / .png">
+
+                <label class="small-label">Lien de l'article (URL)</label>
+                <input type="text" id="news-link" class="glass-input" placeholder="Lien vers l'article complet">
+
+                <label class="small-label">Résumé du message</label>
+                <textarea id="news-content" class="glass-input" placeholder="Résumé..." style="height:100px; resize:none;"></textarea>
+
+                <button class="btn-nav connexion btn-diffuser" onclick="adminPublishNews()">
+                    <i class="fas fa-broadcast-tower"></i> Diffuser l'actualité
+                </button>
+            </div>
+
+            <!-- COLONNE DROITE : LA GESTION (NEWS + FORUM) -->
+            <div class="admin-management-column">
+
+                <!-- Bloc News Publiées -->
+                <div class="forum-mod-box glass" style="margin-bottom: 25px;">
+                    <h3><i class="fas fa-list"></i> News en ligne</h3>
+                    <div id="admin-news-list" class="admin-scroll-list">
+                        <!-- Rempli par admin-social.js -->
+                    </div>
+                </div>
+
+                <!-- Bloc Modération Forum -->
+                <div class="forum-mod-box glass">
+                    <h3><i class="fas fa-comments"></i> Modération Forum</h3>
+                    <div id="admin-forum-list" class="admin-scroll-list">
+                        <!-- Rempli par admin-social.js -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ⭐ SECTION 5 : AUDIT FINTECH (Wallet 8082) - NOUVEAUTÉ ⭐ -->
+    <section id="admin-view-wallet" class="admin-dashboard-view">
+        <div class="news-pill"><h2>Audit Financier</h2></div>
+        <div class="admin-table-container glass">
+            <h3>Santé du système</h3>
+            <p style="color:var(--text-muted); margin-bottom:20px;">Surveillance des flux de Poké-Crédits (PC) en temps réel.</p>
+            <div id="admin-wallet-audit-content">
+                <!-- Rempli par admin-wallet.js -->
+                <p>Analyse des portefeuilles en cours...</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="footer-center">© 2024 PokeTCG Admin — Console réservée au Maître de la Ligue</div>
+</footer>
+
+<!-- CHARGEMENT DES MODULES JS (Ordre de Rigueur) -->
+<script src="../js/admin/admin-main.js"></script>
+<script src="../js/admin/admin-users.js"></script>
+<script src="../js/admin/admin-market.js"></script>
+<script src="../js/admin/admin-social.js"></script>
+<script src="../js/admin/admin-wallet.js"></script>
+
+</body>
+</html>

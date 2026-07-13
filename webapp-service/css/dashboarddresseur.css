@@ -247,7 +247,18 @@ body > main.content-full {
 .edit-form { display: flex; flex-direction: column; gap: 20px; margin: 25px 0; text-align: left; }
 .input-group { display: flex; flex-direction: column; gap: 8px; }
 .input-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; padding-left: 5px; }
-.glass-input { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 12px 15px; color: white; font-size: 1rem; outline: none; transition: 0.3s; }
+.glass-input {
+    width: 100%;
+    box-sizing: border-box; /* Ajout vital pour que le 100% inclue le padding et la bordure ⭐ */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px 15px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
 .glass-input:focus { border-color: var(--poke-yellow); background: rgba(255, 255, 255, 0.1); }
 .modal-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
 .modal-buttons .btn-nav { width: 160px; font-size: 1rem; }
@@ -599,3 +610,25 @@ body > main.content-full {
 }
 .status-available { background: rgba(16, 185, 129, 0.2); color: #10b981; }
 .status-transit { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+
+/* Style sur-mesure pour le bouton Forum (Ajustement police Pokémon)  */
+/* ⭐ HABIB : Style Premium pour le bouton Forum (Police Solid + Espacement) ⭐ */
+.btn-forum {
+    width: 100% !important;        /* Il prend toute la largeur du cadre comme sur ton image */
+    height: 55px !important;
+    font-family: 'PokemonSolid', sans-serif !important; /* ⭐ Passage aux lettres PLEINES ⭐ */
+    font-size: 1.1rem !important;  /* ⭐ Texte légèrement plus grand ⭐ */
+    letter-spacing: 2.5px !important; /* ⭐ Espacement entre les lettres ⭐ */
+    gap: 15px !important;          /* ⭐ Plus d'espace entre l'icône et le texte ⭐ */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    text-transform: none;          /* On garde la casse de la police */
+    padding-bottom: 5px !important; /* Ajustement vertical pour la police Pokémon */
+    transition: 0.4s;
+}
+
+.btn-forum:hover {
+    filter: brightness(1.2);
+    letter-spacing: 4px;           /* Petit effet stylé au survol */
+}

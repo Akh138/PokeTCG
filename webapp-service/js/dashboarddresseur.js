@@ -6,6 +6,7 @@ const API_CATALOG      = "http://localhost:8083/api/catalog";
 const API_INVENTORY    = "http://localhost:8084/api/inventory";
 const API_MARKETPLACE  = "http://localhost:8085/api/marketplace";
 const API_WALLETS      = "http://localhost:8082/api/wallets"; // Port 8082 pour ma banque
+const API_SOCIAL       = "http://localhost:8086/api/social/forum";
 
 // 2. VARIABLES GLOBALES DE SESSION
 let toutesLesExtensions = [];
@@ -53,6 +54,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // 3. Maintenant que j'ai mon inventaire en mémoire, je peux afficher les extensions
         await chargerExtensionsMondiales();
+
+        // Je lance le calcul des stats dès que tout est chargé ⭐
+        mettreAJourStatsAccueil();
 
     } catch (error) {
         console.error("Erreur lors du démarrage du Dashboard :", error);
@@ -830,6 +834,14 @@ function initUIControls() {
                 }
             }
 
+            if (target === "view-forum") {
+                chargerMessagesForum();
+            }
+
+            if (target === "view-home") {
+                mettreAJourStatsAccueil();
+            }
+
             drawer.classList.remove("open");
         };
     });
@@ -878,6 +890,51 @@ function openEditModal() {
 }
 
 function closeEditModal() { document.getElementById("edit-profile-modal").style.display = "none"; }
+
+// ⭐ HABIB : LOGIQUE DE CALCUL DES STATS (DYNAMIQUE : NORMAL 1, HOLO 3, REVERSE 5) ⭐
+async function mettreAJourStatsAccueil() {
+    const cardsCountElem = document.getElementById("total-cards-count");
+    const totalValueElem = document.getElementById("total-collection-value");
+    const levelElem = document.getElementById("trainer-level");
+    const xpBar = document.getElementById("xp-fill-bar");
+    const xpText = document.getElementById("xp-text");
+
+    if (!cardsCountElem) return;
+
+    // 1. Nombre total de cartes
+    const nbCartes = monInventaire.length;
+    cardsCountElem.innerText = nbCartes + " Cartes";
+
+    //  MOTEUR DE CALCUL XP PAR RARETÉ ⭐
+    let totalXP = 0;
+    monInventaire.forEach(card => {
+        // card.langueCarte contient "Normal", "Holo" ou "Reverse"
+        if (card.langueCarte === "Holo") {
+            totalXP += 3;
+        } else if (card.langueCarte === "Reverse") {
+            totalXP += 5;
+        } else {
+            totalXP += 1;
+        }
+    });
+
+    // 2. Calcul du Niveau (On passe à 100 XP par niveau pour que ce soit visuel)
+    const xpParNiveau = 100;
+    const niveau = Math.floor(totalXP / xpParNiveau) + 1;
+    const xpRestant = totalXP % xpParNiveau;
+    const pourcentageXP = (xpRestant / xpParNiveau) * 100;
+
+    levelElem.innerText = niveau;
+    if (xpBar) xpBar.style.width = pourcentageXP + "%";
+    if (xpText) xpText.innerText = `${xpRestant} / ${xpParNiveau} XP`;
+
+    // 3. Calcul de la Valeur Estimée (Cœur Fintech)
+    try {
+        // On simule une valeur moyenne par carte pour le Dashboard
+        let valeurTotale = nbCartes * 12.50;
+        totalValueElem.innerText = valeurTotale.toFixed(2) + " PC";
+    } catch (e) { console.error("Erreur calcul valeur :", e); }
+}
 
 //  LOGIQUE DE VÉRIFICATION FINANCIÈRE (AUDIT LOG - WALLET)
 async function chargerHistoriquePortefeuille(idDresseur) {
@@ -935,6 +992,119 @@ async function cloturerAnnulerAchat(idAnnonce) {
     } catch (e) {
         console.error("Erreur annulation :", e);
         alert("Microservice Marketplace injoignable.");
+    }
+}
+
+// ⭐ HABIB : LOGIQUE SOCIALE (FORUM MONGODB) ⭐
+
+async function chargerMessagesForum() {
+    const feed = document.getElementById("forum-feed");
+    if(!feed) return;
+
+    // ⭐ HABIB : Je récupère les infos de session ICI pour savoir si on peut supprimer ⭐
+    const userData = JSON.parse(localStorage.getItem("user_data"));
+    if(!userData) return;
+
+    try {
+        const reponse = await fetch(API_SOCIAL);
+        const messages = await reponse.json();
+
+        if (messages.length === 0) {
+            feed.innerHTML = "<p style='color:var(--text-muted); padding:50px;'>Aucun message pour le moment.</p>";
+            return;
+        }
+
+        messages.sort((a, b) => new Date(b.dateEnvoi) - new Date(a.dateEnvoi));
+        feed.innerHTML = "";
+
+        messages.forEach(msg => {
+            const date = new Date(msg.dateEnvoi).toLocaleString('fr-FR');
+
+            // ⭐ HABIB : Je vérifie si l'ID de l'auteur MongoDB est le mien (Ondine ID 4 ou Habib ID 7)
+            const monId = Number(userData.id);
+            const estMonMessage = (Number(msg.idAuteur) === monId);
+
+            feed.innerHTML += `
+                <div class="mgmt-item" style="flex-direction:column; align-items:flex-start; gap:10px; padding:20px; position:relative;">
+                    <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">
+                        <span style="color:var(--poke-yellow); font-weight:bold;"><i class="fas fa-user-circle"></i> ${msg.pseudoAuteur}</span>
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <span style="font-size:0.7rem; color:var(--text-muted)">${date}</span>
+                            
+                            <!-- ⭐ HABIB : Bouton supprimer uniquement si c'est moi l'auteur ⭐ -->
+                            ${estMonMessage ? `
+                                <i class="fas fa-trash-alt" style="color:#ef4444; cursor:pointer; font-size:0.9rem;" 
+                                   onclick="supprimerMessageForum('${msg.id}')" title="Supprimer mon message"></i>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <b style="color:white; font-size:1.1rem;">${msg.sujet}</b>
+                    <p style="color:rgba(255,255,255,0.8); font-size:0.9rem; line-height:1.4;">${msg.message}</p>
+                    <button class="like-btn" style="background:none; border:none; color:#fb7185; cursor:pointer; font-weight:bold;" onclick="likerUnMessage('${msg.id}')">
+                        <i class="fas fa-heart"></i> ${msg.likes || 0}
+                    </button>
+                </div>`;
+        });
+    } catch (e) {
+        console.error("Erreur Forum :", e);
+        feed.innerHTML = "<p style='color:red; text-align:center;'>Erreur microservice Social (8086).</p>";
+    }
+}
+
+async function publierSurForum() {
+    const sujet = document.getElementById("forum-sujet").value.trim();
+    const message = document.getElementById("forum-message").value.trim();
+    const userData = JSON.parse(localStorage.getItem("user_data"));
+
+    if (!sujet || !message) { alert("Champs vides !"); return; }
+
+    const body = {
+        idAuteur: userData.id,
+        pseudoAuteur: userData.username || userData.pseudo,
+        sujet: sujet,
+        message: message
+    };
+
+    try {
+        const res = await fetch(API_SOCIAL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+            document.getElementById("forum-sujet").value = "";
+            document.getElementById("forum-message").value = "";
+            chargerMessagesForum();
+        }
+    } catch (e) { alert("Erreur d'envoi."); }
+}
+
+async function likerUnMessage(id) {
+    try {
+        const res = await fetch(`${API_SOCIAL}/like/${id}`, { method: "PUT" });
+        if (res.ok) chargerMessagesForum();
+    } catch (e) { console.error(e); }
+}
+
+//  FONCTION POUR SUPPRIMER UN MESSAGE (MONGODB PORT 8086)
+async function supprimerMessageForum(idMessage) {
+    if (!confirm("Rigueur Habib : Voulez-vous vraiment supprimer ce message ? Cette action est irréversible.")) return;
+
+    try {
+        const res = await fetch(`${API_SOCIAL}/${idMessage}`, {
+            method: "DELETE"
+        });
+
+        if (res.ok) {
+            alert("Message supprimé avec succès.");
+            chargerMessagesForum(); // On rafraîchit le flux
+        } else {
+            alert("Erreur lors de la suppression.");
+        }
+    } catch (e) {
+        console.error("Crash suppression forum :", e);
+        alert("Microservice Social injoignable.");
     }
 }
 

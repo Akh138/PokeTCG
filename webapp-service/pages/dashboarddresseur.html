@@ -47,7 +47,7 @@
         <a href="#" class="nav-link" data-target="view-my-sales"><i class="fas fa-tasks"></i> Gestion de mes ventes</a>
 
         <hr>
-        <a href="forum.html"><i class="fas fa-comments"></i> Forum</a>
+        <a href="#" class="nav-link" data-target="view-forum"><i class="fas fa-comments"></i> Forum</a>
         <a href="#" onclick="logout()" class="logout-link"><i class="fas fa-power-off"></i> Déconnexion</a>
     </div>
 </nav>
@@ -230,6 +230,32 @@
         <div class="news-pill"><h2>Gestion de mes ventes</h2></div>
         <div id="my-sales-placeholder">
             <p style="text-align:center; padding:50px;">Ici vous pourrez gérer vos annonces, vos achats et confirmer vos réceptions.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 7 : FORUM COMMUNAUTAIRE (SPA VIEW) -->
+    <section id="view-forum" class="dashboard-view">
+        <div class="news-pill"><h2>Forum des Dresseurs</h2></div>
+
+        <!-- Formulaire de post -->
+        <div class="mgmt-section glass" style="margin-bottom: 30px; text-align: left; padding: 25px;">
+            <h3 style="color: var(--poke-yellow); margin-bottom: 20px;"><i class="fas fa-comment-dots"></i> Créer une discussion</h3>
+
+            <!--  J'utilise un conteneur flex pour espacer proprement les champs -->
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" id="forum-sujet" class="glass-input" placeholder="Titre de votre sujet...">
+
+                <textarea id="forum-message" class="glass-input" placeholder="Votre message ici..." style="height: 100px; resize: none;"></textarea>
+
+                <button class="btn-nav connexion btn-forum" onclick="publierSurForum()">
+                    <i class="fas fa-paper-plane"></i> Poster le message
+                </button>
+            </div>
+        </div>
+
+        <!-- Flux des messages -->
+        <div id="forum-feed">
+            <p style="color: white;">Chargement des discussions...</p>
         </div>
     </section>
 

@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -91,9 +93,16 @@ public class PortefeuilleService {
         return "Annulation effectuée : le montant de " + montant + " PC a été restitué sur votre solde disponible.";
     }
 
-    // ⭐ HABIB : Méthode pour récupérer le journal d'audit financier ⭐
+    // Méthode pour récupérer le journal d'audit financier
     public List<TransactionHistory> recupererHistorique(Long idDresseur) {
         // On appelle le repository pour avoir la liste triée par date
         return transactionHistoryRepository.findByIdDresseurOrderByDateDesc(idDresseur);
+    }
+
+    public Map<String, BigDecimal> getGlobalStats() {
+        Map<String, BigDecimal> stats = new HashMap<>();
+        stats.put("totalAvailable", portefeuilleRepository.sumAllAvailable());
+        stats.put("totalEscrow", portefeuilleRepository.sumAllEscrow());
+        return stats;
     }
 }

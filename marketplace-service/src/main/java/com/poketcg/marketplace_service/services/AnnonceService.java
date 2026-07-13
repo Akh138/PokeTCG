@@ -179,4 +179,9 @@ public class AnnonceService {
 
         return annonceRepository.save(annonce);
     }
+
+    //  Méthode Admin pour voir l'intégralité de la base des annonces
+    public List<Annonce> voirToutLeHistorique() {
+        return annonceRepository.findAll();
+    }
 }

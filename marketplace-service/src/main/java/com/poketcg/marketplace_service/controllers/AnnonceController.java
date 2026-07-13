@@ -105,4 +105,10 @@ public class AnnonceController {
     public Annonce cancelBuy(@PathVariable Long id) {
         return annonceService.annulerAchatEnCours(id);
     }
+
+    // Route réservée à la modération pour voir TOUT (Vendu, Transit, Dispo)
+    @GetMapping("/admin/all")
+    public List<Annonce> adminGetAll() {
+        return annonceService.voirToutLeHistorique();
+    }
 }

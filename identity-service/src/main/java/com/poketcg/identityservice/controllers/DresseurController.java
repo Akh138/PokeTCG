@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin("*") // J'autorise mon site web à appeler mon service pour s'inscrire ou se connecter
 @RestController // 1. Je dis à Spring que cette classe est une API (elle renvoie du JSON)
 @RequestMapping("/api/auth") // 2. Toutes les adresses commenceront par /api/auth
@@ -54,5 +56,11 @@ public class DresseurController {
     @GetMapping("/id/{id}")
     public Dresseur getById(@PathVariable Long id) {
         return dresseurService.trouverParId(id);
+    }
+
+    //  Route Admin pour voir toute la base de données
+    @GetMapping("/all")
+    public List<Dresseur> getAllTrainers() {
+        return dresseurService.recupererTousLesDresseurs();
     }
 }
