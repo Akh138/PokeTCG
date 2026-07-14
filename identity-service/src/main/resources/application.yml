@@ -6,7 +6,7 @@ spring:
   # 2. Ici, je donne les coordonnees pour trouver ma base de donnees MySQL dans Docker
   datasource:
     # Je vise l'adresse localhost:3306 et la base poketcg_db creee sur Workbench
-    url: jdbc:mysql://localhost:3306/poketcg_db?createDatabaseIfNotExist=true
+    url: jdbc:mysql://mysql-db:3306/poketcg_db?createDatabaseIfNotExist=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,12 +25,12 @@ spring:
   # 4. Ici, mon microservice s'inscrit dans l'annuaire Consul
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
       discovery:
         service-name: ${spring.application.name}
         # ASTUCE PRO : Je dis a Consul (dans Docker) de me chercher a l'adresse de mon PC (host.docker.internal)
-        hostname: host.docker.internal
+        hostname: identity-service
         prefer-ip-address: false
         port: 8081
         # On dit explicitement ou se trouve le test de santé

@@ -1,33 +1,23 @@
 spring:
-  # 1. Je nomme mon service pour qu'il soit reconnu par les autres
   application:
     name: inventory-service
-
-  # 2. Ma connexion à MySQL (On utilise la même base poketcg_db)
   datasource:
-    url: jdbc:mysql://localhost:3306/poketcg_db?createDatabaseIfNotExist=true
+    url: jdbc:mysql://mysql-db:3306/poketcg_db?createDatabaseIfNotExist=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-  # 3. Hibernate va créer la table 'collectionner' automatiquement
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true # Pour voir les requêtes SQL dans la console
-
-  # 4. Inscription dans l'annuaire Consul
+    show-sql: true
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
       discovery:
         service-name: ${spring.application.name}
-        # Adresse pour que Docker (Consul) voit mon IntelliJ (PC)
-        hostname: host.docker.internal
+        hostname: inventory-service
         prefer-ip-address: false
-        port: 8084 # Ce service écoutera sur le port 8084
-
-# 5. On fixe le port 8084 (Identity=8081, Wallet=8082, Catalog=8083)
+        port: 8084
 server:
   port: 8084

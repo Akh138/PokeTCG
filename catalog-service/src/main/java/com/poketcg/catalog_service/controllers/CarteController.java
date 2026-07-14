@@ -72,4 +72,10 @@ public class CarteController {
     public List<Map<String, Object>> searchGlobal(@PathVariable String nom) {
         return carteService.rechercherCartesGlobalement(nom);
     }
+
+    // 9. Route Admin pour aspirer une extension complète dans MongoDB ⭐
+    @PostMapping("/admin/seed/{setId}")
+    public String seedExtension(@PathVariable String setId) {
+        return carteService.peuplerLeCache(setId);
+    }
 }

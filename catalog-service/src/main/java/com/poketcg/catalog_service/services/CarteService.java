@@ -35,8 +35,32 @@ public class CarteService {
         return resIntRaw;
     }
 
-    // 2. FUSION PAR EXTENSION (GARDÉE)
+    // 2. FUSION PAR EXTENSION (GARDÉE ET SÉCURISÉE PAR CACHE)
     public List<Map<String, Object>> recupererCartesParExtension(String setId) {
+
+        // ÉTAPE DE SÉCURITÉ  (VÉRIFICATION DU CACHE)
+        // Avant d'appeler l'API, je regarde si mon MongoDB possède déjà cette extension
+        // J'utilise l'ID technique (ex: base1, swsh1, etc.)
+        List<Carte> cartesEnCache = carteRepository.findByExtension(setId);
+
+        if (!cartesEnCache.isEmpty()) {
+            System.out.println("RIGUEUR HABIB : Extension [" + setId + "] chargée depuis MongoDB (Cache Actif)");
+            List<Map<String, Object>> resLocal = new ArrayList<>();
+            for (Carte c : cartesEnCache) {
+                Map<String, Object> m = new HashMap<>();
+                m.put("id", c.getIdApiUnique());
+                m.put("name", c.getNomFr());
+                // Je recrée la structure attendue par le Front-end
+                Map<String, String> imgs = new HashMap<>();
+                imgs.put("large", c.getImageUrl());
+                m.put("images", imgs);
+                m.put("prixFinal", c.getPrix().toString());
+                resLocal.add(m);
+            }
+            return resLocal; // ✅ Je renvoie les données locales instantanément
+        }
+
+        // --- SI LE CACHE EST VIDE, ON CONTINUE AVEC TON CODE D'ORIGINE ---
         List<Map<String, Object>> finalCards = new ArrayList<>();
         try {
             Map<String, Object> resIntRaw = (Map<String, Object>) pokemonTcgProxy.getCardsBySet(setId);
@@ -69,8 +93,12 @@ public class CarteService {
             return finalCards;
         }
 
+        //  BOUCLE DE CALCUL ET D'ASPIRATION DANS LE CACHE
         for (Map<String, Object> cInt : finalCards) {
+            String idCard = (String) cInt.get("id"); // L'ID unique (ex: base1-4)
             String number = (String) cInt.get("number");
+
+            // 1. On applique les noms français si dispo
             if (frenchDataMap.containsKey(number)) {
                 Map<String, String> fr = frenchDataMap.get(number);
                 cInt.put("name", fr.get("name"));
@@ -79,9 +107,9 @@ public class CarteService {
                     if (images != null) { images.put("large", fr.get("image")); }
                 }
             }
-            // ⭐ MA NOUVELLE LOGIQUE DE PRIX : Je pré-calcule le prix pour le Front-end
-            // Je scanne toutes les catégories (Holo, Normal, etc.) pour ne jamais avoir de N/A
-            cInt.put("prixFinal", "0.00"); // Valeur par défaut
+
+            // 2. On pré-calcule le prix pour le Front-end
+            cInt.put("prixFinal", "0.00");
             if (cInt.containsKey("tcgplayer")) {
                 Map<String, Object> tcg = (Map<String, Object>) cInt.get("tcgplayer");
                 if (tcg.containsKey("prices")) {
@@ -94,6 +122,25 @@ public class CarteService {
                         }
                     }
                 }
+            }
+
+            // ⭐ HABIB : C'EST ICI QU'ON ASPIRE DANS MONGO POUR L'EXAMEN ⭐
+            // Si la carte n'est pas déjà dans mon MongoDB, je l'enregistre
+            if (carteRepository.findByIdApiUnique(idCard).isEmpty()) {
+                Carte c = new Carte();
+                c.setIdApiUnique(idCard);
+                c.setNomFr((String) cInt.get("name"));
+                c.setExtension(setId); // TRÈS IMPORTANT : On lie la carte au setId (ex: base1)
+
+                Map<String, Object> images = (Map<String, Object>) cInt.get("images");
+                if (images != null) { c.setImageUrl((String) images.get("large")); }
+
+                try {
+                    c.setPrix(new BigDecimal(cInt.get("prixFinal").toString()));
+                } catch (Exception e) { c.setPrix(BigDecimal.ZERO); }
+
+                carteRepository.save(c); // On l'enregistre en cache
+                System.out.println("Cache : Carte [" + c.getNomFr() + "] mise en sécurité dans MongoDB.");
             }
         }
         return finalCards;
@@ -189,4 +236,21 @@ public class CarteService {
     public List<Carte> chercherParRarete(String rarete) { return carteRepository.findByRarete(rarete); }
     public List<Carte> recupererToutesLesCartes() { return carteRepository.findAll(); }
     public Carte sauvegarderEnCache(Carte carte) { return carteRepository.save(carte); }
+
+    // La "Super-Aspiration" pour RECUPERER SUR MONGO ⭐
+    public String peuplerLeCache(String setId) {
+        // 1. On récupère toutes les cartes de l'API (Logique existante)
+        List<Map<String, Object>> cartesAPI = recupererCartesParExtension(setId);
+
+        // 2. On les enregistre une par une en base MongoDB
+        for (Map<String, Object> cMap : cartesAPI) {
+            String idApi = (String) cMap.get("id");
+
+            // Si la carte n'est pas déjà là, on l'importe
+            if (carteRepository.findByIdApiUnique(idApi).isEmpty()) {
+                importerCarteDepuisApis(idApi);
+            }
+        }
+        return "Extension " + setId + " aspirée avec succès dans MongoDB !";
+    }
 }

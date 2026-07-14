@@ -1,33 +1,26 @@
 spring:
   application:
     name: catalog-service
-
   data:
     mongodb:
-      # L'adresse magique (URI) qui contient tout
-      # On vise le port 27018 et on précise l'utilisateur pokeadmin
-      uri: mongodb://pokeadmin:pokepassword@localhost:27018/catalog_db?authSource=admin
-
+      #  On remplace localhost:27018 par mongodb:27017 (nom interne Docker)
+      uri: mongodb://pokeadmin:pokepassword@mongodb:27017/catalog_db?authSource=admin
   cloud:
     consul:
-      host: localhost
+      host: consul #  On remplace localhost par consul
       port: 8500
       discovery:
         service-name: ${spring.application.name}
-        hostname: host.docker.internal
+        hostname: catalog-service #  Nom du conteneur
         prefer-ip-address: false
         port: 8083
         health-check-path: /actuator/health
 
-# MA NOUVELLE CONFIGURATION : Pour éviter que l'application ne coupe la connexion
-# quand l'API Pokémon met du temps à répondre (Erreur Read timed out).
 feign:
   client:
     config:
       default:
-        # J'autorise 5 secondes pour établir le contact avec l'API
         connectTimeout: 5000
-        # J'autorise 30 secondes pour recevoir les données (utile pour les gros sets de 200 cartes)
         readTimeout: 30000
 
 server:

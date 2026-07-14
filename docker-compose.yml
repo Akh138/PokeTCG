@@ -1,38 +1,94 @@
-version: '3.8'
-
-services:
-  # 1. MySQL
+services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
+  # --- INFRASTRUCTURE ---
   mysql-db:
     image: mysql:8.0
-    container_name: poketcg-mysql
-    ports:
-      - "3306:3306"
+    container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: poketcg_db
-    volumes:
-      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      # Test plus robuste avec CMD-SHELL
+      test: ["CMD-SHELL", "mysqladmin ping -u root -proot"]
+      interval: 10s # On attend 10s entre chaque test
+      timeout: 10s
+      retries: 10   # On lui laisse 10 chances (100 secondes total)
+      start_period: 30s # On ne commence à tester qu'après 30s
 
-  # 2. MongoDB (On change le port externe en 27018)
   mongodb:
     image: mongo:latest
-    container_name: poketcg-mongodb
-    ports:
-      - "27018:27017" # Ton PC parlera au 27018 pour atteindre le 27017 du Docker
+    container_name: mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: pokeadmin
       MONGO_INITDB_ROOT_PASSWORD: pokepassword
-    volumes:
-      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
 
-  # 3. Consul
   consul:
     image: hashicorp/consul:latest
-    container_name: poketcg-consul
+    container_name: consul
     ports:
       - "8500:8500"
     command: "agent -dev -client 0.0.0.0"
 
-volumes:
-  mysql_data:
-  mongo_data:
+  # --- MICROSERVICES ---
+  # Habib : On utilise 'service_started' pour plus de stabilité le temps du premier lancement
+  identity-service:
+    build: ./identity-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql-db:
+        condition: service_started
+      consul:
+        condition: service_started
+
+  wallet-service:
+    build: ./wallet-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql-db:
+        condition: service_started
+
+  catalog-service:
+    build: ./catalog-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongodb
+
+  inventory-service:
+    build: ./inventory-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      mysql-db:
+        condition: service_started
+
+  marketplace-service:
+    build: ./marketplace-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      mysql-db:
+        condition: service_started
+
+  social-service:
+    build: ./social-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - mongodb
+
+  # --- FRONTEND ---
+  webapp:
+    image: nginx:alpine
+    container_name: poketcg-site
+    volumes:
+      - ./webapp-service:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    depends_on:
+      - identity-service

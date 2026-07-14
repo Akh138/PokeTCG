@@ -5,17 +5,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.math.BigDecimal;
 
-// Ce proxy permet de commander le Wallet pour bloquer l'argent
-@FeignClient(name = "wallet-service", url = "http://localhost:8082/api/wallets")
+@FeignClient(name = "wallet-service")
 public interface WalletProxy {
 
     // J'appelle la méthode de séquestre (bloquer l'argent)
-    @PutMapping("/lock/{idDresseur}/{montant}")
-    String lockFunds(@PathVariable("idDresseur") Long idDresseur, @PathVariable("montant") BigDecimal montant);
+    @PutMapping("/api/wallets/lock/{idDresseur}/{montant}")
+    String lockFunds(@PathVariable("idDresseur") Long idDresseur, @PathVariable("montant") java.math.BigDecimal montant);
 
     // J'appelle la méthode de transfert définitif (une fois reçu)
-    @PutMapping("/confirm/{idAcheteur}/{idVendeur}/{montant}")
-    String confirmPurchase(@PathVariable("idAcheteur") Long idAcheteur, @PathVariable("idVendeur") Long idVendeur, @PathVariable("montant") BigDecimal montant);
+    @PutMapping("/api/wallets/confirm/{idAcheteur}/{idVendeur}/{montant}")
+    String confirmPurchase(@PathVariable("idAcheteur") Long idAcheteur, @PathVariable("idVendeur") Long idVendeur, @PathVariable("montant") java.math.BigDecimal montant);
 
     // J'ajoute le tunnel pour annuler l'achat et rendre l'argent
     @PutMapping("/api/wallets/cancel/{idAcheteur}/{montant}")
