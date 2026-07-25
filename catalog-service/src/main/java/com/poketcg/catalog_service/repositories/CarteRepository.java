@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository // Je dis a Spring que c'est ici qu'on parle a ma base NoSQL MongoDB
 public interface CarteRepository extends MongoRepository<Carte, String> {
 
-    // 1. Pour vérifier si on a déjà la carte en cache
+    // 1. MÉTHODE : Pour vérifier si on a déjà la carte en cache
     List<Carte> findByIdApiUnique(String idApiUnique);
 
     // 2. MÉTHODE : Chercher par extension (ex: Set de Base)

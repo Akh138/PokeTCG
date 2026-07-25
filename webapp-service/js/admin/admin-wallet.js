@@ -1,8 +1,8 @@
-// --- MODULE : AUDIT FINANCIER (Wallet 8082) ---
+// ---AUDIT FINANCIER (Wallet 8082) ---
 
 const API_ADMIN_WALLET = "http://localhost:8082/api/wallets";
 
-// ⭐ HABIB : Fonction pour charger les stats globales (Dresseurs + Argent) ⭐
+// Fonction pour charger les stats globales (Dresseurs + Argent)
 async function loadGlobalStats() {
     try {
         // 1. On récupère le nombre de dresseurs (via le service Identity)

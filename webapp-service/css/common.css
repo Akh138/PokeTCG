@@ -30,7 +30,7 @@ body::before {
     top: 0; left: 0;
     width: 100%; height: 100%;
 
-    /* LE SECRET : J'ajoute un dégradé radial (rond) par-dessus l'image.
+    /* J'ajoute un dégradé radial (rond) par-dessus l'image.
        Le centre est transparent, mais les bords deviennent noirs comme le fond.
        C'est ce qui "gomme" les lignes de répétition sur les côtés. */
     background: radial-gradient(circle, transparent 20%, var(--bg-dark) 80%),
@@ -38,7 +38,7 @@ body::before {
 
     background-repeat: repeat;
 
-    /* J'agrandis la taille à 800px pour que les icônes soient plus grandes
+    /* J'agrandis la taille à XXX px pour que les icônes soient plus grandes
        et qu'on voie moins souvent la répétition de l'image */
     background-size: 900px;
 
@@ -74,9 +74,13 @@ header {
 
 }
 
+header.glass {
+    border-radius: 0;
+}
+
 .header-logo img {
-    width: 420px !important;  /* 3. J'agrandis l'image (était à 200px) */
-    height: auto !important;
+    width: 420px ;  /* 3. J'agrandis l'image (était à 200px) */
+    height: auto ;
 
     /* 4. LE DÉBORDEMENT VERS LE BAS :
        Je pousse l'image vers le bas de 45 pixels.
@@ -97,8 +101,28 @@ header {
 }
 .btn-nav:hover { transform: scale(1.05); filter: brightness(1.2); }
 
-.btn-nav.pokedex { font-family: 'PokemonSolid'; color: var(--poke-yellow); font-size: 1.1rem; }
-.btn-nav.connexion, .btn-nav.accueil { font-family: 'PokemonHollow'; color: white; font-size: 1.3rem; }
+.btn-nav.pokedex, .btn-nav.connexion2, .btn-nav.connexion{
+    font-family: 'PokemonSolid';
+    color: var(--poke-yellow);
+    font-size: 1.4rem;      /* 1. On augmente de 1.1 à 1.4 */
+    letter-spacing: 5px;    /* 2. On fait "respirer" les lettres */
+    padding-top: 0;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-nav.accueil {
+    font-family: 'PokemonSolid';
+    color: var(--poke-yellow);
+    font-size: 1.5rem;      /* Les lettres creuses paraissent plus petites, on compense */
+    letter-spacing: 2px;
+    padding-top: 0;
+    padding-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* --- LOGO RÉDUIT (VERSION CONNECTÉ) --- */
 
@@ -108,7 +132,7 @@ header {
 }
 
 .header-logo.connected img {
-    width: 280px !important;    /* Je réduis l'image de 420px à 280px */
+    width: 280px ;    /* Je réduis l'image de 420px à 280px */
     transform: translateY(40px); /* Je le remonte un peu pour libérer de l'espace (était à 70px) */
     filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); /* Ombre un peu plus discrète */
 }
@@ -117,7 +141,7 @@ header {
 main {
     /* J'augmente la marge du haut à 220px pour que ton titre
        ne soit pas caché par le logo qui descend */
-    margin-top: 220px !important;
+    margin-top: 220px ;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -165,71 +189,143 @@ footer {
 }
 
 /* =============================================================
-   SECTION 7 : RIGUEUR HABIB - RESPONSIVE GLOBAL (HEADER/FOOTER)
+   SECTION 8 : BOUTONS 3D ÉLITE (TAILLE FIXE & LISIBILITÉ)
+   ============================================================= */
+
+.btn-3d {
+    all: unset;
+    cursor: pointer;
+    position: relative;
+    /* 1. ON FIXE LA TAILLE : Le bouton ne bougera plus */
+    width: 200px;
+    height: 50px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.button-outer {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 0px 0px rgba(0, 0, 0, 0.8);
+}
+
+.button-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    /* 2. CENTRE LE TEXTE SANS UTILISER DE PADDING QUI DÉFORME */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Couleurs des dégradés */
+.btn-red .button-inner { background: linear-gradient(135deg, #ef4444, #991b1b); }
+.btn-yellow .button-inner { background: linear-gradient(135deg, #fbbf24, #b45309); }
+
+.btn-3d span {
+    position: relative;
+    z-index: 4;
+    font-family: 'PokemonSolid', sans-serif;
+
+    /* 3. RÉGLAGE OPTIMAL DU TEXTE */
+    font-size: 1.3rem;      /* Grand mais raisonnable */
+    letter-spacing: 4px;    /* Espace pour la lisibilité */
+    text-transform: uppercase;
+
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    margin-bottom: 4px;     /* Ajustement vertical police Pokemon */
+    white-space: nowrap;
+}
+
+.btn-yellow span { color: #020617; text-shadow: none; }
+
+/* Effet d'enfoncement au clic */
+.btn-3d:active .button-outer {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0px 0px rgba(0, 0, 0, 0.8);
+}
+
+/* Permet aux boutons 3D de s'étirer si on leur demande en HTML */
+button[style*="width: 100%"].btn-3d,
+button[style*="width:100%"].btn-3d {
+    width: 100% !important;
+}
+
+/* =============================================================
+   SECTION 7 : RIGUEUR - RESPONSIVE GLOBAL (HEADER/FOOTER)
    ============================================================= */
 
 @media (max-width: 768px) {
     /* 1. Header : On permet aux éléments de s'ajuster s'il n'y a plus de place */
     header {
-        padding: 0 10px !important;
-        height: 70px !important;
+        padding: 0 10px ;
+        height: 70px ;
         justify-content: space-between;
     }
 
     /* 2. Le Logo : On réduit sa taille et sa descente pour mobile */
     .header-logo {
-        width: 150px !important;
+        width: 150px ;
         order: 2; /* On le garde au centre */
     }
 
     .header-logo img {
-        width: 180px !important;
-        transform: translateY(30px) !important;
+        width: 180px ;
+        transform: translateY(30px) ;
     }
 
     /* Ajustement mode connecté */
-    .header-logo.connected { width: 120px !important; }
-    .header-logo.connected img { width: 140px !important; transform: translateY(20px) !important; }
+    .header-logo.connected { width: 120px ; }
+    .header-logo.connected img { width: 140px ; transform: translateY(20px) ; }
 
     /* 3. Boutons de navigation (Connexion / Inscription) */
     .btn-nav {
-        width: 110px !important; /* ⭐ Plus petit pour tenir sur l'écran ⭐ */
-        height: 38px !important;
-        font-size: 0.8rem !important;
+        width: 110px ; /*  Plus petit pour tenir sur l'écran  */
+        height: 38px ;
+        font-size: 0.8rem ;
     }
 
     /* 4. Le Contenu : On adapte la marge haute */
     main {
-        margin-top: 130px !important;
-        padding-bottom: 100px !important;
-        width: 95% !important;
+        margin-top: 130px ;
+        padding-bottom: 100px ;
+        width: 95% ;
     }
 
     /* 5. Capsule de titre */
     .news-pill {
-        width: 95% !important;
+        width: 95% ;
         max-width: 300px;
     }
 
     .news-pill h2 {
-        font-size: 1.1rem !important;
-        letter-spacing: 2px !important;
+        font-size: 1.1rem ;
+        letter-spacing: 2px ;
     }
 
     /* 6. Le Footer : Stable et empilé */
     footer {
-        position: relative !important;
-        flex-direction: column !important;
+        position: relative ;
+        flex-direction: column ;
         gap: 15px;
-        padding: 20px !important;
-        height: auto !important;
+        padding: 20px ;
+        height: auto ;
     }
 
-    .footer-right { justify-content: center !important; }
+    .footer-right { justify-content: center ; }
 }
 
 /* Sécurité pour les tout petits écrans (iPhone SE, etc.)  */
 @media (max-width: 400px) {
-    .header-logo img { width: 150px !important; }
-    .btn-nav { width: 90px !important; font-size: 0.7rem !important; }
+    .header-logo img { width: 150px ; }
+    .btn-nav { width: 90px ; font-size: 0.7rem ; }
 }

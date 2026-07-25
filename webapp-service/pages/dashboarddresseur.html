@@ -23,7 +23,13 @@
     <div class="wallet-capsule" id="wallet-trigger">
         <i class="fas fa-coins"></i>
         <span id="user-balance-header">0.00 PC</span>
-        <button class="add-funds-btn" title="Recharger">+</button>
+        <button class="add-funds-btn btn-3d btn-yellow" onclick="openRechargeModal()" style="width: 40px; height: 40px; padding: 0;">
+            <div class="button-outer">
+                <div class="button-inner" style="padding: 0; height: 40px;">
+                    <span style="font-family: Arial; font-weight: bold; font-size: 20px;">+</span>
+                </div>
+            </div>
+        </button>
     </div>
 </header>
 
@@ -35,20 +41,33 @@
     </div>
 
     <div class="drawer-links">
-        <a href="#" class="nav-link active" data-target="view-home"><i class="fas fa-chart-line"></i> Vue d'ensemble</a>
-        <a href="#" class="nav-link" data-target="view-pokedex"><i class="fas fa-globe"></i> Pokedex Mondial</a>
-        <a href="#" class="nav-link" data-target="view-collection"><i class="fas fa-box-open"></i> Ma Collection</a>
-        <a href="#" class="nav-link" data-target="view-wallet"><i class="fas fa-wallet"></i> Mon Portefeuille</a>
+        <a href="#" class="nav-link btn-3d btn-yellow active" data-target="view-home">
+            <div class="button-outer"><div class="button-inner"><span>VUE D'ENSEMBLE</span></div></div>
+        </a>
+        <a href="#" class="nav-link btn-3d btn-yellow" data-target="view-pokedex">
+            <div class="button-outer"><div class="button-inner"><span>POKEDEX MONDIAL</span></div></div>
+        </a>
+        <a href="#" class="nav-link btn-3d btn-yellow" data-target="view-collection">
+            <div class="button-outer"><div class="button-inner"><span>MA COLLECTION</span></div></div>
+        </a>
+        <a href="#" class="nav-link btn-3d btn-yellow" data-target="view-wallet">
+            <div class="button-outer"><div class="button-inner"><span>MON PORTEFEUILLE</span></div></div>
+        </a>
+        <a href="#" class="nav-link btn-3d btn-yellow" data-target="view-market">
+            <div class="button-outer"><div class="button-inner"><span>MARCHÉ MONDIAL</span></div></div>
+        </a>
+        <a href="#" class="nav-link btn-3d btn-yellow" data-target="view-my-sales">
+            <div class="button-outer"><div class="button-inner"><span>MES VENTES</span></div></div>
+        </a>
 
-        <!-- HABIB : J'AI RENOMMÉ CET ONGLET POUR L'ACHAT -->
-        <a href="#" class="nav-link" data-target="view-market"><i class="fas fa-shopping-cart"></i> Marché Mondial</a>
+        <hr style="border: 0.5px solid rgba(255,255,255,0.1); margin: 15px 0;">
 
-        <!-- HABIB : J'AI AJOUTÉ CET ONGLET POUR LA GESTION -->
-        <a href="#" class="nav-link" data-target="view-my-sales"><i class="fas fa-tasks"></i> Gestion de mes ventes</a>
-
-        <hr>
-        <a href="#" class="nav-link" data-target="view-forum"><i class="fas fa-comments"></i> Forum</a>
-        <a href="#" onclick="logout()" class="logout-link"><i class="fas fa-power-off"></i> Déconnexion</a>
+        <a href="#" class="nav-link btn-3d btn-yellow" data-target="view-forum">
+            <div class="button-outer"><div class="button-inner"><span>FORUM</span></div></div>
+        </a>
+        <a href="#" onclick="logout()" class="btn-3d btn-red" style="width: 100%;">
+            <div class="button-outer"><div class="button-inner"><span>DÉCONNEXION</span></div></div>
+        </a>
     </div>
 </nav>
 
@@ -83,11 +102,19 @@
                         <i class="fas fa-map-marker-alt"></i>
                         <div><label>Adresse de livraison</label><p id="display-address">...</p></div>
                     </div>
-                    <button class="edit-profile-btn" onclick="openEditModal()">
-                        <i class="fas fa-user-edit"></i> Modifier mes coordonnées
+                    <button class="btn-3d btn-red" onclick="openEditModal()" style="width: 100%;">
+                        <div class="button-outer">
+                            <div class="button-inner">
+                                <span><i class="fas fa-user-edit"></i> MODIFIER MON PROFIL</span>
+                            </div>
+                        </div>
                     </button>
-                    <button class="btn-nav pokedex" onclick="supprimerMonCompte()" style="background: #ef4444; border: none; margin-top: 20px; width: 100%; font-size: 0.8rem; height: 45px;">
-                        <i class="fas fa-user-times"></i> Supprimer définitivement mon compte
+                    <button class="btn-3d btn-red" onclick="supprimerMonCompte()" style="width: 100%; margin-top: 20px;">
+                        <div class="button-outer">
+                            <div class="button-inner">
+                                <span><i class="fas fa-user-times"></i> SUPPRIMER MON COMPTE</span>
+                            </div>
+                        </div>
                     </button>
                 </div>
             </div>
@@ -126,8 +153,8 @@
 
     <!-- SECTION 2 : POKEDEX MONDIAL -->
     <section id="view-pokedex" class="dashboard-view">
-        <div class="news-pill"><h2>Explorateur Mondial</h2></div>
-        <section id="search-zone" class="glass" style="width: 100%; margin-top: 20px;">
+        <div class="news-pill-5"><h2>Explorateur Mondial</h2></div>
+        <section id="search-zone" class="glass">
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" id="search-name" placeholder="Chercher un Pokémon (ex: Dracaufeu)... puis Entrée">
@@ -144,14 +171,14 @@
 
     <!-- SECTION 3 : MA COLLECTION -->
     <section id="view-collection" class="dashboard-view">
-        <div class="news-pill"><h2>Ma Collection</h2></div>
+        <div class="news-pill-5"><h2>Ma Collection</h2></div>
         <div id="collection-grid" class="pokedex-grid"></div>
     </section>
 
 
     <!-- SECTION 4 : MON PORTEFEUILLE -->
     <section id="view-wallet" class="dashboard-view">
-        <div class="news-pill"><h2>Ma Banque</h2></div>
+        <div class="news-pill-5"><h2>Ma Banque</h2></div>
         <div class="wallet-grid">
             <div class="wallet-card available glass">
                 <div class="wallet-info">
@@ -187,7 +214,13 @@
                         <div class="input-group"><label>CVV</label><input type="password" id="card-cvv" class="glass-input" placeholder="•••" maxlength="3"></div>
                     </div>
                     <div class="input-group"><label>Montant du dépôt (€)</label><input type="number" id="recharge-amount" class="glass-input" placeholder="0.00"></div>
-                    <button class="btn-nav connexion" onclick="rechargerCompte()">Confirmer le paiement</button>
+                    <button class="btn-3d btn-red" style="width: 100%; margin-top: 10px;" onclick="rechargerCompte()">
+                        <div class="button-outer">
+                            <div class="button-inner">
+                                <span>CONFIRMER LE PAIEMENT</span>
+                            </div>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -210,7 +243,7 @@
 
     <!-- SECTION 5 : MARCHÉ MONDIAL -->
     <section id="view-market" class="dashboard-view">
-        <div class="news-pill"><h2>Marché Mondial</h2></div>
+        <div class="news-pill-5"><h2>Marché Mondial</h2></div>
         <div class="market-filters glass">
             <div class="search-box">
                 <i class="fas fa-search"></i>
@@ -230,7 +263,7 @@
 
     <!-- SECTION 6 - GESTION DES VENTES (NEW) -->
     <section id="view-my-sales" class="dashboard-view">
-        <div class="news-pill"><h2>Gestion de mes ventes</h2></div>
+        <div class="news-pill-5"><h2>Gestion de mes ventes</h2></div>
         <div id="my-sales-placeholder">
             <p style="text-align:center; padding:50px;">Ici vous pourrez gérer vos annonces, vos achats et confirmer vos réceptions.</p>
         </div>
@@ -238,7 +271,7 @@
 
     <!-- SECTION 7 : FORUM COMMUNAUTAIRE (SPA VIEW) -->
     <section id="view-forum" class="dashboard-view">
-        <div class="news-pill"><h2>Forum des Dresseurs</h2></div>
+        <div class="news-pill-5"><h2>Forum des Dresseurs</h2></div>
 
         <!-- Formulaire de post -->
         <div class="mgmt-section glass" style="margin-bottom: 30px; text-align: left; padding: 25px;">
@@ -250,8 +283,12 @@
 
                 <textarea id="forum-message" class="glass-input" placeholder="Votre message ici..." style="height: 100px; resize: none;"></textarea>
 
-                <button class="btn-nav connexion btn-forum" onclick="publierSurForum()">
-                    <i class="fas fa-paper-plane"></i> Poster le message
+                <button class="btn-3d btn-red btn-forum" onclick="publierSurForum()" style="width: 100%;">
+                    <div class="button-outer">
+                        <div class="button-inner">
+                            <span><i class="fas fa-paper-plane"></i> POSTER LE MESSAGE</span>
+                        </div>
+                    </div>
                 </button>
             </div>
         </div>
@@ -285,7 +322,13 @@
     <div class="modal-content glass">
         <h3>Choisir mon profil</h3>
         <div class="avatar-picker" id="avatar-list"></div>
-        <button class="btn-nav pokedex" style="width:100%; margin-top:20px;" onclick="closeAvatarModal()">Fermer</button>
+        <button class="btn-3d btn-yellow" style="width: 100%; margin-top: 20px;" onclick="closeAvatarModal()">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>FERMER</span>
+                </div>
+            </div>
+        </button>
     </div>
 </div>
 
@@ -308,7 +351,13 @@
                 <button class="ver-btn reverse" data-ver="Reverse">Reverse</button>
             </div>
         </div>
-        <button class="btn-nav connexion" id="confirm-add" style="width:100%; margin-top:10px;">Ajouter au Pokedex</button>
+        <button class="btn-3d btn-red" id="confirm-add" style="width: 100%; margin-top: 10px;">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>AJOUTER AU POKEDEX</span>
+                </div>
+            </div>
+        </button>
     </div>
 </div>
 
@@ -321,8 +370,12 @@
             <div class="input-group"><label><i class="fas fa-phone"></i> Téléphone</label><input type="text" id="edit-phone" class="glass-input"></div>
         </div>
         <div class="modal-buttons">
-            <button class="btn-nav pokedex" onclick="closeEditModal()">Annuler</button>
-            <button class="btn-nav connexion" onclick="sauvegarderProfil()">Enregistrer</button>
+            <button class="btn-3d btn-yellow" onclick="closeEditModal()">
+                <div class="button-outer"><div class="button-inner"><span>ANNULER</span></div></div>
+            </button>
+            <button class="btn-3d btn-red" onclick="sauvegarderProfil()">
+                <div class="button-outer"><div class="button-inner"><span>ENREGISTRER</span></div></div>
+            </button>
         </div>
     </div>
 </div>
@@ -338,8 +391,61 @@
             </div>
         </div>
         <div class="modal-buttons">
-            <button class="btn-nav pokedex" onclick="closeSellModal()">Annuler</button>
-            <button class="btn-nav connexion" onclick="confirmerMiseEnVente()">Publier</button>
+            <button class="btn-3d btn-yellow" onclick="closeSellModal()">
+                <div class="button-outer">
+                    <div class="button-inner">
+                        <span>ANNULER</span>
+                    </div>
+                </div>
+            </button>
+            <button class="btn-3d btn-red" onclick="confirmerMiseEnVente()">
+                <div class="button-outer">
+                    <div class="button-inner">
+                        <span>PUBLIER</span>
+                    </div>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE DE RECHARGE RAPIDE  -->
+<div id="recharge-modal" class="modal">
+    <div class="modal-content glass" style="width: 850px; max-width: 95%; position: relative;">
+        <!-- 1. LA CROIX DE FERMETURE -->
+        <span class="close-modal" onclick="closeRechargeModal()">&times;</span>
+
+        <h3 class="pokemon-font-hollow" style="margin-bottom: 20px;">Recharge Rapide</h3>
+
+        <div class="payment-container" style="gap: 30px;">
+            <!-- La Carte Visuelle -->
+            <div class="credit-card-visual glass">
+                <div class="card-top"><div class="chip"></div><i class="fab fa-cc-visa"></i></div>
+                <div class="card-number-display">•••• •••• •••• ••••</div>
+                <div class="card-bottom">
+                    <div id="modal-card-holder">NOM DU DRESSEUR</div>
+                    <div class="card-expiry">MM/YY</div>
+                </div>
+            </div>
+
+            <!-- Le Formulaire -->
+            <div class="payment-form">
+                <div class="input-group"><label>Numéro de carte</label><input type="text" id="modal-card-num" class="glass-input" placeholder="4530 •••• •••• ••••"></div>
+                <div class="form-row">
+                    <div class="input-group"><label>Expiration</label><input type="text" id="modal-card-exp" class="glass-input" placeholder="MM/YY"></div>
+                    <div class="input-group"><label>CVV</label><input type="password" id="modal-card-cvv" class="glass-input" placeholder="•••"></div>
+                </div>
+                <div class="input-group"><label>Montant du dépôt (€)</label><input type="number" id="modal-recharge-amount" class="glass-input" placeholder="0.00"></div>
+
+                <!-- 2. LE BOUTON LARGE "MA BANQUE" -->
+                <button class="btn-3d btn-red" style="width: 100%; margin-top: 20px;" onclick="rechargerCompteModal()">
+                    <div class="button-outer">
+                        <div class="button-inner">
+                            <span>CONFIRMER LE PAIEMENT</span>
+                        </div>
+                    </div>
+                </button>
+            </div>
         </div>
     </div>
 </div>

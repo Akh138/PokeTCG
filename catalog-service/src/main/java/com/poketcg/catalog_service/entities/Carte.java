@@ -24,4 +24,5 @@ public class Carte {
     private String type;        // ex: Feu, Eau, Plante
 
     private BigDecimal prix;
+    private String number; // Numéro de la carte (ex: 4, 15, 102)
 }

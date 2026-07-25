@@ -20,7 +20,7 @@ async function chargerNews() {
 
         // 3. Pour chaque news reçue de MongoDB, je crée une carte HTML
         newsListe.forEach(news => {
-            // MA MODIFICATION : J'ajoute un lien "Lire l'article" sous le titre
+            // J'ajoute un lien "Lire l'article" sous le titre
             // Si news.articleUrl existe dans ma base, le bouton s'affichera
             const card = `
                 <div class="news-card">

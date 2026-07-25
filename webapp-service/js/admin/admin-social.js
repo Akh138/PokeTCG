@@ -31,9 +31,13 @@ async function loadForumMessages() {
                     </div>
                     <i style="color:white; font-size:0.85rem;">Sujet : ${msg.sujet}</i>
                     <p style="font-size:0.8rem; color:rgba(255,255,255,0.7); margin:5px 0;">${msg.message}</p>
-                    <button class="btn-ban" style="padding:4px 8px; font-size:0.7rem;" onclick="adminDeleteForumMsg('${msg.id}')">
-                        <i class="fas fa-trash"></i> Supprimer
-                    </button>
+                    <button class="btn-3d btn-red" style="width: 130px; height: 32px;" onclick="adminDeleteForumMsg('${msg.id}')">
+                       <div class="button-outer">
+                         <div class="button-inner">
+                            <span style="font-size: 0.7rem; letter-spacing: 2px; padding-bottom: 3px;">SUPPRIMER</span>
+                         </div>
+                       </div>
+                   </button>
                 </div>`;
         });
     } catch (e) { forumContainer.innerHTML = "<p style='color:red;'>Erreur Forum.</p>"; }
@@ -64,8 +68,12 @@ async function loadAdminNews() {
                             ${n.titre}
                         </b>
                     </div>
-                    <button class="btn-ban" style="padding: 5px 8px; background: #ef4444;" onclick="adminDeleteNews('${n.id}')">
-                        <i class="fas fa-trash-alt"></i>
+                    <button class="btn-3d btn-red" style="width: 50px; height: 40px;" onclick="adminDeleteNews('${n.id}')">
+                       <div class="button-outer">
+                         <div class="button-inner">
+                           <span><i class="fas fa-trash-alt"></i></span>
+                        </div>
+                      </div>
                     </button>
                 </div>`;
         });

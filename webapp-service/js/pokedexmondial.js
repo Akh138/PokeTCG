@@ -45,9 +45,14 @@ function afficherGalerieExtensions(liste) {
     const grid = document.getElementById("pokedex-grid");
     grid.innerHTML = "";
     liste.forEach(ext => {
+
+        // On gère les deux formats (API vs MongoDB)
+        // Si ext.images existe, on prend le logo dedans. Sinon on prend ext.logoUrl
+        const finalLogo = (ext.images && ext.images.logo) ? ext.images.logo : ext.logoUrl;
+
         const cardHtml = `
             <div class="extension-card glass" onclick="voirCartesDeLExtension('${ext.id}')">
-                <img src="${ext.images.logo}" alt="${ext.name}">
+                <img src="${finalLogo}" alt="${ext.name}">
                 <div class="ext-info">
                     <p class="series-name">${ext.series}</p>
                     <h3>${ext.name}</h3>

@@ -15,20 +15,32 @@
 
 <header class="glass">
     <!-- Bouton Pokedex à gauche -->
-    <button class="btn-nav pokedex" onclick="window.location.href='pokedexmondial.html'">POKEDEX</button>
+    <button class="btn-3d btn-yellow" onclick="window.location.href='pokedexmondial.html'">
+        <div class="button-outer">
+            <div class="button-inner">
+                <span>POKEDEX</span>
+            </div>
+        </div>
+    </button>
 
     <div class="header-logo">
         <img src="../assets/logo.png" alt="Logo"> <!-- Utilise assets/logo.png pour l'accueil -->
     </div>
 
     <!-- Bouton Accueil à droite (remplace Connexion) -->
-    <button class="btn-nav accueil" onclick="window.location.href='../index.html'">ACCUEIL</button>
+    <button class="btn-3d btn-red" onclick="window.location.href='../index.html'">
+        <div class="button-outer">
+            <div class="button-inner">
+                <span>ACCUEIL</span>
+            </div>
+        </div>
+    </button>
 </header>
 
 <main>
 
     <!-- Titre de la page (Capsule comme sur Figma) -->
-    <div class="news-pill">
+    <div class="news-pill-3">
         <h2>Connexion</h2>
     </div>
 
@@ -38,14 +50,20 @@
 
         <div class="login-form">
             <div class="field">
-                <label>USERNAME</label>
+                <label>PSEUDO</label>
                 <input type="text" id="username" placeholder="Pseudo...">
             </div>
             <div class="field">
                 <label>MOT DE PASSE</label>
                 <input type="password" id="password" placeholder="••••••••">
             </div>
-            <button class="btn-nav connexion" id="login-btn" style="width: 100%; margin-top: 10px;">Connexion</button>
+            <button class="btn-3d btn-red" id="login-btn" style="width: 100%; margin-top: 10px;">
+                <div class="button-outer">
+                    <div class="button-inner">
+                        <span>Connexion</span>
+                    </div>
+                </div>
+            </button>
             <p class="auth-switch">
                 Pas encore dresseur ? <a href="register.html" style="color: var(--poke-yellow);">Inscris-toi</a>
             </p>

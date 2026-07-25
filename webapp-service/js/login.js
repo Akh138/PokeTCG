@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const token = await reponse.text();
                 localStorage.setItem("user_token", token);
 
-                // ⭐ HABIB : ÉTAPE CRUCIALE - Je récupère le VRAI profil avant de rediriger ⭐
+                //  - Je récupère le VRAI profil avant de rediriger
                 // On a besoin de savoir si l'utilisateur est ROLE_USER ou ROLE_ADMIN
                 const resProfile = await fetch(`${PROFILE_API_URL}/${usernameVal}`, {
                     method: "GET",

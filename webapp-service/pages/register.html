@@ -11,17 +11,29 @@
 <body>
 
 <header class="glass">
-    <button class="btn-nav pokedex" onclick="window.location.href='pokedexmondial.html'">POKEDEX</button>
+    <button class="btn-3d btn-yellow" onclick="window.location.href='pokedexmondial.html'">
+        <div class="button-outer">
+            <div class="button-inner">
+                <span>POKEDEX</span>
+            </div>
+        </div>
+    </button>
     <div class="header-logo">
         <img src="../assets/logo.png" alt="Logo"> <!-- Utilise assets/logo.png pour l'accueil -->
     </div>
-    <button class="btn-nav accueil" onclick="window.location.href='../index.html'">ACCUEIL</button>
+    <button class="btn-3d btn-red" onclick="window.location.href='../index.html'">
+        <div class="button-outer">
+            <div class="button-inner">
+                <span>ACCUEIL</span>
+            </div>
+        </div>
+    </button>
 </header>
 
 <main>
 
     <!-- Titre Inscription -->
-    <div class="news-pill">
+    <div class="news-pill-4">
         <h2>Inscription</h2>
     </div>
 
@@ -31,7 +43,7 @@
 
         <div class="login-form">
             <div class="field">
-                <label>USERNAME</label>
+                <label>PSEUDO</label>
                 <input type="text" id="reg-username" placeholder="Pseudo...">
             </div>
             <div class="field">
@@ -52,7 +64,13 @@
             </div>
 
             <!-- Bouton identique au style Pokedex (Solid + Jaune) -->
-            <button class="btn-nav pokedex" id="register-btn" style="width: 100%; margin-top: 10px;">S'INSCRIRE</button>
+            <button class="btn-3d btn-red" id="register-btn" style="width: 100%; margin-top: 10px;">
+                <div class="button-outer">
+                    <div class="button-inner">
+                        <span>S'INSCRIRE</span>
+                    </div>
+                </div>
+            </button>
 
             <p class="auth-switch">Déjà dresseur ? <a href="login.html" style="color: var(--poke-yellow);">Connecte-toi</a></p>
         </div>

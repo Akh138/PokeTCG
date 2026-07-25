@@ -11,10 +11,10 @@ const API_SOCIAL       = "http://localhost:8086/api/social/forum";
 // 2. VARIABLES GLOBALES DE SESSION
 let toutesLesExtensions = [];
 let monInventaire = [];
-let mesAnnonces = []; // Habib : Je stocke ici mes ventes actives pour mettre à jour les badges
-let annoncesPubliques = []; // Habib : Je stocke ici les cartes des autres dresseurs
+let mesAnnonces = []; //  Je stocke ici mes ventes actives pour mettre à jour les badges
+let annoncesPubliques = []; //  Je stocke ici les cartes des autres dresseurs
 let carteEnCoursDeCapture = null;
-let carteEnCoursDeVente = null; // Habib : Pour stocker l'ID de la carte que je veux vendre
+let carteEnCoursDeVente = null; //  Pour stocker l'ID de la carte que je veux vendre
 let versionSelectionnee = "Normal";
 
 // --- DÉMARRAGE DE L'APPLICATION ---
@@ -31,14 +31,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // A. INITIALISATION DU PROFIL (MySQL 8081)
-    // ⭐ HABIB : CORRECTION ICI : On utilise username car c'est le nom dans ton entité Java ⭐
+    //   On utilise username car c'est le nom dans ton entité Java
     const nomUtilisateur = userData.username || userData.pseudo;
     document.getElementById("display-pseudo").innerText = nomUtilisateur;
 
     // B. CHARGEMENT DES DONNÉES EN CASCADE (ORDRE CRITIQUE)
     try {
         // 1. Je récupère d'abord les infos complètes (Email, Adresse, Solde)
-        // ⭐ HABIB : CORRECTION ICI : On envoie le bon nom au service Identity ⭐
+        //   On envoie le bon nom au service Identity
         const userFull = await chargerInfosDresseur(nomUtilisateur, userToken);
 
         // 2. TRÈS IMPORTANT : Je récupère mon inventaire MySQL AVANT d'afficher le catalogue
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // 3. Maintenant que j'ai mon inventaire en mémoire, je peux afficher les extensions
         await chargerExtensionsMondiales();
 
-        // Je lance le calcul des stats dès que tout est chargé ⭐
+        // Je lance le calcul des stats dès que tout est chargé
         mettreAJourStatsAccueil();
 
     } catch (error) {
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // --- SECTION : GESTION DU ZOOM (LIGHTBOX) ---
 
-// Habib : J'attache la fonction à 'window' pour qu'elle soit visible partout
+//  J'attache la fonction à 'window' pour qu'elle soit visible partout
 window.ouvrirZoom = function(url, event) {
     if (event) event.stopPropagation(); // Empêche de cliquer sur la carte en même temps
 
@@ -106,13 +106,17 @@ async function chargerExtensionsMondiales() {
     }
 }
 
-// Habib : Voici ma logique de calcul de progression set par set
+//  Voici ma logique de calcul de progression set par set
 function afficherGalerieExtensions(liste) {
     const grid = document.getElementById("pokedex-grid");
     if (!grid) return;
     grid.innerHTML = "";
 
     liste.forEach(ext => {
+        // ⭐ RIGUEUR HABIB : Correction du format d'image (API vs MongoDB) ⭐
+        // Si ext.images existe, on prend le logo dedans (API). Sinon on prend ext.logoUrl (MongoDB)
+        const imageLogo = (ext.images && ext.images.logo) ? ext.images.logo : ext.logoUrl;
+
         // 1. Je filtre mon inventaire MySQL pour cette extension précise
         const mesCartesDuSet = monInventaire.filter(c => c.extension === ext.name);
 
@@ -121,18 +125,18 @@ function afficherGalerieExtensions(liste) {
         const nbPossedes = uniqueOwnedIds.length;
 
         // 3. Je récupère le total de l'API et je calcule le %
-        const totalSet = ext.total;
-        const pourcentage = Math.round((nbPossedes / totalSet) * 100);
+        const totalSet = ext.total; // Plus besoin de "|| 0", la donnée est là !
+        const pourcentage = totalSet > 0 ? Math.round((nbPossedes / totalSet) * 100) : 0;
 
         grid.innerHTML += `
             <div class="extension-card glass" onclick="voirCartesDeLExtension('${ext.id}')">
-                <img src="${ext.images.logo}" alt="${ext.name}">
+                <img src="${imageLogo}" alt="${ext.name}">
                 <div class="ext-info">
                     <p class="series-name">${ext.series}</p>
                     <h3>${ext.name}</h3>
                     <p class="release-date">Sortie : ${ext.releaseDate}</p>
 
-                    <!-- MA BARRE DE PROGRESSION (POKÉCARDEX STYLE) -->
+                    <!-- MA BARRE DE PROGRESSION -->
                     <div class="ext-progress">
                         <div class="ext-progress-info">
                             <span>Possédées</span>
@@ -149,7 +153,7 @@ function afficherGalerieExtensions(liste) {
     });
 }
 
-// Habib : Synchronisation MySQL avant d'entrer dans un set
+// Synchronisation MySQL avant d'entrer dans un set
 async function voirCartesDeLExtension(setId) {
     const grid = document.getElementById("pokedex-grid");
     const userData = JSON.parse(localStorage.getItem("user_data"));
@@ -175,7 +179,7 @@ async function voirCartesDeLExtension(setId) {
     }
 }
 
-// Habib : Cette fonction gère la recherche globale par nom (Pikachu, Dracaufeu...)
+//  Cette fonction gère la recherche globale par nom (Pikachu, Dracaufeu...)
 async function rechercherGlobalement(nom) {
     const grid = document.getElementById("pokedex-grid");
     const userData = JSON.parse(localStorage.getItem("user_data"));
@@ -210,7 +214,7 @@ function afficherGrillePokemon(liste, nomExtension) {
             if (data && data.market) prix = data.market.toFixed(2) + "€";
         }
 
-        // Habib : Je vérifie mes 3 carrés de complétion
+        //  Je vérifie mes 3 carrés de complétion
         const aN = monInventaire.some(c => c.idCarteApi === carte.id && c.langueCarte === "Normal");
         const aH = monInventaire.some(c => c.idCarteApi === carte.id && c.langueCarte === "Holo");
         const aR = monInventaire.some(c => c.idCarteApi === carte.id && c.langueCarte === "Reverse");
@@ -242,14 +246,14 @@ function afficherGrillePokemon(liste, nomExtension) {
 }
 
 
-// ⭐ HABIB : MA LOGIQUE DE COLLECTION (LISTE DES LOGOS + CLASSEUR GRID) ⭐
+//  MA LOGIQUE DE COLLECTION (LISTE DES LOGOS + CLASSEUR GRID)
 
 async function afficherMaCollection() {
     const grid = document.getElementById("collection-grid");
     if (!grid) return;
     grid.innerHTML = `<p style="text-align:center;">Chargement de votre collection...</p>`;
 
-    // Habib : Sécurité si les extensions ne sont pas encore chargées
+    //  Sécurité si les extensions ne sont pas encore chargées
     if (toutesLesExtensions.length === 0) {
         await chargerExtensionsMondiales();
     }
@@ -265,19 +269,31 @@ async function afficherMaCollection() {
 
     grid.innerHTML = "";
     mesExtensions.forEach(ext => {
+        // Sécurité format d'image pour la collection
+        const logoCollection = (ext.images && ext.images.logo) ? ext.images.logo : ext.logoUrl;
+
         const mesCartes = monInventaire.filter(c => c.extension === ext.name);
         const uniqueIds = [...new Set(mesCartes.map(c => c.idCarteApi))];
         const nbPossedes = uniqueIds.length;
-        const pourcent = Math.round((nbPossedes / ext.total) * 100);
+
+// Utilisation directe du champ .total de MongoDB
+        const pourcent = Math.round((nbPossedes / ext.total) * 100)
 
         grid.innerHTML += `
             <div class="extension-card glass" onclick="ouvrirClasseurSet('${ext.id}')">
-                <img src="${ext.images.logo}" alt="${ext.name}">
+                <img src="${logoCollection}" alt="${ext.name}">
                 <div class="ext-info">
                     <h3>${ext.name}</h3>
                     <div class="ext-progress">
-                        <div class="ext-progress-info"><span>Collection</span><span>${nbPossedes} / ${ext.total}</span></div>
-                        <div class="ext-progress-bg"><div class="ext-progress-fill ${pourcent === 100 ? 'completed' : ''}" style="width: ${pourcent}%"></div></div>
+                        <div class="ext-progress-info">
+                            <span>Collection</span>
+                            <span>${nbPossedes} / ${ext.total}</span>
+                        </div>
+                        <div class="ext-progress-bg">
+                            <div class="ext-progress-fill ${pourcent === 100 ? 'completed' : ''}" 
+                                 style="width: ${pourcent}%">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -292,6 +308,8 @@ async function ouvrirClasseurSet(setId) {
     try {
         const reponse = await fetch(`${API_CATALOG}/set/${setId}`);
         const toutesLesCartesMondiales = await reponse.json();
+
+        // On trie par numéro de carte
         toutesLesCartesMondiales.sort((a, b) => parseInt(a.number) - parseInt(b.number));
 
         grid.innerHTML = `
@@ -305,30 +323,41 @@ async function ouvrirClasseurSet(setId) {
         const binderView = document.getElementById("binder-view");
 
         toutesLesCartesMondiales.forEach(carteMondiale => {
-            // ⭐ HABIB : Rigueur - On affiche en couleur uniquement si statut est 'POSSEDEE'
-            // Si c'est 'EN_TRANSIT', la carte reste en mode "Manquante" tant qu'on n'a pas cliqué sur le bouton
+            //  On définit les variables au début de la boucle pour chaque carte
             const possession = monInventaire.find(c => c.idCarteApi === carteMondiale.id && c.statut === 'POSSEDEE');
+
+            // Sécurité Image (API vs MongoDB)
+            const imageCarte = (carteMondiale.images && carteMondiale.images.large) ? carteMondiale.images.large : carteMondiale.imageUrl;
+
+            // Sécurité Numéro (C'est ici qu'on utilise le nouveau champ total/number)
+            const numeroCarte = carteMondiale.number || "N/A";
 
             if (possession) {
                 const estEnVente = mesAnnonces.some(a => a.idCarteApi === carteMondiale.id && a.statut === 'DISPONIBLE');
                 let classEtat = "cond-neuf";
                 if(possession.etatCarte === "Excellent") classEtat = "cond-excellent";
                 if(possession.etatCarte === "Usé") classEtat = "cond-use";
-                const date = new Date(possession.dateAcquisition).toLocaleDateString('fr-FR');
 
-                const nomSecurise = carteMondiale.name.replace(/'/g, "\\'");
+                const date = new Date(possession.dateAcquisition).toLocaleDateString('fr-FR');
+                const nomSecurise = (carteMondiale.name || carteMondiale.nomFr).replace(/'/g, "\\'");
 
                 binderView.innerHTML += `
                     <div class="pokemon-card glass">
                         <div class="card-img-container">
                             <div class="condition-badge ${classEtat}">${possession.etatCarte}</div>
-                            <div class="btn-zoom-overlay" onclick="ouvrirZoom('${carteMondiale.images.large}', event)"><i class="fas fa-search-plus"></i></div>
-                            <img src="${carteMondiale.images.large}" alt="${carteMondiale.name}">
+                            <div class="btn-zoom-overlay" onclick="ouvrirZoom('${imageCarte}', event)">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                            <img src="${imageCarte}" alt="pokemon">
                         </div>
                         <div class="card-details">
-                            <h3>${carteMondiale.name}</h3>
+                            <h3>${carteMondiale.name || carteMondiale.nomFr}</h3>
                             ${estEnVente ? `<div class="status-badge-sale"><i class="fas fa-tag"></i> En vente</div>` : `<button class="btn-sell-trigger" onclick="preparerVente('${carteMondiale.id}', '${nomSecurise}')"><i class="fas fa-hand-holding-usd"></i> Mettre en vente</button>`}
-                            <div class="status-indicators"><div class="box ${possession.langueCarte === 'Normal' ? 'active-normal' : ''}">N</div><div class="box ${possession.langueCarte === 'Holo' ? 'active-holo' : ''}">H</div><div class="box ${possession.langueCarte === 'Reverse' ? 'active-reverse' : ''}">R</div></div>
+                            <div class="status-indicators">
+                                <div class="box ${possession.langueCarte === 'Normal' ? 'active-normal' : ''}">N</div>
+                                <div class="box ${possession.langueCarte === 'Holo' ? 'active-holo' : ''}">H</div>
+                                <div class="box ${possession.langueCarte === 'Reverse' ? 'active-reverse' : ''}">R</div>
+                            </div>
                             <span class="acquisition-date">Obtenue le ${date}</span>
                         </div>
                     </div>`;
@@ -339,7 +368,9 @@ async function ouvrirClasseurSet(setId) {
                             <div class="missing-badge">MANQUANTE</div>
                             <img src="../assets/cards-back.png" alt="Missing">
                         </div>
-                        <div class="card-details"><h3 style="opacity:0.3;">N°${carteMondiale.number}</h3></div>
+                        <div class="card-details">
+                            <h3 style="opacity:0.3;">N°${numeroCarte}</h3>
+                        </div>
                     </div>`;
             }
         });
@@ -347,7 +378,7 @@ async function ouvrirClasseurSet(setId) {
 }
 
 
-// ⭐ HABIB : LOGIQUE MARCHÉ MONDIAL ⭐
+//  LOGIQUE MARCHÉ MONDIAL
 
 async function chargerMarcheMondial() {
     const grid = document.getElementById("market-grid");
@@ -390,8 +421,12 @@ async function chargerMarcheMondial() {
                         <p style="font-size:0.8rem; color: var(--poke-yellow); font-weight: bold;">
                            <i class="fas fa-user-tag"></i> ${sellerName}
                         </p>
-                        <button class="btn-buy-trigger" onclick="acheterCarte(${ad.id}, ${ad.prix})">
-                            <i class="fas fa-shopping-cart"></i> Acheter
+                        <button class="btn-3d btn-red" style="width: 100%; margin-top: 15px;" onclick="acheterCarte(${ad.id}, ${ad.prix})">
+                          <div class="button-outer">
+                             <div class="button-inner" style="background: linear-gradient(135deg, #10b981, #059669);">
+                               <span><i class="fas fa-shopping-cart"></i> ACHETER</span>
+                             </div>
+                          </div>
                         </button>
                     </div>
                 </div>`;
@@ -435,7 +470,7 @@ async function acheterCarte(idAnnonce, prix) {
 }
 
 
-// ⭐ HABIB : SECTION 6 - GESTION DES VENTES (HISTORIQUE DÉDIÉ ACHATS/VENTES) ⭐
+//  SECTION 6 - GESTION DES VENTES (HISTORIQUE DÉDIÉ ACHATS/VENTES)
 async function chargerGestionVentes() {
     const placeholder = document.getElementById("my-sales-placeholder");
     const userData = JSON.parse(localStorage.getItem("user_data"));
@@ -488,17 +523,28 @@ async function chargerGestionVentes() {
                 let actionHtml = "";
 
                 if (achat.statut === 'EN_TRANSIT') {
-                    // Si c'est juste acheté, Ondine peut encore annuler
+                    // Bouton ANNULER en 3D Rouge
                     actionHtml = `
-                        <div style="display:flex; flex-direction:column; gap:5px;">
+                        <div style="display:flex; flex-direction:column; gap:5px; align-items: flex-end;">
                             <span style="color:var(--text-muted); font-size:0.7rem;"><i class="fas fa-clock"></i> Attente envoi...</span>
-                            <button class="btn-nav pokedex" style="height:25px; font-size:0.6rem; background:#64748b; border:none;" onclick="cloturerAnnulerAchat(${achat.id})">
-                                Annuler l'achat
+                            <button class="btn-3d btn-red" style="width: 130px; height: 32px;" onclick="cloturerAnnulerAchat(${achat.id})">
+                                <div class="button-outer">
+                                    <div class="button-inner">
+                                        <span style="font-size: 0.8rem; letter-spacing: 2.5px;">ANNULER</span>
+                                    </div>
+                                </div>
                             </button>
                         </div>`;
                 } else if (achat.statut === 'EXPEDIEE') {
-                    // Si Habib a envoyé, Ondine peut seulement valider la réception
-                    actionHtml = `<button class="btn-nav connexion" style="height:35px; font-size:0.7rem;" onclick="confirmerReceptionAchat(${achat.id})">Valider réception</button>`;
+                    // Bouton VALIDER en 3D Jaune (Action positive)
+                    actionHtml = `
+                        <button class="btn-3d btn-yellow" style="width: 130px; height: 32px;" onclick="confirmerReceptionAchat(${achat.id})">
+                            <div class="button-outer">
+                                <div class="button-inner">
+                                    <span style="font-size: 0.8rem; letter-spacing: 2.5px;">REÇU ?</span>
+                                </div>
+                            </div>
+                        </button>`;
                 }
 
                 pendingGrid.innerHTML += `
@@ -521,7 +567,7 @@ async function chargerGestionVentes() {
             }
         }
 
-        // 6. Remplissage Ventes (Habib voit ses ventes et peut envoyer)
+        // 6. Remplissage Ventes (voit ses ventes et peut envoyer)
         const salesGrid = document.getElementById("list-ventes-actives");
         if (mesVentes.length === 0) {
             salesGrid.innerHTML = "<p class='small-text'>Vous n'avez aucune annonce.</p>";
@@ -531,18 +577,31 @@ async function chargerGestionVentes() {
                 const card = await resCard.json();
                 const cardData = card.id ? card : card.data;
 
-                // ⭐ HABIB : Je gère les boutons Vendeur avec précision selon le statut ⭐
+                //   Je gère les boutons Vendeur avec précision selon le statut
                 let btnVendeur = "";
 
                 if (vente.statut === 'DISPONIBLE') {
-                    // La carte est sur le marché, on peut la retirer
-                    btnVendeur = `<button class="btn-nav pokedex" style="height:35px; font-size:0.7rem; background:#ef4444; border:none;" onclick="annulerAnnonce(${vente.id})"><i class="fas fa-times-circle"></i> Retirer</button>`;
+                    // Bouton RETIRER en 3D Rouge
+                    btnVendeur = `
+                        <button class="btn-3d btn-red" style="width: 110px; height: 32px;" onclick="annulerAnnonce(${vente.id})">
+                            <div class="button-outer">
+                                <div class="button-inner">
+                                   <span style="font-size: 0.8rem; letter-spacing: 2.5px;">RETIRER</span>
+                                </div>
+                            </div>
+                        </button>`;
                 } else if (vente.statut === 'EN_TRANSIT') {
-                    // Ondine a payé, Habib doit confirmer l'envoi
-                    btnVendeur = `<button class="btn-nav connexion" style="height:35px; font-size:0.7rem; background:var(--poke-yellow); color:black;" onclick="marquerCommeEnvoye(${vente.id})"><i class="fas fa-shipping-fast"></i> Confirmer l'envoi</button>`;
+                    // Bouton ENVOYÉ en 3D Jaune (L'icône de camion est incluse proprement)
+                    btnVendeur = `
+                        <button class="btn-3d btn-yellow" style="width: 130px; height: 32px;" onclick="marquerCommeEnvoye(${vente.id})">
+                            <div class="button-outer">
+                                <div class="button-inner">
+                                    <span style="font-size: 0.8rem; letter-spacing: 2.5px;"><i class="fas fa-shipping-fast"></i> ENVOYER</span>
+                                </div>
+                            </div>
+                        </button>`;
                 } else if (vente.statut === 'EXPEDIEE') {
-                    // Habib a envoyé, il attend qu'Ondine valide
-                    btnVendeur = `<span style="color:#3b82f6; font-size:0.7rem;"><i class="fas fa-truck"></i> Colis expédié</span>`;
+                    btnVendeur = `<span style="color:#3b82f6; font-size:0.75rem; font-weight:bold;"><i class="fas fa-truck"></i> EN ROUTE</span>`;
                 }
 
                 salesGrid.innerHTML += `
@@ -559,7 +618,7 @@ async function chargerGestionVentes() {
     } catch (e) { console.error("Erreur de rendu Gestion :", e); }
 }
 
-// ⭐ NOUVELLE FONCTION POUR LE VENDEUR (HABIB)
+//  NOUVELLE FONCTION POUR LE VENDEUR
 async function marquerCommeEnvoye(idAnnonce) {
     if (!confirm("Avez-vous bien déposé le colis ? Ondine pourra alors valider la réception.")) return;
     try {
@@ -583,7 +642,7 @@ async function confirmerReceptionAchat(idAnnonce) {
     } catch (e) { alert("Erreur."); }
 }
 
-// ⭐ HABIB : FONCTION POUR RETIRER UNE ANNONCE DU MARCHÉ ⭐
+// FONCTION POUR RETIRER UNE ANNONCE DU MARCHÉ
 async function annulerAnnonce(idAnnonce) {
     if (!confirm("Rigueur Habib : Voulez-vous vraiment retirer cette carte de la vente ?")) return;
 
@@ -609,7 +668,7 @@ async function annulerAnnonce(idAnnonce) {
 }
 
 
-// ⭐ HABIB : LOGIQUE PROFIL, INVENTAIRE ET WALLET (RIGOUREUSEMENT IDENTIQUES) ⭐
+// LOGIQUE PROFIL, INVENTAIRE ET WALLET (RIGOUREUSEMENT IDENTIQUES)
 
 async function chargerMesAnnonces(idVendeur) {
     try {
@@ -684,6 +743,7 @@ async function rechargerCompte() {
             document.getElementById("card-exp").value = "";
             document.getElementById("card-cvv").value = "";
             await chargerSoldeDresseur(userData.id);
+            await chargerHistoriquePortefeuille(userData.id);
         }
     } catch (e) { alert("Impossible de joindre le microservice Wallet."); }
 }
@@ -770,7 +830,7 @@ async function chargerInventairePrivé(idDresseur) {
     try {
         const reponse = await fetch(`${API_INVENTORY}/pokedex/${idDresseur}`);
         if (reponse.ok) {
-            // ⭐ HABIB : Je corrige le nom de la variable reponse ici ⭐
+
             monInventaire = await reponse.json();
         }
     } catch (e) { console.error(e); }
@@ -891,7 +951,7 @@ function openEditModal() {
 
 function closeEditModal() { document.getElementById("edit-profile-modal").style.display = "none"; }
 
-// ⭐ HABIB : LOGIQUE DE CALCUL DES STATS (DYNAMIQUE : NORMAL 1, HOLO 3, REVERSE 5) ⭐
+// LOGIQUE DE CALCUL DES STATS (DYNAMIQUE : NORMAL 1, HOLO 3, REVERSE 5)
 async function mettreAJourStatsAccueil() {
     const cardsCountElem = document.getElementById("total-cards-count");
     const totalValueElem = document.getElementById("total-collection-value");
@@ -905,7 +965,7 @@ async function mettreAJourStatsAccueil() {
     const nbCartes = monInventaire.length;
     cardsCountElem.innerText = nbCartes + " Cartes";
 
-    //  MOTEUR DE CALCUL XP PAR RARETÉ ⭐
+    //  MOTEUR DE CALCUL XP PAR RARETÉ
     let totalXP = 0;
     monInventaire.forEach(card => {
         // card.langueCarte contient "Normal", "Holo" ou "Reverse"
@@ -972,7 +1032,7 @@ async function chargerHistoriquePortefeuille(idDresseur) {
     } catch (e) { console.error("Erreur Audit Wallet :", e); }
 }
 
-//  FONCTION POUR ANNULER UN ACHAT (REMBOURSEMENT + RETOUR CARTE) ⭐
+//  FONCTION POUR ANNULER UN ACHAT (REMBOURSEMENT + RETOUR CARTE)
 async function cloturerAnnulerAchat(idAnnonce) {
     if (!confirm("Rigueur Habib : Voulez-vous vraiment annuler cet achat ? L'argent sera rendu sur votre solde disponible.")) return;
 
@@ -995,13 +1055,13 @@ async function cloturerAnnulerAchat(idAnnonce) {
     }
 }
 
-// ⭐ HABIB : LOGIQUE SOCIALE (FORUM MONGODB) ⭐
+//  LOGIQUE SOCIALE (FORUM MONGODB)
 
 async function chargerMessagesForum() {
     const feed = document.getElementById("forum-feed");
     if(!feed) return;
 
-    // ⭐ HABIB : Je récupère les infos de session ICI pour savoir si on peut supprimer ⭐
+    // Je récupère les infos de session ICI pour savoir si on peut supprimer
     const userData = JSON.parse(localStorage.getItem("user_data"));
     if(!userData) return;
 
@@ -1020,7 +1080,7 @@ async function chargerMessagesForum() {
         messages.forEach(msg => {
             const date = new Date(msg.dateEnvoi).toLocaleString('fr-FR');
 
-            // ⭐ HABIB : Je vérifie si l'ID de l'auteur MongoDB est le mien (Ondine ID 4 ou Habib ID 7)
+            //  Je vérifie si l'ID de l'auteur MongoDB est le mien (Ondine ID 4 ou Habib ID 7)
             const monId = Number(userData.id);
             const estMonMessage = (Number(msg.idAuteur) === monId);
 
@@ -1031,7 +1091,7 @@ async function chargerMessagesForum() {
                         <div style="display:flex; align-items:center; gap:15px;">
                             <span style="font-size:0.7rem; color:var(--text-muted)">${date}</span>
                             
-                            <!-- ⭐ HABIB : Bouton supprimer uniquement si c'est moi l'auteur ⭐ -->
+                            <!-- Bouton supprimer uniquement si c'est moi l'auteur  -->
                             ${estMonMessage ? `
                                 <i class="fas fa-trash-alt" style="color:#ef4444; cursor:pointer; font-size:0.9rem;" 
                                    onclick="supprimerMessageForum('${msg.id}')" title="Supprimer mon message"></i>
@@ -1143,6 +1203,46 @@ async function supprimerMonCompte() {
     } catch (e) {
         console.error("Crash suppression compte :", e);
         alert("Microservice Identity injoignable.");
+    }
+}
+
+// --- LOGIQUE DE LA MODALE DE RECHARGE ---
+
+function openRechargeModal() {
+    const userData = JSON.parse(localStorage.getItem("user_data"));
+    document.getElementById("recharge-modal").style.display = "flex";
+    // On pré-remplit le nom du dresseur sur la carte
+    document.getElementById("modal-card-holder").innerText = userData.username || "DRESSEUR";
+}
+
+function closeRechargeModal() {
+    document.getElementById("recharge-modal").style.display = "none";
+}
+
+// Fonction de validation pour la modale
+async function rechargerCompteModal() {
+    const userData = JSON.parse(localStorage.getItem("user_data"));
+    const montant = document.getElementById("modal-recharge-amount").value;
+    const card = document.getElementById("modal-card-num").value;
+
+    if (!card || card.length < 16 || !montant || montant <= 0) {
+        alert("Rigueur : Merci de remplir tous les champs de paiement.");
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_WALLETS}/deposit/${userData.id}/${montant}`, {
+            method: "PUT"
+        });
+
+        if (res.ok) {
+            alert("Paiement accepté ! Vos Poké-Crédits ont été ajoutés.");
+            closeRechargeModal();
+            // Mise à jour du solde partout sur le site
+            await chargerSoldeDresseur(userData.id);
+        }
+    } catch (e) {
+        alert("Erreur de connexion avec le service Wallet.");
     }
 }
 

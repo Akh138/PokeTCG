@@ -5,6 +5,22 @@
     margin-top: 50px !important;
 }
 
+.news-pill-4 {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    padding: 5px 0; width: 450px;
+    display: flex; justify-content: center; align-items: center;
+    margin-top: 10px;
+    position: relative; overflow: visible;
+}
+
+.news-pill-4 h2 {
+    font-family: 'PokemonHollow', sans-serif;
+    color: var(--poke-yellow); margin: 0; font-size: 1.8rem;
+    letter-spacing: 10px; text-transform: uppercase;
+}
+
 /* 3. LA POKÉBALL (ÉCHELLE RÉDUITE POUR 5 CHAMPS) */
 .pokeball-container {
     margin-top: -60px !important; /* Je remonte un peu plus car le bloc est long */
@@ -68,11 +84,25 @@
 
 /* --- STYLE DES CHAMPS --- */
 .field label {
-    width: 130px;
+    /* 1. On donne assez de largeur pour que "MOT DE PASSE" tienne sur une ligne */
+    width: 145px;
+
+    /* 2. On empêche techniquement le texte de se couper */
+    white-space: nowrap;
+
     font-family: 'PokemonSolid', sans-serif;
     color: var(--poke-yellow);
-    font-size: 0.8rem;
-    text-align: left;
+
+    /* 3. On augmente la lisibilité (Taille + Espacement) */
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+
+    /* 4. On aligne à gauche pour un look formulaire propre */
+    display: flex;
+    justify-content: center; /* Centre le texte horizontalement dans les 145px */
+    align-items: center;     /* Centre le texte verticalement */
+    text-align: center;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
 }
 
 .field {
@@ -135,8 +165,9 @@
     }
 
     .field label {
-        width: 100% !important;
-        font-size: 0.65rem !important; /* Un peu plus petit pour gagner de la place */
+        width: 100% !important; /* Le label prend toute la largeur au-dessus de la case */
+        font-size: 0.8rem !important;
+        letter-spacing: 2px;
         padding-left: 5px;
     }
 

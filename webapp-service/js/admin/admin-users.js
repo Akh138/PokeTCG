@@ -26,12 +26,16 @@ async function loadAllUsers() {
                     <td>${user.email}</td>
                     <td><span class="status-tag ${roleClass}">${user.role}</span></td>
                     <td>
-                        <!-- Habib : On ne permet pas de se supprimer soi-même ! -->
+                        <!--  On ne permet pas de se supprimer soi-même ! -->
                         ${user.role !== 'ROLE_ADMIN' ? `
-                            <button class="btn-ban" onclick="deleteTrainer(${user.id}, '${user.username}')">
-                                <i class="fas fa-user-slash"></i> Bannir
-                            </button>
-                        ` : '<i style="color:var(--text-muted)">Protégé</i>'}
+                            <button class="btn-3d btn-red" style="width: 125px; height: 32px;" onclick="deleteTrainer(${user.id}, '${user.username}')">
+                                <div class="button-outer">
+                                   <div class="button-inner">
+                                     <span style="font-size: 0.75rem; letter-spacing: 3px; padding-bottom: 3px;">BANNIR</span>
+                                  </div>
+                               </div>
+                           </button>
+                          ` : '<i style="color:var(--text-muted); font-size: 0.8rem;">🛡️ Protégé</i>'}
                     </td>
                 </tr>`;
         });
@@ -42,7 +46,7 @@ async function loadAllUsers() {
     }
 }
 
-// ⭐ HABIB : Fonction pour bannir (supprimer) un dresseur ⭐
+// ⭐ Fonction pour bannir (supprimer) un dresseur ⭐
 async function deleteTrainer(id, pseudo) {
     if(!confirm(`Rigueur Habib : Voulez-vous vraiment bannir définitivement ${pseudo} ?\nTous ses Poké-Crédits et ses cartes seront effacés.`)) return;
 

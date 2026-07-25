@@ -31,14 +31,61 @@
         <button id="close-admin-drawer">&times;</button>
     </div>
     <div class="drawer-links">
-        <a href="#" class="admin-nav-link active" data-target="admin-view-home"><i class="fas fa-tachometer-alt"></i> Vue d'ensemble</a>
-        <a href="#" class="admin-nav-link" data-target="admin-view-users"><i class="fas fa-users"></i> Gestion Dresseurs</a>
-        <a href="#" class="admin-nav-link" data-target="admin-view-market"><i class="fas fa-shopping-cart"></i> Modération Marché</a>
-        <a href="#" class="admin-nav-link" data-target="admin-view-social"><i class="fas fa-bullhorn"></i> News & Forum</a>
-        <a href="#" class="admin-nav-link" data-target="admin-view-wallet"><i class="fas fa-university"></i> Audit Fintech</a>
-        <hr>
-        <!-- Habib : Lien pour switcher rapidement vers le mode utilisateur -->
-        <a href="dashboarddresseur.html"><i class="fas fa-user-circle"></i> Mode Dresseur</a>
+        <!-- 1. VUE D'ENSEMBLE -->
+        <a href="#" class="admin-nav-link btn-3d btn-yellow active" data-target="admin-view-home">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>Vue d'ensemble</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 2. GESTION DRESSEURS -->
+        <a href="#" class="admin-nav-link btn-3d btn-yellow" data-target="admin-view-users">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>Gestion Dresseurs</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 3. MODÉRATION MARCHÉ -->
+        <a href="#" class="admin-nav-link btn-3d btn-yellow" data-target="admin-view-market">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>Modération Marché</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 4. NEWS & FORUM -->
+        <a href="#" class="admin-nav-link btn-3d btn-yellow" data-target="admin-view-social">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>News & Forum</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 5. AUDIT FINTECH -->
+        <a href="#" class="admin-nav-link btn-3d btn-yellow" data-target="admin-view-wallet">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>Audit Fintech</span>
+                </div>
+            </div>
+        </a>
+
+        <hr style="border: 0.5px solid rgba(255,255,255,0.1); margin: 15px 0;">
+
+        <!-- 6. SWITCH VERS MODE DRESSEUR -->
+        <a href="dashboarddresseur.html" class="btn-3d btn-yellow" style="width: 100%;">
+            <div class="button-outer">
+                <div class="button-inner">
+                    <span>Mode Dresseur</span>
+                </div>
+            </div>
+        </a>
     </div>
 </nav>
 
@@ -116,8 +163,12 @@
                 <label class="small-label">Résumé du message</label>
                 <textarea id="news-content" class="glass-input" placeholder="Résumé..." style="height:100px; resize:none;"></textarea>
 
-                <button class="btn-nav connexion btn-diffuser" onclick="adminPublishNews()">
-                    <i class="fas fa-broadcast-tower"></i> Diffuser l'actualité
+                <button class="btn-3d btn-red btn-diffuser" onclick="adminPublishNews()">
+                    <div class="button-outer">
+                        <div class="button-inner">
+                            <span>DIFFUSER L'ACTUALITÉ</span>
+                        </div>
+                    </div>
                 </button>
             </div>
 
@@ -144,7 +195,7 @@
         </div>
     </section>
 
-    <!-- ⭐ SECTION 5 : AUDIT FINTECH (Wallet 8082) - NOUVEAUTÉ ⭐ -->
+    <!--  SECTION 5 : AUDIT FINTECH (Wallet 8082) - NOUVEAUTÉ  -->
     <section id="admin-view-wallet" class="admin-dashboard-view">
         <div class="news-pill"><h2>Audit Financier</h2></div>
         <div class="admin-table-container glass">

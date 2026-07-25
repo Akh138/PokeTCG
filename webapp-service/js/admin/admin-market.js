@@ -64,8 +64,12 @@ async function loadMarketModeration() {
                     <td><b style="color:var(--poke-yellow)">${ad.prix} PC</b></td>
                     <td><span class="status-tag ${statusColor}">${ad.statut}</span></td>
                     <td>
-                        <button class="btn-ban" onclick="adminDeleteAd(${ad.id})">
-                            <i class="fas fa-trash"></i> Supprimer
+                        <button class="btn-3d btn-red" style="width: 140px; height: 32px;" onclick="adminDeleteAd(${ad.id})">
+                            <div class="button-outer">
+                              <div class="button-inner">
+                                <span style="font-size: 0.7rem; letter-spacing: 2.5px; padding-bottom: 3px;">SUPPRIMER</span>
+                             </div>
+                           </div>
                         </button>
                     </td>
                 </tr>`;

@@ -1,4 +1,4 @@
-services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
+services:
   # --- INFRASTRUCTURE ---
   mysql-db:
     image: mysql:8.0
@@ -9,12 +9,11 @@ services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
     ports:
       - "3306:3306"
     healthcheck:
-      # Test plus robuste avec CMD-SHELL
       test: ["CMD-SHELL", "mysqladmin ping -u root -proot"]
-      interval: 10s # On attend 10s entre chaque test
+      interval: 10s
       timeout: 10s
-      retries: 10   # On lui laisse 10 chances (100 secondes total)
-      start_period: 30s # On ne commence à tester qu'après 30s
+      retries: 10
+      start_period: 30s
 
   mongodb:
     image: mongo:latest
@@ -23,7 +22,7 @@ services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
       MONGO_INITDB_ROOT_USERNAME: pokeadmin
       MONGO_INITDB_ROOT_PASSWORD: pokepassword
     ports:
-      - "27017:27017"
+      - "27018:27017"
 
   consul:
     image: hashicorp/consul:latest
@@ -33,7 +32,6 @@ services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
     command: "agent -dev -client 0.0.0.0"
 
   # --- MICROSERVICES ---
-  # Habib : On utilise 'service_started' pour plus de stabilité le temps du premier lancement
   identity-service:
     build: ./identity-service
     ports:
@@ -43,6 +41,7 @@ services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
         condition: service_started
       consul:
         condition: service_started
+    restart: on-failure
 
   wallet-service:
     build: ./wallet-service
@@ -51,13 +50,20 @@ services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
     depends_on:
       mysql-db:
         condition: service_started
+      consul:
+        condition: service_started
+    restart: on-failure
 
   catalog-service:
     build: ./catalog-service
     ports:
       - "8083:8083"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_started
+      consul:
+        condition: service_started
+    restart: on-failure
 
   inventory-service:
     build: ./inventory-service
@@ -66,6 +72,9 @@ services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
     depends_on:
       mysql-db:
         condition: service_started
+      consul:
+        condition: service_started
+    restart: on-failure
 
   marketplace-service:
     build: ./marketplace-service
@@ -74,13 +83,20 @@ services: #  On enlève 'version' car c'est obsolète comme dit ton terminal
     depends_on:
       mysql-db:
         condition: service_started
+      consul:
+        condition: service_started
+    restart: on-failure
 
   social-service:
     build: ./social-service
     ports:
       - "8086:8086"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_started
+      consul:
+        condition: service_started
+    restart: on-failure
 
   # --- FRONTEND ---
   webapp:

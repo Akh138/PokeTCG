@@ -12,6 +12,22 @@ body > main.content-full {
     text-align: center; /* Pour centrer les titres mais pas les cartes */
 }
 
+.news-pill-5 {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    padding: 5px 0; width: 450px;
+    display: flex; justify-content: center; align-items: center;
+    margin-top: 10px;
+    position: relative; overflow: visible;
+}
+
+.news-pill-5 h2 {
+    font-family: 'PokemonHollow', sans-serif;
+    color: var(--poke-yellow); margin: 0; font-size: 1.8rem;
+    letter-spacing: 10px; text-transform: uppercase;
+}
+
 /* --- 2. LE HEADER ÉLITE (BURGER & WALLET) --- */
 
 .burger-btn {
@@ -61,11 +77,23 @@ body > main.content-full {
 .side-drawer {
     position: fixed;
     top: 0; left: -320px;
-    width: 300px; height: 100vh;
+    width: 300px;
+    height: 100vh; /* Garde toute la hauteur de l'écran */
     z-index: 2000;
     padding: 40px 20px;
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* SCROLL INTELLIGENT  */
+    overflow-y: auto;          /* 1. Active le scroll vertical uniquement si nécessaire */
+    box-sizing: border-box;     /* 2. Assure que le padding n'augmente pas la taille du menu */
+}
+
+/* Optionnel : Rendre la barre de scroll invisible pour garder le look Premium */
+.side-drawer::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
 }
 
 .side-drawer.open {
@@ -84,13 +112,8 @@ body > main.content-full {
 #close-drawer { background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; }
 
 .drawer-links { display: flex; flex-direction: column; gap: 10px; }
-.drawer-links a {
-    text-decoration: none; color: white;
-    padding: 15px 20px; border-radius: 12px;
-    display: flex; align-items: center; gap: 15px;
-    transition: 0.3s;
-}
-.drawer-links a:hover, .drawer-links a.active { background: var(--poke-red); }
+
+
 .drawer-links hr { border: 0.5px solid rgba(255,255,255,0.1); margin: 15px 0; }
 
 /* --- 4. GESTION DES VUES (SINGLE PAGE) --- */
@@ -105,9 +128,9 @@ body > main.content-full {
 
 /* --- CENTRAGE DES TITRES (CAPSULES) --- */
 
-/* Habib : Je force les capsules de titre à se centrer horizontalement
+/* Je force les capsules de titre à se centrer horizontalement
    en utilisant des marges automatiques à gauche et à droite */
-.content-full .news-pill {
+.content-full .news-pill-5 {
     margin-left: auto !important;
     margin-right: auto !important;
     margin-bottom: 40px; /* J'ajoute un peu d'espace sous le titre */
@@ -195,7 +218,7 @@ body > main.content-full {
 
 /* --- 7. INDICATEURS DE COLLECTION (POKÉCARDEX STYLE) --- */
 
-/* Habib : Je force le Pokedex Mondial à être en grille */
+/*  Je force le Pokedex Mondial à être en grille */
 #pokedex-grid {
     display: grid !important;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
@@ -262,10 +285,60 @@ body > main.content-full {
     transition: 0.3s;
 }
 .glass-input:focus { border-color: var(--poke-yellow); background: rgba(255, 255, 255, 0.1); }
-.modal-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
-.modal-buttons .btn-nav { width: 160px; font-size: 1rem; }
+/* --- HARMONISATION DES BOUTONS DE MODALE --- */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.modal-buttons .btn-nav {
+    /* 1. On force une largeur fixe identique pour les deux */
+    width: 160px !important;
+
+    /* 2. On s'assure que la hauteur est la même */
+    height: 45px !important;
+
+    /* 3. On uniformise la police pour la modale */
+    font-family: 'PokemonSolid', sans-serif !important;
+    font-size: 1.1rem !important;
+    letter-spacing: 2px !important;
+
+    /* 4. On remet le texte bien au centre */
+    padding: 0 !important;
+    padding-bottom: 5px !important; /* Ajustement optique police Pokémon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .pokemon-font-hollow { font-family: 'PokemonHollow', sans-serif; color: var(--white); letter-spacing: 3px; font-size: 1.5rem; }
 
+/* --- AJOUT POUR LA MODALE DE RECHARGE --- */
+
+/* Style de la croix de fermeture */
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    transition: 0.3s;
+    z-index: 100;
+}
+.close-modal:hover { color: var(--poke-red); transform: scale(1.2); }
+
+/* Style du bouton "Confirmer le paiement" dans la modale */
+.payment-form .btn-nav.connexion {
+    height: 55px !important;
+    font-family: 'PokemonSolid', sans-serif !important;
+    color: var(--poke-yellow) !important;
+    font-size: 1.1rem !important;
+    letter-spacing: 2px;
+}
 /* --- 12. STYLE DES CARTES POKÉMON --- */
 
 .card-img-container {
@@ -515,29 +588,56 @@ body > main.content-full {
     color: var(--poke-yellow) !important;
 }
 
-/* --- 20. STYLE DU MARCHÉ PUBLIC --- */
+/* --- 20. STYLE DU MARCHÉ PUBLIC  --- */
 
-.market-filters {
+/* On centre le conteneur global sur la page */
+#view-market .market-filters.glass {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 50px;
     padding: 20px 40px;
-    margin-bottom: 30px;
+    margin: 20px auto 40px auto;
+    max-width: 1000px;
+    width: 90%;
     border-radius: 15px;
-    gap: 30px;
 }
 
-.market-filters .search-box { flex: 2; }
-.market-filters .sort-box { flex: 1; text-align: right; }
+/* On force l'alignement interne (Input à gauche, Loupe à droite) */
+#view-market .search-box {
+    display: flex;
+    flex-direction: row; /* Ordre naturel : 1. Input / 2. Icône */
+    align-items: center;
+    gap: 15px;
+}
 
-.market-filters select {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.2);
+/* Style des champs de saisie et de tri */
+#market-search, #market-sort {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 15px;
     color: white;
-    padding: 10px;
-    border-radius: 8px;
     outline: none;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+#market-search {
+    width: 300px;
+}
+
+/* Style de l'icône loupe à droite */
+#view-market .search-box i {
+    color: var(--text-muted);
+    font-size: 1.1rem;
     cursor: pointer;
+    position: static; /* Force le comportement flex naturel */
+}
+
+#market-search:focus, #market-sort:focus {
+    border-color: var(--poke-yellow);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Bouton Acheter (Style Fintech Green) */
@@ -595,6 +695,7 @@ body > main.content-full {
     margin-bottom: 15px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: 0.3s;
+    min-height: 60px;
 }
 
 .mgmt-item:hover { background: rgba(255, 255, 255, 0.05); }
@@ -614,14 +715,14 @@ body > main.content-full {
 .status-transit { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
 
 /* Style sur-mesure pour le bouton Forum (Ajustement police Pokémon)  */
-/* ⭐ HABIB : Style Premium pour le bouton Forum (Police Solid + Espacement) ⭐ */
+/* Style Premium pour le bouton Forum (Police Solid + Espacement)  */
 .btn-forum {
     width: 100% !important;        /* Il prend toute la largeur du cadre comme sur ton image */
     height: 55px !important;
-    font-family: 'PokemonSolid', sans-serif !important; /* ⭐ Passage aux lettres PLEINES ⭐ */
-    font-size: 1.1rem !important;  /* ⭐ Texte légèrement plus grand ⭐ */
-    letter-spacing: 2.5px !important; /* ⭐ Espacement entre les lettres ⭐ */
-    gap: 15px !important;          /* ⭐ Plus d'espace entre l'icône et le texte ⭐ */
+    font-family: 'PokemonSolid', sans-serif !important; /*  Passage aux lettres PLEINES  */
+    font-size: 1.1rem !important;  /*  Texte légèrement plus grand  */
+    letter-spacing: 2.5px !important; /*  Espacement entre les lettres  */
+    gap: 15px !important;          /* Plus d'espace entre l'icône et le texte  */
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
@@ -640,6 +741,111 @@ body > main.content-full {
     background: #b91c1c !important; /* Rouge plus foncé au survol */
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
     transform: scale(0.98); /* Petit effet d'enfoncement */
+}
+
+/* =============================================================
+   SECTION : CENTRAGE DE LA ZONE DE RECHERCHE
+   ============================================================= */
+
+#search-zone {
+    display: flex;
+    justify-content: center; /*  Centre horizontalement  */
+    align-items: center;     /* Aligne verticalement la loupe et le filtre */
+    gap: 40px;               /* Espace entre la recherche et le menu déroulant */
+    padding: 20px 40px;
+    margin: 20px auto;       /* Centre le bloc entier sur la page */
+    max-width: 1000px;        /* On limite la largeur pour un look plus "pro" */
+    width: 90%;
+}
+
+/* Style interne pour que les icônes et les textes soient bien alignés */
+.search-box, .filter-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* On harmonise les champs avec le reste du site */
+#search-name, #extension-filter {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: white;
+    outline: none;
+    transition: 0.3s;
+}
+
+#search-name:focus, #extension-filter:focus {
+    border-color: var(--poke-yellow);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- RIGUEUR : CENTRAGE ET LISIBILITÉ DES BOUTONS DE GESTION --- */
+.mgmt-item .btn-3d .button-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px; /* On retire le padding global pour maîtriser l'espace */
+}
+
+.mgmt-item .btn-3d span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espace entre l'icône (camion/poubelle) et le texte */
+    padding-bottom: 3px; /* Ajustement optique pour la police Pokémon */
+    width: 100%;
+}
+
+/* =============================================================
+   SECTION 24 : NAVIGATION 3D DRESSEUR
+   ============================================================= */
+
+/* On utilise l'ID pour être prioritaire sur tout le reste */
+#side-drawer .drawer-links .btn-3d {
+    display: block;
+    width: 100%;
+    height: 48px;
+    margin-bottom: 12px;
+    text-decoration: none;
+}
+
+#side-drawer .button-outer,
+#side-drawer .button-inner {
+    width: 100%;
+    height: 100%;
+}
+
+#side-drawer .button-inner {
+    /* Centrage total du texte */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+/* --- ÉTAT ACTIF (L'onglet sélectionné passe en ROUGE) --- */
+#side-drawer .nav-link.active .button-inner {
+    background: linear-gradient(135deg, #ef4444, #991b1b);
+}
+
+/* --- STYLE DU TEXTE --- */
+#side-drawer .btn-3d span {
+    font-family: 'PokemonSolid', sans-serif;
+    font-size: 1rem;       /* Taille idéale pour le menu */
+    letter-spacing: 2.5px; /* On fait respirer les lettres */
+    text-transform: uppercase;
+    color: #020617;        /* Texte noir sur bouton jaune */
+    padding-bottom: 3px;   /* Ajustement optique police Pokémon */
+}
+
+/* Texte blanc quand l'onglet est actif (fond rouge) */
+#side-drawer .nav-link.active span {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 /* =============================================================

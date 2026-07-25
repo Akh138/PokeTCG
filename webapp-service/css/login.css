@@ -4,6 +4,22 @@
     margin-top: 50px !important;
 }
 
+.news-pill-3 {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    padding: 5px 0; width: 450px;
+    display: flex; justify-content: center; align-items: center;
+    margin-top: 10px;
+    position: relative; overflow: visible;
+}
+
+.news-pill-3 h2 {
+    font-family: 'PokemonHollow', sans-serif;
+    color: var(--poke-yellow); margin: 0; font-size: 1.8rem;
+    letter-spacing: 10px; text-transform: uppercase;
+}
+
 /* 3. LE CONTENEUR DE LA POKÉBALL */
 .pokeball-container {
     /* Je remonte l'ensemble pour compenser la réduction de taille (scale) */
@@ -71,13 +87,24 @@
 }
 
 .field label {
-    /* Je donne une largeur fixe pour que les cases commencent au même niveau.
-       110px est suffisant pour "MOT DE PASSE" */
-    width: 110px;
+    /* 1. Largeur fixe : GARANTIT que les cases de saisie restent alignées */
+    width: 100px;
+
+    /* 2. Typographie & Lisibilité */
     font-family: 'PokemonSolid', sans-serif;
     color: var(--poke-yellow);
-    font-size: 0.8rem;
-    text-align: left;
+    font-size: 0.95rem;
+    letter-spacing: 4px;
+
+    /* 3. Centrage du texte sur les deux lignes */
+    text-align: center;
+    line-height: 1.2; /* Resserre l'espace vertical entre "MOT DE" et "PASSE" */
+
+    /* 4. Esthétique */
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .field input {
@@ -143,9 +170,10 @@
     }
 
     .field label {
-        width: 100% !important; /* Le label prend toute la ligne */
-        font-size: 0.7rem !important;
+        width: 100% !important;
+        font-size: 0.85rem !important; /* On remonte un peu par rapport à 0.7 */
         padding-left: 5px;
+        letter-spacing: 2px;          /* Un peu d'espace aussi sur mobile */
     }
 
     .field input {

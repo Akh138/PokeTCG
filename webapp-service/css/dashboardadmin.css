@@ -60,14 +60,23 @@ body > main.content-full {
 .side-drawer {
     position: fixed;
     top: 0; left: -320px;
-    width: 300px; height: 100vh;
+    width: 300px;
+    height: 100vh; /* Garde toute la hauteur de l'écran */
     z-index: 2000;
     padding: 40px 20px;
-    display: flex; flex-direction: column;
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(15px);
-    border-right: 1px solid var(--poke-yellow);
+    display: flex;
+    flex-direction: column;
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* SCROLL  */
+    overflow-y: auto;          /* 1. Active le scroll vertical uniquement si nécessaire */
+    box-sizing: border-box;     /* 2. Assure que le padding n'augmente pas la taille du menu */
+}
+
+/*  Rendre la barre de scroll invisible pour garder le look Premium */
+.side-drawer::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
 }
 
 .side-drawer.open { left: 0; box-shadow: 20px 0 60px rgba(0,0,0,0.9); }
@@ -82,13 +91,58 @@ body > main.content-full {
 
 #close-admin-drawer { background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; }
 
-.drawer-links a {
-    text-decoration: none; color: white;
-    padding: 15px 20px; border-radius: 12px;
-    display: flex; align-items: center; gap: 15px;
-    transition: 0.3s;
+/* --- 4. NAVIGATION 3D (DIMENSIONS CORRIGÉES) --- */
+
+/* On cible les boutons 3D UNIQUEMENT à l'intérieur du menu admin */
+#admin-drawer .drawer-links .btn-3d {
+    display: block;
+    width: 100%;      /* Prend toute la largeur du menu */
+    height: 48px;     /* Hauteur fixe pour éviter l'effet "géant" */
+    margin-bottom: 12px;
+    text-decoration: none;
 }
-.drawer-links a:hover, .drawer-links a.active { background: var(--poke-yellow); color: #020617; }
+
+/* On force les couches internes à remplir la hauteur de 48px */
+#admin-drawer .button-outer,
+#admin-drawer .button-inner {
+    /* --- On centre tout maintenant que l'icône est partie --- */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0; /* On retire le padding-left qui décentrait le texte */
+    width: 100%;
+    height: 100%;
+}
+
+/* Réglage de la police pour le menu latéral */
+#admin-drawer .btn-3d span {
+    font-family: 'PokemonSolid', sans-serif;
+    font-size: 0.95rem;     /* Ajustement pour que "MODÉRATION MARCHÉ" tienne sur une ligne */
+    letter-spacing: 4px;    /* Espacement propre */
+    text-transform: uppercase;
+    margin-bottom: 3px;     /* Petit ajustement vertical pour la police */
+    width: 100%;
+    text-align: center;     /* Force le centrage du texte */
+    white-space: nowrap;    /* Empêche le texte de se couper */
+}
+
+/* État Actif : L'onglet sélectionné passe en dégradé Rouge */
+#admin-drawer .admin-nav-link.active .button-inner {
+    background: linear-gradient(135deg, #ef4444, #991b1b);
+}
+
+#admin-drawer .admin-nav-link.active span {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* On gère les icônes */
+#admin-drawer i {
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+}
+
 .drawer-links hr { border: 0.5px solid rgba(255,255,255,0.1); margin: 15px 0; }
 
 /* --- 4. GESTION DES TITRES ET SECTIONS --- */
@@ -96,7 +150,7 @@ body > main.content-full {
 .admin-dashboard-view { display: none; width: 100%; animation: fadeIn 0.4s ease; }
 .admin-dashboard-view.active { display: block; }
 
-/* Habib : Je centre la capsule de titre au milieu de la page */
+/* Je centre la capsule de titre au milieu de la page */
 .admin-dashboard-view .news-pill {
     margin: 0 auto 50px auto !important;
     display: inline-block;
@@ -116,7 +170,7 @@ body > main.content-full {
 .stat-card {
     padding: 40px;
     border-radius: 25px;
-    text-align: center; /* Habib : On centre les chiffres à l'intérieur */
+    text-align: center; /* centre les chiffres à l'intérieur */
     transition: 0.3s;
 }
 .stat-card:hover { transform: translateY(-5px); border-color: var(--poke-yellow); }
@@ -240,6 +294,52 @@ td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 
     padding-right: 10px;
 }
 
+/* --- AJUSTEMENT DES BOUTONS DANS LES TABLEAUX --- */
+td button.btn-3d {
+    margin: 0 auto; /* Centre le bouton dans sa cellule */
+}
+
+td .btn-3d .button-inner {
+    padding: 0; /* On retire le padding pour les petits boutons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* On s'assure que le texte dans les petits boutons de tableau ne déborde pas */
+td .btn-3d .button-inner span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    white-space: nowrap; /* Force le mot sur une seule ligne */
+}
+
+/* On s'assure que la ligne du tableau laisse de la place au relief */
+tr {
+    height: 70px;
+}
+
+/* Style pour le bouton de diffusion */
+.btn-diffuser.btn-3d {
+    width: 100% !important;
+    height: 55px;
+    margin-top: 20px;
+}
+
+.btn-diffuser.btn-3d span {
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+}
+
+/* Alignement des news dans la liste */
+#admin-news-list .mgmt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 70px;
+}
+
 /* =============================================================
    SECTION 8 :  RESPONSIVE CONSOLE ADMIN
    ============================================================= */
@@ -267,7 +367,7 @@ td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 
     }
 
     /* 4. Tableaux (Dresseurs/Marché) : Sécurité anti-débordement */
-    /* Habib : On force le scroll horizontal pour que le tableau ne casse pas le cadre */
+    /*  On force le scroll horizontal pour que le tableau ne casse pas le cadre */
     .admin-table-container {
         padding: 10px !important;
         overflow-x: auto !important;

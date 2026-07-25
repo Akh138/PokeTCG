@@ -37,7 +37,7 @@ function initAdminUI() {
                 if(v.id === target) v.classList.add("active");
             });
 
-            // ⭐ HABIB : Ici on déclenchera le chargement des données selon la vue
+            //Ici on déclenchera le chargement des données selon la vue
             if(target === "admin-view-users") loadAllUsers();
             if(target === "admin-view-market") loadMarketModeration();
             if(target === "admin-view-social") loadSocialManagement();
