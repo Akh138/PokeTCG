@@ -324,6 +324,119 @@ button[style*="width:100%"].btn-3d {
     .footer-right { justify-content: center ; }
 }
 
+/* =============================================================
+   SECTION 9 : ENCADREMENTS DE TITRES "CYBER-POKÉ" (Rigueur)
+   ============================================================= */
+
+.cyber-title-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.cyber-title {
+    position: relative;
+    padding: 20px 80px; /* 1. On augmente le rembourrage interne */
+    border: none;
+    background-color: transparent;
+    cursor: default;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 2. On élargit la boîte pour que les lettres espacées ne sortent pas */
+    min-width: 600px;
+}
+
+/* Effet de lueur au survol de la section */
+.cyber-title:hover {
+    transform: scale(1.02);
+}
+
+.cyber-title .title-text {
+    position: relative;
+    z-index: 3;
+    font-family: 'PokemonSolid', sans-serif;
+    color: var(--poke-yellow);
+
+    /* --- AMÉLIORATIONS DE LISIBILITÉ --- */
+    font-size: 2.5rem;       /* 3. On passe de 1.8 à 2.5 (Grand Impact) */
+    letter-spacing: 12px;    /* 4. On espace massivement les lettres (Aération) */
+
+    text-transform: uppercase;
+    /* 5. renforce l'ombre pour détacher le texte du cadre rouge */
+    text-shadow: 3px 3px 0px rgba(0,0,0,0.9);
+
+    white-space: nowrap;     /* Empêche le titre de se couper en deux */
+}
+
+.cyber-title .clip {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 4px solid var(--poke-red);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 30%, 100% 70%, 90% 100%, 10% 100%, 0% 70%, 0% 30%);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+    transition: 0.3s ease;
+    animation: shape-glitch 2s infinite ease-in-out;
+}
+
+.cyber-title:hover .clip {
+    box-shadow: inset 0 0 25px var(--poke-red);
+    filter: brightness(1.2);
+}
+
+.cyber-title .corner {
+    position: absolute;
+    /* 1. On ajuste la taille pour que la Pokéball soit bien visible */
+    width: 35px;
+    height: 35px;
+
+    /* 2. On charge ton icône à la place de la couleur rouge */
+    background-image: url('../assets/pokeball-icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent; /* On enlève le fond rouge */
+
+    /* 3. On enlève la rotation de 45° pour que la Pokéball soit droite */
+    transform: none;
+
+    transition: 0.2s ease;
+    /* On garde ton animation de "respiration" */
+    animation: corner-glitch 2.5s infinite ease-in-out;
+    z-index: 5;
+}
+
+/* 4. On ajuste les positions pour que le centre de la ball soit pile sur le coin */
+.cyber-title .top-left { top: -17px; left: -17px; }
+.cyber-title .top-right { top: -17px; right: -17px; }
+.cyber-title .bottom-left { bottom: -17px; left: -17px; }
+.cyber-title .bottom-right { bottom: -17px; right: -17px; }
+
+.cyber-title .top-left { top: -10px; left: -10px; }
+.cyber-title .top-right { top: -10px; right: -10px; }
+.cyber-title .bottom-left { bottom: -10px; left: -10px; }
+.cyber-title .bottom-right { bottom: -10px; right: -10px; }
+
+/* --- ANIMATIONS DE RIGUEUR --- */
+@keyframes shape-glitch {
+    0%, 100% { clip-path: polygon(10% 0%, 90% 0%, 100% 30%, 100% 70%, 90% 100%, 10% 100%, 0% 70%, 0% 30%); }
+    50% { clip-path: polygon(12% 0%, 88% 0%, 100% 35%, 100% 65%, 88% 100%, 12% 100%, 0% 65%, 0% 35%); }
+}
+
+@keyframes corner-glitch {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 5px var(--poke-red));
+    }
+    50% {
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 15px var(--poke-red));
+    }
+}
+
 /* Sécurité pour les tout petits écrans (iPhone SE, etc.)  */
 @media (max-width: 400px) {
     .header-logo img { width: 150px ; }
