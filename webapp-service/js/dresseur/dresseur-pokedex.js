@@ -18,6 +18,8 @@ async function chargerExtensionsMondiales() {
         afficherGalerieExtensions(toutesLesExtensions);
     } catch (error) {
         console.error("Erreur microservice Catalog :", error);
+        // On informe si le service est hors-ligne dès l'entrée
+        await pokeAlert("MAINTENANCE", "Le catalogue mondial est momentanément indisponible.");
     }
 }
 
@@ -89,7 +91,8 @@ async function voirCartesDeLExtension(setId) {
         afficherGrillePokemon(cartes, extInfo.name);
 
     } catch (error) {
-        alert("Erreur lors du chargement.");
+        await pokeAlert("ERREUR CATALOGUE", "Impossible de charger les cartes de cette extension.");
+        chargerExtensionsMondiales();
     }
 }
 
@@ -112,7 +115,8 @@ async function rechercherGlobalement(nom) {
 
         afficherGrillePokemon(resultats, "Résultats Mondiaux");
     } catch (error) {
-        alert("La recherche a échoué.");
+        console.error("Erreur recherche globale:", error);
+        await pokeAlert("RECHERCHE", "La recherche mondiale a échoué. Réessayez plus tard.");
     }
 }
 
@@ -191,12 +195,16 @@ window.ouvrirZoom = function(url, event) {
 function initSearchLogic() {
     const searchInput = document.getElementById("search-name");
     if (searchInput) {
-        searchInput.addEventListener("keydown", (e) => {
+        // On ajoute "async" ici pour pouvoir utiliser "await" plus bas
+        searchInput.addEventListener("keydown", async (e) => {
             if (e.key === "Enter") {
                 let val = searchInput.value.trim();
                 if (val.length >= 3) {
                     val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
                     rechercherGlobalement(val);
+                } else {
+                    // Désormais, l'attente (await) est autorisée
+                    await pokeAlert("RECHERCHE", "Merci d'écrire au moins 3 lettres pour lancer la recherche.");
                 }
             }
         });

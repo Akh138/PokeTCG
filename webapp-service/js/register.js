@@ -15,6 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
             zipCode: document.getElementById("reg-zip").value,
             role: "USER" // Je force le rôle de base
         };
+        // Rigueur : Vérification rapide avant d'envoyer
+        if(!userData.username || !userData.email || !userData.password) {
+            await pokeAlert("CHAMPS VIDES", "Merci de remplir les informations obligatoires !");
+            return;
+        }
 
         try {
             // J'envoie le gros paquet de données en JSON
@@ -25,17 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (reponse.ok) {
-                alert("Inscription réussie ! Bienvenue dans l'aventure. Connecte-toi maintenant.");
+                //  On attend le clic sur OK avant de rediriger
+                await pokeAlert("BIENVENUE", "Inscription réussie ! Bienvenue dans l'aventure. Connecte-toi maintenant.");
                 window.location.href = "login.html";
             } else {
-                // Je récupère le message d'erreur du backend (ex: email invalide)
-                const errorData = await reponse.json();
-                alert("Erreur lors de l'inscription. Vérifie tes informations.");
+                // En cas de doublon (email déjà pris) ou erreur backend
+                await pokeAlert("ÉCHEC", "Erreur lors de l'inscription. L'email ou le pseudo est peut-être déjà utilisé.");
             }
 
         } catch (error) {
             console.error("Erreur technique :", error);
-            alert("Le service d'identité est indisponible.");
+            await pokeAlert("MAINTENANCE", "Le service d'identité est indisponible pour le moment.");
         }
     });
 });

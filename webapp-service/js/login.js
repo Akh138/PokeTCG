@@ -46,7 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     // On enregistre les vraies données (avec l'ID et le ROLE)
                     localStorage.setItem("user_data", JSON.stringify(fullUserData));
 
-                    alert("Connexion réussie ! Bienvenue Maître " + fullUserData.username);
+                    // On ajoute "await" pour dire : "Attends que l'utilisateur clique sur OK"
+                    await pokeAlert("SUCCÈS", "Connexion réussie ! Bienvenue Maître " + fullUserData.username);
 
                     // LOGIQUE D'AIGUILLAGE
                     if (fullUserData.role === 'ROLE_ADMIN') {

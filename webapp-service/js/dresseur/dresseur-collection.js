@@ -125,7 +125,10 @@ async function ouvrirClasseurSet(setId) {
                     </div>`;
             }
         });
-    } catch (e) { console.error("Erreur classeur :", e); }
+    } catch (e) {
+        console.error("Erreur classeur :", e);
+        await pokeAlert("ERREUR CATALOGUE", "Impossible de charger les détails de cette extension.");
+    }
 }
 
 // 3. LOGIQUE DE CAPTURE (AJOUT À MYSQL)
@@ -148,6 +151,13 @@ function initCaptureLogic() {
         const userData = JSON.parse(localStorage.getItem("user_data"));
         const condition = document.getElementById("select-condition").value;
 
+        // Sécurité Session
+        if (!userData || !userData.id) {
+            await pokeAlert("SESSION EXPIREE", "ID dresseur introuvable. Merci de vous reconnecter.");
+            window.location.href = "login.html";
+            return;
+        }
+
         const body = {
             idDresseur: userData.id,
             idCarteApi: carteEnCoursDeCapture.idApi,
@@ -165,11 +175,16 @@ function initCaptureLogic() {
             });
 
             if (res.ok) {
-                alert("Carte ajoutée avec succès !");
+                // Succès de capture
+                await pokeAlert("POKÉDEX", "Félicitations ! La carte a été ajoutée à votre collection.");
                 document.getElementById("add-card-modal").style.display = "none";
                 location.reload();
+            } else {
+                await pokeAlert("ÉCHEC", "Le service d'inventaire a refusé l'ajout.");
             }
-        } catch (e) { alert("Erreur serveur."); }
+        } catch (e) {
+            await pokeAlert("MAINTENANCE", "Le microservice Inventory est indisponible.");
+        }
     };
 }
 

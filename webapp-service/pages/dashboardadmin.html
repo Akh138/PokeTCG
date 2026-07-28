@@ -260,11 +260,32 @@
 </footer>
 
 <!-- CHARGEMENT DES MODULES JS (Ordre de Rigueur) -->
+<script src="../js/ui-utils.js"></script>
 <script src="../js/admin/admin-main.js"></script>
 <script src="../js/admin/admin-users.js"></script>
 <script src="../js/admin/admin-market.js"></script>
 <script src="../js/admin/admin-social.js"></script>
 <script src="../js/admin/admin-wallet.js"></script>
+
+<!-- MODALE INTERACTIVE POKE-UI (Alertes & Confirmations) -->
+<div id="poke-modal-container" class="modal" style="z-index: 9999; display: none;">
+    <div class="modal-content glass" style="width: 450px; text-align: center; border: 2px solid var(--poke-yellow); position: relative;">
+        <h3 id="poke-modal-title" class="pokemon-font-hollow" style="color: var(--poke-yellow); font-size: 1.5rem; margin-bottom: 20px;">LIGUE POKÉMON</h3>
+        <p id="poke-modal-message" style="color: white; margin-bottom: 25px; line-height: 1.5; font-weight: bold;"></p>
+
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <!-- Bouton Annuler (Caché par défaut) -->
+            <button id="poke-modal-cancel" class="btn-3d btn-red" style="width: 150px; height: 40px; display: none;">
+                <div class="button-outer"><div class="button-inner"><span>ANNULER</span></div></div>
+            </button>
+
+            <!-- Bouton OK / Confirmer -->
+            <button id="poke-modal-ok" class="btn-3d btn-yellow" style="width: 150px; height: 40px;">
+                <div class="button-outer"><div class="button-inner"><span id="poke-modal-ok-text">OK</span></div></div>
+            </button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

@@ -186,14 +186,16 @@ function initAvatarSystem() {
             });
 
             if (res.ok) {
-                alert("Profil mis à jour avec succès !");
+                // Utilisation de la nouvelle modale 
+                await pokeAlert("PROFIL", "Vos coordonnées ont été mises à jour avec succès !");
                 window.closeEditModal();
-                // On rafraîchit les infos avec la fonction déjà présente dans ton main
                 await chargerInfosDresseur(userData.username || userData.pseudo, token);
+            } else {
+                await pokeAlert("ÉCHEC", "Le serveur a refusé la mise à jour des données.");
             }
         } catch (e) {
             console.error("Erreur mise à jour profil :", e);
-            alert("Erreur lors de la mise à jour.");
+            await pokeAlert("MAINTENANCE", "Impossible de joindre le microservice Identity.");
         }
     };
 }

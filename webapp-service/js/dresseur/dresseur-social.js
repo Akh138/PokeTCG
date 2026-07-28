@@ -61,7 +61,10 @@ async function publierSurForum() {
     const message = document.getElementById("forum-message").value.trim();
     const userData = JSON.parse(localStorage.getItem("user_data"));
 
-    if (!sujet || !message) { alert("Champs vides !"); return; }
+    if (!sujet || !message) {
+        await pokeAlert("CHAMPS VIDES", "Merci de donner un sujet et un contenu à votre message !");
+        return;
+    }
 
     const body = {
         idAuteur: userData.id,
@@ -81,8 +84,10 @@ async function publierSurForum() {
             document.getElementById("forum-sujet").value = "";
             document.getElementById("forum-message").value = "";
             chargerMessagesForum();
+        } else {
+            await pokeAlert("ERREUR", "Impossible de publier pour le moment.");
         }
-    } catch (e) { alert("Erreur d'envoi."); }
+    } catch (e) { await pokeAlert("MAINTENANCE", "Le microservice Social ne répond pas."); }
 }
 
 async function likerUnMessage(id) {
@@ -93,21 +98,29 @@ async function likerUnMessage(id) {
 }
 
 async function supprimerMessageForum(idMessage) {
-    if (!confirm("Rigueur Habib : Voulez-vous vraiment supprimer ce message ?")) return;
+    const conf = await pokeConfirm("MODÉRATION", "Voulez-vous vraiment supprimer ce message ?");
+    if (!conf) return;
+
     try {
-        const res = await fetch(`${API_SOCIAL}/${idMessage}`, { method: "DELETE" });
-        if (res.ok) chargerMessagesForum();
-    } catch (e) { alert("Erreur suppression."); }
+        const res = await fetch(`${API_SOCIAL}/${idMessage}`, {
+            method: "DELETE"
+        });
+
+        if (res.ok) {
+            await pokeAlert("SUPPRIMÉ", "Le message a été effacé du forum.");
+            chargerMessagesForum();
+        }
+    } catch (e) { await pokeAlert("ERREUR", "Impossible de supprimer le message."); }
 }
 
 // 3. DROIT À L'OUBLI (SUPPRESSION TOTALE RGPD)
 async function supprimerMonCompte() {
     const userData = JSON.parse(localStorage.getItem("user_data"));
-    const confirmation = confirm(
-        "ATTENTION RIGUEUR HABIB :\n\n" +
-        "Voulez-vous vraiment supprimer votre compte ?\n" +
-        "Cette action effacera définitivement toutes vos données.\n" +
-        "C'est votre dernière chance !"
+
+    // La grande alerte de sécurité
+    const confirmation = await pokeConfirm(
+        "DANGER - SUPPRESSION",
+        "ATTENTION RIGUEUR HABIB : Cette action effacera définitivement votre compte, votre argent et toutes vos cartes. Continuer ?"
     );
 
     if (!confirmation) return;
@@ -119,13 +132,13 @@ async function supprimerMonCompte() {
         });
 
         if (reponse.ok) {
-            alert("Votre compte et toutes vos données ont été effacés. Au revoir dresseur !");
+            await pokeAlert("ADIEU DRESSEUR", "Votre compte et toutes vos données ont été effacés avec succès.");
             logout();
         } else {
-            alert("Erreur lors de la suppression.");
+            await pokeAlert("ERREUR TECHNIQUE", "Une erreur est survenue lors de la suppression de vos données.");
         }
     } catch (e) {
         console.error("Crash suppression compte :", e);
-        alert("Microservice Identity injoignable.");
+        await pokeAlert("MAINTENANCE", "Le microservice Identity est injoignable.");
     }
 }

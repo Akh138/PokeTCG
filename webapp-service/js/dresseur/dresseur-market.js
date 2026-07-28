@@ -61,7 +61,7 @@ async function chargerMarcheMondial() {
         }
     } catch (error) {
         console.error("Erreur Marketplace :", error);
-        alert("Impossible de charger le marché mondial.");
+        await pokeAlert("ERREUR", "Impossible de charger le marché mondial.");
     }
 }
 
@@ -71,11 +71,12 @@ async function acheterCarte(idAnnonce, prix) {
     const userToken = localStorage.getItem("user_token");
 
     if (userData.solde < prix) {
-        alert("Achat refusé : Solde insuffisant ! Rechargez votre compte via le bouton (+).");
+        await pokeAlert("SOLDE INSUFFISANT", "Vous n'avez pas assez de Poké-Crédits pour cet achat.");
         return;
     }
 
-    if (!confirm(`Confirmer l'achat pour ${prix} PC ? L'argent sera placé en séquestre.`)) return;
+    const confirmation = await pokeConfirm("TRANSACTION", `Voulez-vous acheter cette carte pour ${prix} PC ? L'argent sera bloqué en séquestre jusqu'à la livraison.`);
+    if (!confirmation) return;
 
     try {
         const reponse = await fetch(`${API_MARKETPLACE}/buy/${idAnnonce}/${userData.id}`, {
@@ -87,15 +88,15 @@ async function acheterCarte(idAnnonce, prix) {
         });
 
         if (reponse.ok) {
-            alert("Achat réussi ! La carte est en cours de livraison (EN TRANSIT).");
+            await pokeAlert("SUCCÈS", "Achat validé ! La carte est en route vers votre collection.");
             await chargerSoldeDresseur(userData.id);
             await chargerInventairePrivé(userData.id);
             chargerMarcheMondial();
         } else {
             const errorMsg = await reponse.text();
-            alert("Le serveur a refusé l'achat : " + errorMsg);
+            await pokeAlert("REFUSÉ", "Le serveur a décliné l'achat : " + errorMsg);
         }
-    } catch (error) { alert("Erreur réseau."); }
+    } catch (error) { await pokeAlert("ERREUR", "Le service Marketplace est injoignable."); }
 }
 
 // 3. GESTION DES VENTES (BUREAU COMMERCIAL / HISTORIQUE)
@@ -196,36 +197,60 @@ async function chargerGestionVentes() {
 
 // 4. ACTIONS DU WORKFLOW DE VENTE
 async function marquerCommeEnvoye(idAnnonce) {
-    if (!confirm("Avez-vous bien déposé le colis ?")) return;
+    const conf = await pokeConfirm("LOGISTIQUE", "Avez-vous déposé le colis ? L'acheteur sera notifié de l'expédition.");
+    if (!conf) return;
+
     try {
         const res = await fetch(`${API_MARKETPLACE}/ship/${idAnnonce}`, { method: "PUT" });
-        if (res.ok) { alert("Colis marqué comme envoyé !"); chargerGestionVentes(); }
-    } catch (e) { alert("Erreur serveur."); }
+        if (res.ok) {
+            await pokeAlert("ENVOI", "Statut mis à jour : Colis expédié !");
+            chargerGestionVentes();
+        }
+    } catch (e) { await pokeAlert("ERREUR", "Erreur lors de la mise à jour du statut."); }
 }
 
 async function confirmerReceptionAchat(idAnnonce) {
-    if (!confirm("Avez-vous bien reçu le colis ? L'argent sera transféré au vendeur.")) return;
+    const conf = await pokeConfirm("LIVRAISON", "Confirmez-vous avoir reçu la carte ? Cela libérera l'argent pour le vendeur.");
+    if (!conf) return;
+
     try {
         const res = await fetch(`${API_MARKETPLACE}/confirm-delivery/${idAnnonce}`, { method: "PUT" });
-        if (res.ok) { alert("Transaction clôturée ! La carte est officiellement à vous !"); location.reload(); }
-    } catch (e) { alert("Erreur."); }
+        if (res.ok) {
+            await pokeAlert("TERMINÉ", "Merci ! La transaction est clôturée et la carte est officiellement à vous.");
+            location.reload();
+        }
+    } catch (e) { await pokeAlert("ERREUR", "Impossible de valider la réception."); }
 }
 
 async function annulerAnnonce(idAnnonce) {
-    if (!confirm("Voulez-vous retirer cette carte de la vente ?")) return;
+    const conf = await pokeConfirm("RETRAIT", "Voulez-vous retirer cette carte du marché mondial ?");
+    if (!conf) return;
+
     try {
         const res = await fetch(`${API_MARKETPLACE}/delete/${idAnnonce}`, { method: "DELETE" });
-        if (res.ok) { alert("Annonce retirée."); chargerGestionVentes(); const userData = JSON.parse(localStorage.getItem("user_data")); chargerInventairePrivé(userData.id); }
-    } catch (e) { alert("Erreur Marketplace."); }
+        if (res.ok) {
+            await pokeAlert("ANNULATION", "L'annonce a été supprimée avec succès.");
+            chargerGestionVentes();
+            const userData = JSON.parse(localStorage.getItem("user_data"));
+            chargerInventairePrivé(userData.id);
+        }
+    } catch (e) { await pokeAlert("ERREUR", "Le microservice Marketplace ne répond pas."); }
 }
 
 async function cloturerAnnulerAchat(idAnnonce) {
-    if (!confirm("Annuler cet achat ? Vos Poké-Crédits vous seront restitués.")) return;
+    const conf = await pokeConfirm("ANNULATION", "Annuler cet achat ? Vos Poké-Crédits vous seront immédiatement restitués.");
+    if (!conf) return;
+
     try {
         const reponse = await fetch(`${API_MARKETPLACE}/cancel-buy/${idAnnonce}`, { method: "PUT" });
-        if (reponse.ok) { alert("Achat annulé avec succès."); location.reload(); }
-        else { const error = await reponse.text(); alert("Action impossible : " + error); }
-    } catch (e) { alert("Erreur annulation."); }
+        if (reponse.ok) {
+            await pokeAlert("REMBOURSEMENT", "Achat annulé. Votre solde a été mis à jour.");
+            location.reload();
+        } else {
+            const error = await reponse.text();
+            await pokeAlert("ACTION IMPOSSIBLE", error);
+        }
+    } catch (e) { await pokeAlert("ERREUR", "Erreur lors de la procédure de remboursement."); }
 }
 
 // 5. LOGIQUE DE MISE EN VENTE (PUBLICATION)
@@ -245,19 +270,19 @@ function preparerVente(idApi, nomFr) {
 async function confirmerMiseEnVente() {
     const userData = JSON.parse(localStorage.getItem("user_data"));
     const prixSaisi = document.getElementById("sell-price").value;
-    if (!prixSaisi || prixSaisi <= 0) { alert("Prix invalide !"); return; }
+    if (!prixSaisi || prixSaisi <= 0) { await pokeAlert("PRIX", "Prix invalide !"); return; }
     const maCarte = monInventaire.find(c => c.idCarteApi === carteEnCoursDeVente);
     const nouvelleAnnonce = { idVendeur: userData.id, idCarteApi: carteEnCoursDeVente, prix: prixSaisi, etat: maCarte ? maCarte.etatCarte : "Normal", statut: "DISPONIBLE", datePublication: new Date().toISOString() };
     try {
         const reponse = await fetch(`${API_MARKETPLACE}/post`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(nouvelleAnnonce) });
         if (reponse.ok) {
-            alert("Annonce publiée !");
+            await pokeAlert("BRAVO", "Annonce publiée !");
             closeSellModal();
             await chargerMesAnnonces(userData.id);
             const ext = toutesLesExtensions.find(e => e.name === maCarte.extension);
             if(ext) ouvrirClasseurSet(ext.id);
         }
-    } catch (error) { alert("Erreur."); }
+    } catch (error) { await pokeAlert("ERREUR", "Erreur serveur."); }
 }
 
 function closeSellModal() { document.getElementById("sell-card-modal").style.display = "none"; }
