@@ -1,0 +1,6 @@
+# Fichiers et dossiers inutiles à ignorer
+.idea/
+target/
+*.iml
+.mvn/
+.env
