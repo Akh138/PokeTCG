@@ -52,11 +52,15 @@ Le projet étant basé sur une architecture **Microservices**, j'utilise **Docke
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et lancé.
 - Java 17 et Maven installés.
 
-### Lancement
+### Procédure de lancement
 1. **Cloner le projet :**
    ```bash
    git clone https://github.com/Akh138/PokeTCG-Project.git
----
+
+### Lancer l'écosystème
+À la racine du projet, exécutez :
+   `docker-compose up --build`
+
 ## <img src="webapp-service/assets/readme/icon_psykokwak.png" width="30"> Stack Technique
 
 > * **Développement :**
