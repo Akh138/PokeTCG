@@ -5,10 +5,11 @@ spring:
 
   # 2. Ici, je donne les coordonnees pour trouver ma base de donnees MySQL dans Docker
   datasource:
-    # Je vise l'adresse localhost:3306 et la base poketcg_db creee sur Workbench
+    # Je vise le conteneur mysql-db sur le port interne 3306
     url: jdbc:mysql://mysql-db:3306/poketcg_db?createDatabaseIfNotExist=true
-    username: root
-    password: root
+    #  On utilise l'utilisateur applicatif restreint
+    username: poke_user
+    password: poke_password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # 3. Hibernate traduit mon code Java en langage SQL automatiquement

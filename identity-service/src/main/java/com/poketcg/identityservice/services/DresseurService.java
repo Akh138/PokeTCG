@@ -8,6 +8,7 @@ import com.poketcg.identityservice.proxies.SocialProxy;
 import com.poketcg.identityservice.proxies.WalletProxy;
 import com.poketcg.identityservice.repositories.DresseurRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DresseurService {
 
     private final DresseurRepository dresseurRepository;
@@ -24,7 +26,7 @@ public class DresseurService {
     private final WalletProxy walletProxy;
     private final InventoryProxy inventoryProxy;
     private final MarketplaceProxy marketplaceProxy;
-    // 2. C'est cette ligne qu'il manquait pour que le rouge disparaisse !
+
     private final SocialProxy socialProxy;
 
     public Dresseur inscription(Dresseur dresseur) {
@@ -67,11 +69,12 @@ public class DresseurService {
     }
 
     // Méthode pour mettre à jour les coordonnées du dresseur
-    public Dresseur mettreAJourProfil(String username, Dresseur nouveauxInfos) {
-        Dresseur dresseur = dresseurRepository.findByUsername(username)
+    public Dresseur mettreAJourProfil(Long id, Dresseur nouveauxInfos) {
+        // 1. On cherche par ID pour correspondre à ce que le JS envoie
+        Dresseur dresseur = dresseurRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dresseur introuvable"));
 
-        // Je ne modifie que ce qui est autorisé
+        // 2. On met à jour les champs
         dresseur.setAddress(nouveauxInfos.getAddress());
         dresseur.setZipCode(nouveauxInfos.getZipCode());
         dresseur.setPhone(nouveauxInfos.getPhone());

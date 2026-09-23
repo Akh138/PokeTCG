@@ -8,11 +8,13 @@ import com.poketcg.marketplace_service.repositories.AnnonceRepository;
 import com.poketcg.marketplace_service.repositories.OffreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AnnonceService {
 
     private final AnnonceRepository annonceRepository;

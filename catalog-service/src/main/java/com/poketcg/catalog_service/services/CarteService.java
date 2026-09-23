@@ -30,13 +30,13 @@ public class CarteService {
         List<Extension> cacheExtensions = extensionRepository.findAll();
 
         if (!cacheExtensions.isEmpty()) {
-            System.out.println("RIGUEUR HABIB : Liste des extensions chargée depuis MongoDB (Mode Autonome)");
+            System.out.println("Liste des extensions chargée depuis MongoDB (Mode Autonome)");
             Map<String, Object> resLocal = new HashMap<>();
             resLocal.put("data", cacheExtensions);
             return resLocal; //On renvoie tout de suite ce qu'on a en base
         }
 
-        // 2. Si MongoDB est vide, on appelle l'API et on l'enregistre au vol
+        // 2. Si MongoDB est vide, on appelle l'API et on l'enregistre
         try {
             Map<String, Object> resIntRaw = (Map<String, Object>) pokemonTcgProxy.getAllSets();
             List<Map<String, Object>> data = (List<Map<String, Object>>) resIntRaw.get("data");
@@ -69,7 +69,7 @@ public class CarteService {
         List<Carte> cartesEnCache = carteRepository.findByExtension(setId);
 
         if (!cartesEnCache.isEmpty()) {
-            System.out.println("RIGUEUR HABIB : Extension [" + setId + "] chargée depuis MongoDB (Cache Actif)");
+            System.out.println("Extension [" + setId + "] chargée depuis MongoDB (Cache Actif)");
             List<Map<String, Object>> resLocal = new ArrayList<>();
             for (Carte c : cartesEnCache) {
                 resLocal.add(transformerCarteEnMap(c));
@@ -116,7 +116,7 @@ public class CarteService {
         return finalCards;
     }
 
-    // ⭐ OUTIL : Transformer une Carte MongoDB en Map pour le Front-end
+    // Transformer une Carte MongoDB en Map pour le Front-end
     private Map<String, Object> transformerCarteEnMap(Carte c) {
         Map<String, Object> m = new HashMap<>();
         m.put("id", c.getIdApiUnique());
@@ -128,7 +128,7 @@ public class CarteService {
         return m;
     }
 
-    // ⭐ OUTIL : Fusionner les données et enregistrer dans MongoDB
+    //  Fusionner les données et enregistrer dans MongoDB
     private void traitementEtAspiration(Map<String, Object> cInt, Map<String, Map<String, String>> frenchDataMap, String setId) {
         String idCard = (String) cInt.get("id");
         String number = (String) cInt.get("number");

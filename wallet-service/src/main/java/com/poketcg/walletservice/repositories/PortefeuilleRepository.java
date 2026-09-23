@@ -8,7 +8,7 @@ import java.util.Optional;
 @Repository
 public interface PortefeuilleRepository extends JpaRepository<Portefeuille, Long> {
 
-    // Cette méthode permettra de retrouver le portefeuille d'un dresseur précis
+    // Cette méthode permet de retrouver le portefeuille d'un dresseur précis
     Optional<Portefeuille> findByIdDresseur(Long idDresseur);
 
     // Somme de tout l'argent disponible sur le site

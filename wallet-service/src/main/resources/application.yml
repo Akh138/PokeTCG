@@ -3,8 +3,9 @@ spring:
     name: wallet-service
   datasource:
     url: jdbc:mysql://mysql-db:3306/poketcg_db?createDatabaseIfNotExist=true
-    username: root
-    password: root
+    # On utilise poke_user pour ce service financier
+    username: poke_user
+    password: poke_password
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

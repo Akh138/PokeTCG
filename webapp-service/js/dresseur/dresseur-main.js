@@ -56,6 +56,12 @@ async function chargerInfosDresseur(pseudo, token) {
         const fullUser = await reponse.json();
         document.getElementById("display-email").innerText = fullUser.email;
         document.getElementById("display-address").innerText = `${fullUser.address}, ${fullUser.zipCode}`;
+
+        //  On ajoute cette ligne pour afficher le téléphone
+        if (fullUser.phone) {
+            document.getElementById("display-phone").innerText = fullUser.phone;
+        }
+
         localStorage.setItem("user_data", JSON.stringify(fullUser));
         return fullUser;
     }
@@ -112,7 +118,7 @@ function initUIControls() {
 
 // --- GESTION DU SYSTÈME D'AVATARS ---
 function initAvatarSystem() {
-    const avatars = ['avatar1.png', 'avatar2.png', 'avatar3.png', 'avatar4.png']; // Rigueur : on s'arrête à 3
+    const avatars = ['avatar1.png', 'avatar2.png', 'avatar3.png', 'avatar4.png'];
     const list = document.getElementById("avatar-list");
     if(!list) return;
 
@@ -186,7 +192,7 @@ function initAvatarSystem() {
             });
 
             if (res.ok) {
-                // Utilisation de la nouvelle modale 
+                // Utilisation de la modale
                 await pokeAlert("PROFIL", "Vos coordonnées ont été mises à jour avec succès !");
                 window.closeEditModal();
                 await chargerInfosDresseur(userData.username || userData.pseudo, token);

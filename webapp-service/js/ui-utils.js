@@ -12,7 +12,7 @@ window.pokeAlert = function(titre, message) {
 
         modal.style.display = "flex";
 
-        // ⭐ RIGUEUR : On ne résout la promesse QUE quand on clique sur OK
+        //  ne résout la promesse QUE quand on clique sur OK
         document.getElementById("poke-modal-ok").onclick = () => {
             modal.style.display = "none";
             resolve(); // Le code peut enfin continuer

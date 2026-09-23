@@ -3,8 +3,9 @@ spring:
     name: marketplace-service
   datasource:
     url: jdbc:mysql://mysql-db:3306/poketcg_db?createDatabaseIfNotExist=true
-    username: root
-    password: root
+    # ⭐ RIGUEUR : On utilise poke_user pour sécuriser la place de marché
+    username: poke_user
+    password: poke_password
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

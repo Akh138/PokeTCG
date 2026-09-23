@@ -5,6 +5,7 @@ import com.poketcg.walletservice.entities.TransactionHistory;
 import com.poketcg.walletservice.repositories.PortefeuilleRepository;
 import com.poketcg.walletservice.repositories.TransactionHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PortefeuilleService {
 
     private final PortefeuilleRepository portefeuilleRepository;

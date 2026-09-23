@@ -47,9 +47,10 @@ public class DresseurController {
     }
 
     // Route pour modifier son profil (Adresse et Téléphone)
-    @PutMapping("/update/{username}")
-    public Dresseur updateProfile(@PathVariable String username, @RequestBody Dresseur dresseur) {
-        return dresseurService.mettreAJourProfil(username, dresseur);
+    @PutMapping("/update/{id}")
+    public Dresseur updateProfile(@PathVariable Long id, @RequestBody Dresseur dresseur) {
+        // On appelle le service avec l'ID
+        return dresseurService.mettreAJourProfil(id, dresseur);
     }
 
     //  Route indispensable pour traduire l'ID du vendeur en Pseudo sur le Marché

@@ -4,12 +4,14 @@ services:
     image: mysql:8.0
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: poketcg_db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PWD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
+      MYSQL_USER: ${MYSQL_APP_USER}
+      MYSQL_PASSWORD: ${MYSQL_APP_PWD}
     ports:
-      - "3306:3306"
+      - "${MYSQL_EXTERNAL_PORT}:3306"
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -u root -proot"]
+      test: ["CMD-SHELL", "mysqladmin ping -u root -p${MYSQL_ROOT_PWD}"]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -19,23 +21,23 @@ services:
     image: mongo:latest
     container_name: mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: pokeadmin
-      MONGO_INITDB_ROOT_PASSWORD: pokepassword
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PWD}
     ports:
-      - "27018:27017"
+      - "${MONGO_EXTERNAL_PORT}:27017"
 
   consul:
     image: hashicorp/consul:latest
     container_name: consul
     ports:
-      - "8500:8500"
+      - "${CONSUL_EXTERNAL_PORT}:8500"
     command: "agent -dev -client 0.0.0.0"
 
   # --- MICROSERVICES ---
   identity-service:
     build: ./identity-service
     ports:
-      - "8081:8081"
+      - "${PORT_IDENTITY}:8081"
     depends_on:
       mysql-db:
         condition: service_started
@@ -46,7 +48,7 @@ services:
   wallet-service:
     build: ./wallet-service
     ports:
-      - "8082:8082"
+      - "${PORT_WALLET}:8082"
     depends_on:
       mysql-db:
         condition: service_started
@@ -57,7 +59,7 @@ services:
   catalog-service:
     build: ./catalog-service
     ports:
-      - "8083:8083"
+      - "${PORT_CATALOG}:8083"
     depends_on:
       mongodb:
         condition: service_started
@@ -68,7 +70,7 @@ services:
   inventory-service:
     build: ./inventory-service
     ports:
-      - "8084:8084"
+      - "${PORT_INVENTORY}:8084"
     depends_on:
       mysql-db:
         condition: service_started
@@ -79,7 +81,7 @@ services:
   marketplace-service:
     build: ./marketplace-service
     ports:
-      - "8085:8085"
+      - "${PORT_MARKETPLACE}:8085"
     depends_on:
       mysql-db:
         condition: service_started
@@ -90,7 +92,7 @@ services:
   social-service:
     build: ./social-service
     ports:
-      - "8086:8086"
+      - "${PORT_SOCIAL}:8086"
     depends_on:
       mongodb:
         condition: service_started
@@ -105,6 +107,6 @@ services:
     volumes:
       - ./webapp-service:/usr/share/nginx/html
     ports:
-      - "80:80"
+      - "${PORT_WEBAPP}:80"
     depends_on:
       - identity-service
