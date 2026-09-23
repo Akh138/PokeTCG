@@ -44,7 +44,19 @@
 | <img src="webapp-service/assets/readme/dashboard.png" width="400"> | <img src="webapp-service/assets/readme/pokedex.png" width="400"> |
 
 ---
+## <img src="webapp-service/assets/readme/icon_evoli.png" width="30"> Installation & Lancement
 
+Le projet étant basé sur une architecture **Microservices**, j'utilise **Docker Compose** pour orchestrer l'ensemble de l'écosystème.
+
+### Prérequis
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et lancé.
+- Java 17 et Maven installés.
+
+### Lancement
+1. **Cloner le projet :**
+   ```bash
+   git clone https://github.com/Akh138/PokeTCG-Project.git
+---
 ## <img src="webapp-service/assets/readme/icon_psykokwak.png" width="30"> Stack Technique
 
 > * **Développement :**
